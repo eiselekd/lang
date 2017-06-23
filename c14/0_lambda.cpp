@@ -15,4 +15,5 @@ int main() {
     return x*y>55;
   };
   a(c1) ;
+  return 0;
 }
