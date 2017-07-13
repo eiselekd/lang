@@ -1,0 +1,5 @@
+
+
+* links
+[1] http://dev.stephendiehl.com/fun/002_parsers.html
+[2] http://book.realworldhaskell.org/read/
