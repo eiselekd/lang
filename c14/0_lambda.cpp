@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <functional>
+#include <algorithm>
 using namespace std;
 
 int a(std::function<int (int)> c) {
