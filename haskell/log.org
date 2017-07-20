@@ -1,5 +1,74 @@
 
+* cabal
+ update cabal repo
+$cabal update
+
+ cabal sandbox
+$cabal sandbox init
+
+ use <name>.cabal and install dependencies
+(cabal configure)
+cabal install --only-dependencies
+
+ build and run
+cabal build
+cabal run
+ run interpreter
+cabal repl
+
+
+
+** test.cabal
+
+name:                test
+version:             0.1.0.0
+license:             MIT
+license-file:        LICENSE
+author:              Konrad Eisele
+maintainer:          eiselekd@gmail.com
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+executable test
+  build-depends:
+    base             >= 4.6 ,
+    filepath         >= 1.3 ,
+    text             >= 1.1 ,
+    pretty           >= 1.1 ,
+    process          >= 1.1 ,
+    directory        >= 1.2 ,
+    haskeline        >= 0.7 ,
+    containers       >= 0.5 ,
+    parsec           >= 3.1 ,
+    transformers     >= 0.4
+  default-language:  Haskell2010
+  main-is:           Main.hs
+
+
+* ghci
+
+1. :t  get type information
+2. :k  get kind
+3. :i  get type and source information
+4. :l  load module
+5. :add  add module
+6. :bro  browse
+7. :show imports
+
+cabal install happy
+cabal install hoogle
+hoogle generate
 
 * links
 [1] http://dev.stephendiehl.com/fun/002_parsers.html
 [2] http://book.realworldhaskell.org/read/
+[3] https://stackoverflow.com/questions/20660782/writing-a-parser-from-scratch-in-haskell
+[4] http://dev.stephendiehl.com/hask/#cabal
+[5] https://www.youtube.com/watch?v=gEoruozy3mk
+[6] https://www.youtube.com/watch?v=re96UgMk6GQ
+[7] https://de.wikipedia.org/wiki/Monade_(Informatik)
+[8] http://learnyouahaskell.com/making-our-own-types-and-typeclasses#the-functor-typeclass
+[9] http://learnyouahaskell.com/input-and-output
+[10] http://learnyouahaskell.com/functors-applicative-functors-and-monoids
+[11] http://dev.stephendiehl.com/fun/
