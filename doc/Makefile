@@ -1,7 +1,11 @@
 all:
 	cd sphinx; make html
-	cd julia-documenter; make 
+	echo "julia v0.7 or later required"; cd julia-documenter; make 
 
 prep:
 	pip install sphinx
-	apt install julia
+
+
+julia:
+	git clone https://github.com/JuliaLang/julia.git
+	cd julia; make

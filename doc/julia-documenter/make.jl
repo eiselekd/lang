@@ -11,7 +11,7 @@ using Documenter
 
 baremodule GenStdLib end
 isdefined(:build_sysimg) || @eval module BuildSysImg
-    include(joinpath(@__DIR__, "..", "contrib", "build_sysimg.jl"))
+    include(joinpath(".", "contrib", "build_sysimg.jl"))
 end
 
 # Documenter Setup.
