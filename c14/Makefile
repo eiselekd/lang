@@ -6,6 +6,19 @@ all: bison
 
 var:
 	g++ -std=c++14 3_var.cpp -o 3_var.exe; ./3_var.exe
+	g++ -std=c++14 4_var.cpp -o 4_var.exe; ./4_var.exe
+
+var5:
+	g++ -std=c++14 5_var_data.cpp -o 5_var_data.exe; ./5_var_data.exe
+
+var6:
+	g++ -std=c++14 6_var.cpp -o 6_var_data.exe; ./6_var_data.exe
+
+var7:
+	g++ -std=c++14 7_forward.cpp -o 7_forward.exe; ./7_forward.exe
+
+var5-clang:
+	clang++ -std=c++14 -Xclang -fdump-record-layouts 5_var_data.cpp -o 5_var_data.exe; ./5_var_data.exe
 
 l4.exe: l4.o l4main.c
 	cc  l4.o l4main.c -o l4.exe
