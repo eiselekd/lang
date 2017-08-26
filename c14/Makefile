@@ -17,6 +17,10 @@ var6:
 var7:
 	g++ -std=c++14 7_forward.cpp -o 7_forward.exe; ./7_forward.exe
 
+# var8:
+# 	g++ -std=c++14 8_enable.cpp -o 8_enable.exe; ./8_enable.exe
+
+
 var5-clang:
 	clang++ -std=c++14 -Xclang -fdump-record-layouts 5_var_data.cpp -o 5_var_data.exe; ./5_var_data.exe
 
