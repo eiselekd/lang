@@ -5,6 +5,7 @@ class CId {
 };
 
 class h {
+
 public:
   class ref {
   public:
@@ -26,6 +27,7 @@ int main(int argc, char **argv) {
   CId *b;
 
   b = a[1];
+  a[1] = 1;
   return 0;
 
 }
