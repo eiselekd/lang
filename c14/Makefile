@@ -4,6 +4,10 @@ all: bison
 	g++ -std=c++14 1_thread.cpp -o 1_thread.exe -lpthread; ./1_thread.exe
 	g++ -std=c++14 2_switch.cpp -o 2_switch.exe; ./2_switch.exe
 
+pack:
+	g++ -g -std=c++14 10_temppack.cpp -o 10_temppack.exe -lpthread; ./10_temppack.exe
+
+
 thread:
 	g++ -std=c++14 1_thread_2.cpp -o 1_thread_2.exe -lpthread; ./1_thread_2.exe
 
