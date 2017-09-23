@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 class a {
 public:
@@ -33,9 +34,48 @@ public:
   int e1 = 3;
 };
 
+int
+func(int a = 1, int b = 2) {
+  return 0;
+}
+
+class c0 {
+public:
+
+};
+
+class c1 : c0 {
+public:
+  void operator=(const c0 &a) {}
+};
+
+class mypair {
+public:
+  mypair(int i, std::string a) {}
+};
+
+class mymap {
+public:
+  mymap(std::initializer_list<mypair> a) {
+    for (auto i: a) {
+      insert(i);
+    }
+  }
+  void insert(mypair &p) {
+
+  }
+};
+
 int main(int argc, char **argv) {
   a x({1,2,3,4});
   b y{1,2};
   d z{1,2};
+  func(2);
+  c1 x0;
+  x0=c1{};
+  std::map<int,std::string> a({{1,"test0"}, {2, "test1"}});
+
+  mymap m0({{1,"test0"},{2,"test1"}});
+
   return 0;
 }
