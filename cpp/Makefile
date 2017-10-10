@@ -7,6 +7,9 @@ all: bison
 o:
 	g++ -g -std=c++14 14_o.cpp -o 14_o.exe -lpthread; ./14_o.exe
 
+map17:
+	g++-7 -g -std=c++17 50_map.cpp -o 50_map.exe ; ./50_map.exe
+
 conv:
 	g++ -g -std=c++14 13_conv.cpp -o 13_conv.exe -lpthread; ./13_conv.exe
 
@@ -57,3 +60,10 @@ cmp:
 #    "file": "file.cc" },
 #  ...
 #]
+
+c17-update:
+	apt-get install software-properties-common
+	add-apt-repository ppa:ubuntu-toolchain-r/test
+	apt-get update
+	apt-get install -y gcc-7
+	apt-get install -y g++-7
