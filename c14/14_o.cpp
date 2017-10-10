@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <iostream>
+#include <stdlib.h>
+#include <functional>
+#include <stdio.h>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
+#include <functional>
 
 class a {
 public:
@@ -62,12 +67,15 @@ public:
     }
   }
   void insert(mypair &p) {
-
+  }
+  void insert(mypair &&p) {
   }
 };
 
 int main(int argc, char **argv) {
   a x({1,2,3,4});
+
+
   b y{1,2};
   d z{1,2};
   func(2);
@@ -76,6 +84,9 @@ int main(int argc, char **argv) {
   std::map<int,std::string> a({{1,"test0"}, {2, "test1"}});
 
   mymap m0({{1,"test0"},{2,"test1"}});
+
+  m0.insert(mypair(1,"test3"));
+
 
   return 0;
 }

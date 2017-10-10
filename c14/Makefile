@@ -45,3 +45,15 @@ var5-clang:
 
 l4.exe: l4.o l4main.c
 	cc  l4.o l4main.c -o l4.exe
+
+
+
+
+cmp:
+	clang++ -DDEFINE_B -DDEFINE_A 15_cmp.cpp -o 15_cmp.exe
+#
+#  { "directory": "/home/user/llvm/build",
+#    "command": "/usr/bin/clang++ -Irelative -DSOMEDEF=\"With spaces, quotes and \\-es.\" -c -o file.o file.cc",
+#    "file": "file.cc" },
+#  ...
+#]
