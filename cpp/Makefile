@@ -10,6 +10,11 @@ o:
 map17:
 	g++-7 -g -std=c++17 50_map.cpp -o 50_map.exe ; ./50_map.exe
 
+bind17:
+	g++-7 -g -std=c++17 51_bind.cpp -o 51_bind.exe ; ./51_bind.exe
+bind172:
+	g++-7 -g -std=c++17 52_bind.cpp -o 52_bind.exe ; ./52_bind.exe
+
 conv:
 	g++ -g -std=c++14 13_conv.cpp -o 13_conv.exe -lpthread; ./13_conv.exe
 
