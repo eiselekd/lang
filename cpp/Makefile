@@ -4,6 +4,9 @@ all: bison
 	g++ -std=c++14 1_thread.cpp -o 1_thread.exe -lpthread; ./1_thread.exe
 	g++ -std=c++14 2_switch.cpp -o 2_switch.exe; ./2_switch.exe
 
+const:
+	g++ -std=c++14 30_const.cpp -o 30_const.exe; ./30_const.exe
+
 o:
 	g++ -g -std=c++14 14_o.cpp -o 14_o.exe -lpthread; ./14_o.exe
 
