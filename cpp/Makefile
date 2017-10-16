@@ -18,6 +18,14 @@ bind17:
 bind172:
 	g++-7 -g -std=c++17 52_bind.cpp -o 52_bind.exe ; ./52_bind.exe
 
+
+doubleit:
+	g++-7 -g -std=c++17 60_double_it.cpp -o 60_double_it.exe ; ./60_double_it.exe
+
+tripple:
+	g++-7 -g -std=c++17 61_tripple.cpp -o 61_tripple.exe ; ./61_tripple.exe
+
+
 conv:
 	g++ -g -std=c++14 13_conv.cpp -o 13_conv.exe -lpthread; ./13_conv.exe
 
