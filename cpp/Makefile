@@ -25,6 +25,9 @@ doubleit:
 tripple:
 	g++-7 -g -std=c++17 61_tripple.cpp -o 61_tripple.exe ; ./61_tripple.exe
 
+type:
+	g++-7 -g -std=c++17 70_type.cpp -o 70_type.exe ; ./70_type.exe
+
 
 conv:
 	g++ -g -std=c++14 13_conv.cpp -o 13_conv.exe -lpthread; ./13_conv.exe
