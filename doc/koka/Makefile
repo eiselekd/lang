@@ -40,8 +40,13 @@ ubuntu-xelatex:
 	sudo apt install texlive-xetex
 	sudo apt install texlive-science
 
-test:
+test-all:
 	cd madoko-precompiled; npm install
 	node madoko-precompiled/lib/cli.js test.md
-	node madoko-precompiled/lib/cli.js --pdf test.md
+	node madoko-precompiled/lib/cli.js --pdf test.md; cd out; pdflatex test.tex
+
+test:
+	node madoko-precompiled/lib/cli.js test.md;
+	chromium-browser out/test.html
+
 
