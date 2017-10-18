@@ -1,0 +1,2 @@
+all:
+	doxygen conf.txt

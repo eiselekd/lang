@@ -1,0 +1,2 @@
+FILE_PATTERNS = *.cpp *.h
+EXTRACT_ALL = yes
