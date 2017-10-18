@@ -35,3 +35,9 @@ ubuntu:
 de:
 	cp koka-0.6.tar.lzma tmp-koka-0.6.tar.lzma; lzma -d tmp-koka-0.6.tar.lzma; tar xvf tmp-koka-0.6.tar
 	cp koka-0.8.tar.lzma tmp-koka-0.8.tar.lzma; lzma -d tmp-koka-0.8.tar.lzma; tar xvf tmp-koka-0.8.tar
+
+
+test:
+	cd madoko-precompiled; npm install
+	node madoko-precompiled/lib/cli.js test.md
+
