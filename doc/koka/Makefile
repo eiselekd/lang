@@ -21,6 +21,7 @@ prepare:
 	if [ ! -d koka ]; then git clone https://github.com/koka-lang/koka.git; cd koka; fi
 	sed -i'' 's/" --html " + docflags/" "/g' koka/Jakefile.js
 	if [ ! -d madoko-0.6 ]; then git clone https://github.com/koka-lang/madoko.git madoko-0.6; fi
+	if [ ! -f madoko ]; then ln -s madoko-0.6 madoko; fi
 
 ubuntu:
 	sudo apt install ghc nodejs cabal-install
