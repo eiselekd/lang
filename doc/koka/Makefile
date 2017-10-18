@@ -23,9 +23,13 @@ prepare:
 	if [ ! -d madoko-0.6 ]; then git clone https://github.com/koka-lang/madoko.git madoko-0.6; fi
 
 ubuntu:
-	sudo apt isntall ghc nodejs
+	sudo apt install ghc nodejs
 	sudo npm install -g jake
 	sudo npm install -g madoko
 	cd koka-0.6; sudo npm install
 	cd koka; sudo npm install
 	cd madoko; jake config
+
+de:
+	cp koka-0.6.tar.lzma tmp-koka-0.6.tar.lzma; lzma -d tmp-koka-0.6.tar.lzma; tar xvf tmp-koka-0.6.tar
+	cp koka-0.8.tar.lzma tmp-koka-0.8.tar.lzma; lzma -d tmp-koka-0.8.tar.lzma; tar xvf tmp-koka-0.8.tar
