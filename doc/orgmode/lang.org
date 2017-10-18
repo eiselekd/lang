@@ -1,3 +1,167 @@
+#+STARTUP: inlineimages
+
+* PlantUML
+note:/etc/java-9-openjdk/accessibility.properties
+#assistive_technologies=org.GNOME.Accessibility.AtkWrapper
+
+http://plantuml.com/class-diagram
+
+#+BEGIN_SRC plantuml :file test30.png
+robust "DNS Resolver" as DNS
+robust "Web Browser" as WB
+concise "Web User" as WU
+
+@0
+WU is Idle
+WB is Idle
+DNS is Idle
+
+@+100
+WU -> WB : URL
+WU is Waiting
+WB is Processing
+
+@+200
+WB is Waiting
+WB -> DNS@+50 : Resolve URL
+
+@+100
+DNS is Processing
+
+@+300
+DNS is Idle
+#+END_SRC
+
+#+RESULTS:
+[[file:test30.png]]
+
+
+#+BEGIN_SRC plantuml :file test30.png
+:Ready;
+:next(o)|
+:Receiving;
+split
+ :nak(i)<
+ :ack(o)>
+split again
+ :ack(i)<
+ :next(o)
+ on several line|
+ :i := i + 1]
+ :ack(o)>
+split again
+ :err(i)<
+ :nak(o)>
+split again
+ :foo/
+split again
+ :i > 5}
+stop
+end split
+:finish;
+#+END_SRC
+
+#+RESULTS:
+[[file:test30.png]]
+
+#+BEGIN_SRC plantuml :file test3.png
+class Dummy {
+ -field1
+ #field2
+ ~method1()
+ +method2()
+}
+#+END_SRC
+
+#+RESULTS:
+[[file:test3.png]]
+
+#+BEGIN_SRC plantuml :file test10.png
+class BaseClass
+
+namespace net.dummy #DDDDDD {
+    .BaseClass <|-- Person
+    Meeting o-- Person
+    
+    .BaseClass <|- Meeting
+}
+
+namespace net.foo {
+  net.dummy.Person  <|- Person
+  .BaseClass <|-- Person
+
+  net.dummy.Meeting o-- Person
+}
+
+BaseClass <|-- net.unused.Person
+
+#+END_SRC
+
+#+RESULTS:
+[[file:test10.png]]
+
+
+#+BEGIN_SRC plantuml :file test2.png
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 20
+skinparam maxmessagesize 60
+skinparam sequenceParticipant underline
+
+actor User
+participant "First Class" as A
+participant "Second Class" as B
+participant "Last Class" as C
+
+User -> A: DoWork
+activate A
+
+A -> B: Create Request
+activate B
+
+B -> C: DoWork
+activate C
+C --> B: WorkDone
+destroy C
+
+B --> A: Request Created
+deactivate B
+
+A --> User: Done
+deactivate A
+
+#+END_SRC
+
+#+RESULTS:
+[[file:test2.png]]
+
+#+BEGIN_SRC plantuml :file test.png
+actor Bob #red
+' The only difference between actor
+'and participant is the drawing
+participant Alice
+participant "I have a really\nlong name" as L #99FF99
+/' You can also declare:
+   participant L as "I have a really\nlong name"  #99FF99
+  '/
+
+Alice->Bob: Authentication Request
+Bob->Alice: Authentication Response
+Bob->L: Log transaction
+
+#+END_SRC
+
+#+RESULTS:
+[[file:test.png]]
+
+
+
+#+CAPTION: This is the caption for the next figure link (or table)
+#+NAME:   fig:SED-HR4049
+[[file:a.jpg]]
+
+
+
+
 * Test
 ** Test2
 Hello
@@ -22,13 +186,14 @@ Hello
 
 * Test 2 
 
-
 |------------------+-----+-----------------------------------------------------------|
 | tableconstructor | ::= | `{´ [fieldlist] `}´                                       |
 | fieldlist        | ::= | field {fieldsep field} [fieldsep]                         |
 | field            | ::= | `[´ exp `]´ `=´ exp       \vert         Name `=´ exp  exp |
 | fieldsep         | ::= | `,´  \vert  `;´                                           |
 |                  |     |                                                           |
+
+
 
 test
 
