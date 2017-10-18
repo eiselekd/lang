@@ -3,7 +3,7 @@ all:
 	echo "julia v0.7 or later required"; cd julia-documenter; make 
 
 prep:
-	pip install sphinx
+	sudo pip install sphinx
 
 
 julia:

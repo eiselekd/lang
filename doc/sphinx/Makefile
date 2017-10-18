@@ -15,7 +15,7 @@ ALLSPHINXOPTS   = -d _build/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
-SPHINX_BUILD  = /usr/bin/sphinx-build
+SPHINX_BUILD  = $(shell ls /usr/bin/sphinx-build /usr/local/bin/sphinx-build)
 
 SPHINXBUILD = $(SPHINX_BUILD)
 
