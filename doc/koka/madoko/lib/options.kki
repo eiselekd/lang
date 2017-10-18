@@ -1,0 +1,290 @@
+// The ":options" type and parsing of the command line
+module interface options
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/*
+Access to the program environment and commmand line arguments.
+
+Print the environment: "env.list.map(fun(p) { p.fst + ""="" + p.snd }).join(""\n"").print"
+
+Note: we view the environment and command line as (total) constants in the
+program. i.e. as if the program is only compiled at the point when both the 
+environment and command line is supplied. 
+*/
+import std/env = std/env = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/*
+Parsing of command line flags.
+*/
+import std/flags = std/flags = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// Common types and operations
+import common = common = "";
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+// Bibliography styles
+type bibstyle {
+  con Bst(styleName: std/core/string, locale: std/core/string) : (styleName : std/core/string, locale : std/core/string) -> bibstyle;
+  con Csl(styleName: std/core/string, locale: std/core/string) : (styleName : std/core/string, locale : std/core/string) -> bibstyle;
+};
+// Mathematics rendering mode.
+type mathmode {
+  con Static : mathmode;
+  con Dynamic : mathmode;
+};
+type mathoptions {
+  con Mathoptions(mode: mathmode, render: (std/core/maybe :: V -> V)<common/mathrender>, renderFull: (std/core/maybe :: V -> V)<common/mathrender>, mathjax: std/core/string, mjext: std/core/string, imgDir: std/core/string, scale: std/core/int, scalePng: std/core/int, scaleSvg: std/core/int, dpi: std/core/int, baseline: std/core/int, embedLimit: std/core/int, docClass: std/core/string, svgShare: std/core/bool, svgPrec: std/core/int, svgDefs: std/core/string, svgFontFormat: std/core/string, dvipng: std/core/string, dvisvg: std/core/string, latex: std/core/string, latexFull: std/core/string, dvips: std/core/string, ps2pdf: std/core/string, convert: std/core/string, dim: (std/dict/dict :: V -> V)<common/mathinfo>) : (mode : mathmode, render : (std/core/maybe :: V -> V)<common/mathrender>, renderFull : (std/core/maybe :: V -> V)<common/mathrender>, mathjax : std/core/string, mjext : std/core/string, imgDir : std/core/string, scale : std/core/int, scalePng : std/core/int, scaleSvg : std/core/int, dpi : std/core/int, baseline : std/core/int, embedLimit : std/core/int, docClass : std/core/string, svgShare : std/core/bool, svgPrec : std/core/int, svgDefs : std/core/string, svgFontFormat : std/core/string, dvipng : std/core/string, dvisvg : std/core/string, latex : std/core/string, latexFull : std/core/string, dvips : std/core/string, ps2pdf : std/core/string, convert : std/core/string, dim : (std/dict/dict :: V -> V)<common/mathinfo>) -> mathoptions;
+};
+// Metadata is just a string to string map.
+alias metadata = (std/core/list :: V -> V)<(std/core/string, std/core/string)> = 1;
+// The options
+type options {
+  // The options
+  con Options(version: std/core/string, bench: std/core/bool, verbose: std/core/int, verboseMaxLine: std/core/int, pedantic: std/core/bool, sanitize: std/core/bool, xmp: std/core/bool, full: (std/core/maybe :: V -> V)<std/core/bool>, tex: std/core/bool, pdf: std/core/bool, texzip: std/core/bool, rebuild: std/core/bool, sandbox: std/core/bool, prelude: std/core/string, title: std/core/string, css: std/core/string, scripts: std/core/string, scriptsx: std/core/string, htmlHeader: std/core/string, cssHeader: std/core/string, jsHeader: std/core/string, htmlFooter: std/core/string, jsFooter: std/core/string, htmlMeta: std/core/string, texHeader: std/core/string, texHeaderx: std/core/string, texDocHeader: std/core/string, texDocHeaderx: std/core/string, texFooter: std/core/string, texSectionNum: std/core/bool, bibStyle: bibstyle, bib: std/core/string, locale: std/core/string, packages: std/core/string, packagesx: std/core/string, docClass: std/core/string, citestyle: (std/core/maybe :: V -> V)<common/citestyle>, citeAll: std/core/bool, tocDepth: std/core/int, headingDepth: std/core/int, headingBase: std/core/int, sectionMax: std/core/int, sectionBase: std/core/int, starBold: std/core/bool, prettyAlign: std/core/int, logo: std/core/bool, math: mathoptions, highlight: std/core/bool, hilitelang: std/core/string, pdflatex: std/core/string, bibtex: std/core/string, latex: std/core/string, processTimeout: std/core/int, zip: std/core/string, metadata: (metadata == 1 (std/core/list :: V -> V)<(std/core/string, std/core/string)>), embedinfos: (std/dict/dict :: V -> V)<common/embedinfo>, embedLimit: std/core/int, lineNo: std/core/int, lineNoWeb: std/core/bool, copyStyles: std/core/bool, lineMap: common/lineMap, extractStart: std/core/string, extractEnd: std/core/string) : (version : std/core/string, bench : std/core/bool, verbose : std/core/int, verboseMaxLine : std/core/int, pedantic : std/core/bool, sanitize : std/core/bool, xmp : std/core/bool, full : (std/core/maybe :: V -> V)<std/core/bool>, tex : std/core/bool, pdf : std/core/bool, texzip : std/core/bool, rebuild : std/core/bool, sandbox : std/core/bool, prelude : std/core/string, title : std/core/string, css : std/core/string, scripts : std/core/string, scriptsx : std/core/string, htmlHeader : std/core/string, cssHeader : std/core/string, jsHeader : std/core/string, htmlFooter : std/core/string, jsFooter : std/core/string, htmlMeta : std/core/string, texHeader : std/core/string, texHeaderx : std/core/string, texDocHeader : std/core/string, texDocHeaderx : std/core/string, texFooter : std/core/string, texSectionNum : std/core/bool, bibStyle : bibstyle, bib : std/core/string, locale : std/core/string, packages : std/core/string, packagesx : std/core/string, docClass : std/core/string, citestyle : (std/core/maybe :: V -> V)<common/citestyle>, citeAll : std/core/bool, tocDepth : std/core/int, headingDepth : std/core/int, headingBase : std/core/int, sectionMax : std/core/int, sectionBase : std/core/int, starBold : std/core/bool, prettyAlign : std/core/int, logo : std/core/bool, math : mathoptions, highlight : std/core/bool, hilitelang : std/core/string, pdflatex : std/core/string, bibtex : std/core/string, latex : std/core/string, processTimeout : std/core/int, zip : std/core/string, metadata : (metadata == 1 (std/core/list :: V -> V)<(std/core/string, std/core/string)>), embedinfos : (std/dict/dict :: V -> V)<common/embedinfo>, embedLimit : std/core/int, lineNo : std/core/int, lineNoWeb : std/core/bool, copyStyles : std/core/bool, lineMap : common/lineMap, extractStart : std/core/string, extractEnd : std/core/string) -> options;
+};
+type commandOptions {
+  con CommandOptions(showVersion: std/core/bool, convertTex: std/core/bool, outputDir: std/core/string, installDir: std/core/string, inputs: (std/core/list :: V -> V)<std/core/string>, options: options) : (showVersion : std/core/bool, convertTex : std/core/bool, outputDir : std/core/string, installDir : std/core/string, inputs : (std/core/list :: V -> V)<std/core/string>, options : options) -> commandOptions;
+};
+// Automatically generated. Retrieves the `styleName` constructor field of the ":bibstyle" type.
+fun styleName : (bibstyle : bibstyle) -> std/core/string;
+// Automatically generated. Retrieves the `locale` constructor field of the ":bibstyle" type.
+fun locale : (bibstyle : bibstyle) -> std/core/string;
+// Automatically generated. Tests for the "Bst" constructor of the ":bibstyle" type.
+fun isBst : (bibstyle : bibstyle) -> std/core/bool;
+// Automatically generated. Tests for the "Csl" constructor of the ":bibstyle" type.
+fun isCsl : (bibstyle : bibstyle) -> std/core/bool;
+// Automatically generated. Tests for the "Static" constructor of the ":mathmode" type.
+fun isStatic : (mathmode : mathmode) -> std/core/bool;
+// Automatically generated. Tests for the "Dynamic" constructor of the ":mathmode" type.
+fun isDynamic : (mathmode : mathmode) -> std/core/bool;
+// Automatically generated. Retrieves the `mode` constructor field of the ":mathoptions" type.
+fun mode : (mathoptions : mathoptions) -> mathmode;
+// Automatically generated. Retrieves the `render` constructor field of the ":mathoptions" type.
+fun render : (mathoptions : mathoptions) -> (std/core/maybe :: V -> V)<common/mathrender>;
+// Automatically generated. Retrieves the `renderFull` constructor field of the ":mathoptions" type.
+fun renderFull : (mathoptions : mathoptions) -> (std/core/maybe :: V -> V)<common/mathrender>;
+// Automatically generated. Retrieves the `mathjax` constructor field of the ":mathoptions" type.
+fun mathjax : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `mjext` constructor field of the ":mathoptions" type.
+fun mjext : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `imgDir` constructor field of the ":mathoptions" type.
+fun imgDir : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `scale` constructor field of the ":mathoptions" type.
+fun scale : (mathoptions : mathoptions) -> std/core/int;
+// Automatically generated. Retrieves the `scalePng` constructor field of the ":mathoptions" type.
+fun scalePng : (mathoptions : mathoptions) -> std/core/int;
+// Automatically generated. Retrieves the `scaleSvg` constructor field of the ":mathoptions" type.
+fun scaleSvg : (mathoptions : mathoptions) -> std/core/int;
+// Automatically generated. Retrieves the `dpi` constructor field of the ":mathoptions" type.
+fun dpi : (mathoptions : mathoptions) -> std/core/int;
+// Automatically generated. Retrieves the `baseline` constructor field of the ":mathoptions" type.
+fun baseline : (mathoptions : mathoptions) -> std/core/int;
+// Automatically generated. Retrieves the `embedLimit` constructor field of the ":mathoptions" type.
+fun embedLimit : (mathoptions : mathoptions) -> std/core/int;
+// Automatically generated. Retrieves the `docClass` constructor field of the ":mathoptions" type.
+fun docClass : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `svgShare` constructor field of the ":mathoptions" type.
+fun svgShare : (mathoptions : mathoptions) -> std/core/bool;
+// Automatically generated. Retrieves the `svgPrec` constructor field of the ":mathoptions" type.
+fun svgPrec : (mathoptions : mathoptions) -> std/core/int;
+// Automatically generated. Retrieves the `svgDefs` constructor field of the ":mathoptions" type.
+fun svgDefs : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `svgFontFormat` constructor field of the ":mathoptions" type.
+fun svgFontFormat : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `dvipng` constructor field of the ":mathoptions" type.
+fun dvipng : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `dvisvg` constructor field of the ":mathoptions" type.
+fun dvisvg : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `latex` constructor field of the ":mathoptions" type.
+fun latex : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `latexFull` constructor field of the ":mathoptions" type.
+fun latexFull : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `dvips` constructor field of the ":mathoptions" type.
+fun dvips : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `ps2pdf` constructor field of the ":mathoptions" type.
+fun ps2pdf : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `convert` constructor field of the ":mathoptions" type.
+fun convert : (mathoptions : mathoptions) -> std/core/string;
+// Automatically generated. Retrieves the `dim` constructor field of the ":mathoptions" type.
+fun dim : (mathoptions : mathoptions) -> (std/dict/dict :: V -> V)<common/mathinfo>;
+fun (.copy) : (mathoptions, mode : ?mathmode, render : ?(std/core/maybe :: V -> V)<common/mathrender>, renderFull : ?(std/core/maybe :: V -> V)<common/mathrender>, mathjax : ?std/core/string, mjext : ?std/core/string, imgDir : ?std/core/string, scale : ?std/core/int, scalePng : ?std/core/int, scaleSvg : ?std/core/int, dpi : ?std/core/int, baseline : ?std/core/int, embedLimit : ?std/core/int, docClass : ?std/core/string, svgShare : ?std/core/bool, svgPrec : ?std/core/int, svgDefs : ?std/core/string, svgFontFormat : ?std/core/string, dvipng : ?std/core/string, dvisvg : ?std/core/string, latex : ?std/core/string, latexFull : ?std/core/string, dvips : ?std/core/string, ps2pdf : ?std/core/string, convert : ?std/core/string, dim : ?(std/dict/dict :: V -> V)<common/mathinfo>) -> mathoptions;
+// Automatically generated. Retrieves the `version` constructor field of the ":options" type.
+fun version : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `bench` constructor field of the ":options" type.
+fun bench : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `verbose` constructor field of the ":options" type.
+fun verbose : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `verboseMaxLine` constructor field of the ":options" type.
+fun verboseMaxLine : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `pedantic` constructor field of the ":options" type.
+fun pedantic : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `sanitize` constructor field of the ":options" type.
+fun sanitize : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `xmp` constructor field of the ":options" type.
+fun xmp : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `full` constructor field of the ":options" type.
+fun full : (options : options) -> (std/core/maybe :: V -> V)<std/core/bool>;
+// Automatically generated. Retrieves the `tex` constructor field of the ":options" type.
+fun tex : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `pdf` constructor field of the ":options" type.
+fun pdf : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `texzip` constructor field of the ":options" type.
+fun texzip : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `rebuild` constructor field of the ":options" type.
+fun rebuild : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `sandbox` constructor field of the ":options" type.
+fun sandbox : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `prelude` constructor field of the ":options" type.
+fun prelude : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `title` constructor field of the ":options" type.
+fun title : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `css` constructor field of the ":options" type.
+fun css : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `scripts` constructor field of the ":options" type.
+fun scripts : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `scriptsx` constructor field of the ":options" type.
+fun scriptsx : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `htmlHeader` constructor field of the ":options" type.
+fun htmlHeader : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `cssHeader` constructor field of the ":options" type.
+fun cssHeader : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `jsHeader` constructor field of the ":options" type.
+fun jsHeader : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `htmlFooter` constructor field of the ":options" type.
+fun htmlFooter : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `jsFooter` constructor field of the ":options" type.
+fun jsFooter : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `htmlMeta` constructor field of the ":options" type.
+fun htmlMeta : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `texHeader` constructor field of the ":options" type.
+fun texHeader : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `texHeaderx` constructor field of the ":options" type.
+fun texHeaderx : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `texDocHeader` constructor field of the ":options" type.
+fun texDocHeader : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `texDocHeaderx` constructor field of the ":options" type.
+fun texDocHeaderx : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `texFooter` constructor field of the ":options" type.
+fun texFooter : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `texSectionNum` constructor field of the ":options" type.
+fun texSectionNum : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `bibStyle` constructor field of the ":options" type.
+fun bibStyle : (options : options) -> bibstyle;
+// Automatically generated. Retrieves the `bib` constructor field of the ":options" type.
+fun bib : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `locale` constructor field of the ":options" type.
+fun locale .1 : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `packages` constructor field of the ":options" type.
+fun packages : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `packagesx` constructor field of the ":options" type.
+fun packagesx : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `docClass` constructor field of the ":options" type.
+fun docClass .1 : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `citestyle` constructor field of the ":options" type.
+fun citestyle : (options : options) -> (std/core/maybe :: V -> V)<common/citestyle>;
+// Automatically generated. Retrieves the `citeAll` constructor field of the ":options" type.
+fun citeAll : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `tocDepth` constructor field of the ":options" type.
+fun tocDepth : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `headingDepth` constructor field of the ":options" type.
+fun headingDepth : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `headingBase` constructor field of the ":options" type.
+fun headingBase : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `sectionMax` constructor field of the ":options" type.
+fun sectionMax : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `sectionBase` constructor field of the ":options" type.
+fun sectionBase : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `starBold` constructor field of the ":options" type.
+fun starBold : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `prettyAlign` constructor field of the ":options" type.
+fun prettyAlign : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `logo` constructor field of the ":options" type.
+fun logo : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `math` constructor field of the ":options" type.
+fun math : (options : options) -> mathoptions;
+// Automatically generated. Retrieves the `highlight` constructor field of the ":options" type.
+fun highlight : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `hilitelang` constructor field of the ":options" type.
+fun hilitelang : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `pdflatex` constructor field of the ":options" type.
+fun pdflatex : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `bibtex` constructor field of the ":options" type.
+fun bibtex : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `latex` constructor field of the ":options" type.
+fun latex .1 : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `processTimeout` constructor field of the ":options" type.
+fun processTimeout : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `zip` constructor field of the ":options" type.
+fun zip : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `metadata` constructor field of the ":options" type.
+fun metadata : (options : options) -> metadata;
+// Automatically generated. Retrieves the `embedinfos` constructor field of the ":options" type.
+fun embedinfos : (options : options) -> (std/dict/dict :: V -> V)<common/embedinfo>;
+// Automatically generated. Retrieves the `embedLimit` constructor field of the ":options" type.
+fun embedLimit .1 : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `lineNo` constructor field of the ":options" type.
+fun lineNo : (options : options) -> std/core/int;
+// Automatically generated. Retrieves the `lineNoWeb` constructor field of the ":options" type.
+fun lineNoWeb : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `copyStyles` constructor field of the ":options" type.
+fun copyStyles : (options : options) -> std/core/bool;
+// Automatically generated. Retrieves the `lineMap` constructor field of the ":options" type.
+fun lineMap : (options : options) -> common/lineMap;
+// Automatically generated. Retrieves the `extractStart` constructor field of the ":options" type.
+fun extractStart : (options : options) -> std/core/string;
+// Automatically generated. Retrieves the `extractEnd` constructor field of the ":options" type.
+fun extractEnd : (options : options) -> std/core/string;
+fun (.copy) .1 : (options, version : ?std/core/string, bench : ?std/core/bool, verbose : ?std/core/int, verboseMaxLine : ?std/core/int, pedantic : ?std/core/bool, sanitize : ?std/core/bool, xmp : ?std/core/bool, full : ?(std/core/maybe :: V -> V)<std/core/bool>, tex : ?std/core/bool, pdf : ?std/core/bool, texzip : ?std/core/bool, rebuild : ?std/core/bool, sandbox : ?std/core/bool, prelude : ?std/core/string, title : ?std/core/string, css : ?std/core/string, scripts : ?std/core/string, scriptsx : ?std/core/string, htmlHeader : ?std/core/string, cssHeader : ?std/core/string, jsHeader : ?std/core/string, htmlFooter : ?std/core/string, jsFooter : ?std/core/string, htmlMeta : ?std/core/string, texHeader : ?std/core/string, texHeaderx : ?std/core/string, texDocHeader : ?std/core/string, texDocHeaderx : ?std/core/string, texFooter : ?std/core/string, texSectionNum : ?std/core/bool, bibStyle : ?bibstyle, bib : ?std/core/string, locale : ?std/core/string, packages : ?std/core/string, packagesx : ?std/core/string, docClass : ?std/core/string, citestyle : ?(std/core/maybe :: V -> V)<common/citestyle>, citeAll : ?std/core/bool, tocDepth : ?std/core/int, headingDepth : ?std/core/int, headingBase : ?std/core/int, sectionMax : ?std/core/int, sectionBase : ?std/core/int, starBold : ?std/core/bool, prettyAlign : ?std/core/int, logo : ?std/core/bool, math : ?mathoptions, highlight : ?std/core/bool, hilitelang : ?std/core/string, pdflatex : ?std/core/string, bibtex : ?std/core/string, latex : ?std/core/string, processTimeout : ?std/core/int, zip : ?std/core/string, metadata : ?metadata, embedinfos : ?(std/dict/dict :: V -> V)<common/embedinfo>, embedLimit : ?std/core/int, lineNo : ?std/core/int, lineNoWeb : ?std/core/bool, copyStyles : ?std/core/bool, lineMap : ?common/lineMap, extractStart : ?std/core/string, extractEnd : ?std/core/string) -> options;
+// Automatically generated. Retrieves the `showVersion` constructor field of the ":commandOptions" type.
+fun showVersion : (commandOptions : commandOptions) -> std/core/bool;
+// Automatically generated. Retrieves the `convertTex` constructor field of the ":commandOptions" type.
+fun convertTex : (commandOptions : commandOptions) -> std/core/bool;
+// Automatically generated. Retrieves the `outputDir` constructor field of the ":commandOptions" type.
+fun outputDir : (commandOptions : commandOptions) -> std/core/string;
+// Automatically generated. Retrieves the `installDir` constructor field of the ":commandOptions" type.
+fun installDir : (commandOptions : commandOptions) -> std/core/string;
+// Automatically generated. Retrieves the `inputs` constructor field of the ":commandOptions" type.
+fun inputs : (commandOptions : commandOptions) -> (std/core/list :: V -> V)<std/core/string>;
+// Automatically generated. Retrieves the `options` constructor field of the ":commandOptions" type.
+fun options : (commandOptions : commandOptions) -> options;
+fun (.copy) .2 : (commandOptions, showVersion : ?std/core/bool, convertTex : ?std/core/bool, outputDir : ?std/core/string, installDir : ?std/core/string, inputs : ?(std/core/list :: V -> V)<std/core/string>, options : ?options) -> commandOptions;
+fun (.createMathoptions) : (mode : ?mathmode, render : ?(std/core/maybe :: V -> V)<common/mathrender>, renderFull : ?(std/core/maybe :: V -> V)<common/mathrender>, mathjax : ?std/core/string, mjext : ?std/core/string, imgDir : ?std/core/string, scale : ?std/core/int, scalePng : ?std/core/int, scaleSvg : ?std/core/int, dpi : ?std/core/int, baseline : ?std/core/int, embedLimit : ?std/core/int, docClass : ?std/core/string, svgShare : ?std/core/bool, svgPrec : ?std/core/int, svgDefs : ?std/core/string, svgFontFormat : ?std/core/string, dvipng : ?std/core/string, dvisvg : ?std/core/string, latex : ?std/core/string, latexFull : ?std/core/string, dvips : ?std/core/string, ps2pdf : ?std/core/string, convert : ?std/core/string, dim : ?(std/dict/dict :: V -> V)<common/mathinfo>) -> mathoptions;
+// The options
+fun (.createOptions) : (version : ?std/core/string, bench : ?std/core/bool, verbose : ?std/core/int, verboseMaxLine : ?std/core/int, pedantic : ?std/core/bool, sanitize : ?std/core/bool, xmp : ?std/core/bool, full : ?(std/core/maybe :: V -> V)<std/core/bool>, tex : ?std/core/bool, pdf : ?std/core/bool, texzip : ?std/core/bool, rebuild : ?std/core/bool, sandbox : ?std/core/bool, prelude : ?std/core/string, title : ?std/core/string, css : ?std/core/string, scripts : ?std/core/string, scriptsx : ?std/core/string, htmlHeader : ?std/core/string, cssHeader : ?std/core/string, jsHeader : ?std/core/string, htmlFooter : ?std/core/string, jsFooter : ?std/core/string, htmlMeta : ?std/core/string, texHeader : ?std/core/string, texHeaderx : ?std/core/string, texDocHeader : ?std/core/string, texDocHeaderx : ?std/core/string, texFooter : ?std/core/string, texSectionNum : ?std/core/bool, bibStyle : ?bibstyle, bib : ?std/core/string, locale : ?std/core/string, packages : ?std/core/string, packagesx : ?std/core/string, docClass : ?std/core/string, citestyle : ?(std/core/maybe :: V -> V)<common/citestyle>, citeAll : ?std/core/bool, tocDepth : ?std/core/int, headingDepth : ?std/core/int, headingBase : ?std/core/int, sectionMax : ?std/core/int, sectionBase : ?std/core/int, starBold : ?std/core/bool, prettyAlign : ?std/core/int, logo : ?std/core/bool, math : ?mathoptions, highlight : ?std/core/bool, hilitelang : ?std/core/string, pdflatex : ?std/core/string, bibtex : ?std/core/string, latex : ?std/core/string, processTimeout : ?std/core/int, zip : ?std/core/string, metadata : ?metadata, embedinfos : ?(std/dict/dict :: V -> V)<common/embedinfo>, embedLimit : ?std/core/int, lineNo : ?std/core/int, lineNoWeb : ?std/core/bool, copyStyles : ?std/core/bool, lineMap : ?common/lineMap, extractStart : ?std/core/string, extractEnd : ?std/core/string) -> options;
+fun (.createCommandOptions) : (showVersion : ?std/core/bool, convertTex : ?std/core/bool, outputDir : ?std/core/string, installDir : ?std/core/string, inputs : ?(std/core/list :: V -> V)<std/core/string>, options : ?options) -> commandOptions;
+// sanitize options
+fun getDocName : (opts : options) -> std/core/string;
+fun getMathjax : (opts : mathoptions) -> std/core/string;
+fun getMathLatex : (opts : options) -> std/core/string;
+fun getMathLatexFull : (opts : options) -> std/core/string;
+fun getMathRender .1 : (opts : mathoptions) -> common/mathrender;
+fun getMathRenderFull : (opts : mathoptions) -> common/mathrender;
+fun getMathRender : (opts : mathoptions, kind : common/mathkind) -> common/mathrender;
+fun getMathScale : (opts : mathoptions, mrender : common/mathrender) -> std/core/int;
+fun getPdfLatex : (opts : options) -> std/core/string;
+fun indent : (opts : options, s : std/core/string, maxLine : ?std/core/int) -> std/core/string;
+fun parseOptionList : (version : std/core/string, cmdargs : (std/core/list :: V -> V)<std/core/string>) -> <(std/core/io :: E)> (std/core/maybe :: V -> V)<commandOptions>;
+// Parse the options from the command line given some extra arguments (default `""`).
+fun parseOptions : (version : std/core/string, extra : ?std/core/string) -> <(std/core/io :: E)> (std/core/maybe :: V -> V)<commandOptions>;
+fun print : (opts : options, msg : std/core/string, level : ?std/core/int) -> <(std/core/console :: X)> ();
+fun printErr : (opts : options, msg : std/core/string, level : ?std/core/int) -> <(std/core/console :: X)> ();

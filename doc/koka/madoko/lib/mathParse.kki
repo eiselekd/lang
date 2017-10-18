@@ -1,0 +1,33 @@
+// Parse math dimension file
+module interface mathParse
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+val rxDigest : std/regex/regex;
+fun containsSnippet : (txt : std/core/string) -> std/core/bool;
+fun dimension : (whole : std/core/string, fraction : std/core/string) -> std/core/double;
+val rxDimLine : std/regex/regex;
+fun showSize : (size : std/core/int) -> std/core/string;
+// parse a dimension file written by latex snippets
+fun parseMathDim : (txt : std/core/string, opts : options/mathoptions) -> ((std/dict/dict :: V -> V)<common/mathinfo>, std/core/string, std/core/string);
+// return all tex content outside snippets and line comments
+fun unsnippet : (txt : std/core/string, which : std/core/string) -> std/core/string;

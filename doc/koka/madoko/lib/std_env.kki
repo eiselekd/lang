@@ -1,0 +1,37 @@
+/*
+Access to the program environment and commmand line arguments.
+
+Print the environment: "env.list.map(fun(p) { p.fst + ""="" + p.snd }).join(""\n"").print"
+
+Note: we view the environment and command line as (total) constants in the
+program. i.e. as if the program is only compiled at the point when both the 
+environment and command line is supplied. 
+*/
+module interface std/env
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+// The environment variables for this program
+val env : (std/dict/dict :: V -> V)<std/core/string>;
+// The unprocessed command line that was used to start this program.
+// On ''Node'' the first arguments will often be of the form "[""node"",""interactive.js"",...]".
+val argv : (std/core/list :: V -> V)<std/core/string>;
+// Return the arguments that were passed to program itself.
+// Strips off the initial program from the unprocessed command line.
+// i.e. If a program started as:
+//     > node myprogram.js --flag bla
+// The "arguments" list will be "[""--flag"",""bla""]"
+val arguments : (std/core/list :: V -> V)<std/core/string>;
+// Returns the value of an environment variable "name".
+// Returns "default" (= |""|) if the environment variable was not present.
+fun getEnv : (name : std/core/string, default : ?std/core/string) -> std/core/string;

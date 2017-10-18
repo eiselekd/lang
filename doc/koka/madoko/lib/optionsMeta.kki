@@ -1,0 +1,28 @@
+// Options from metadata
+module interface optionsMeta
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+// Setting sandboxed options
+import optionsSandbox = optionsSandbox = "";
+// Setting math options
+import optionsMath = optionsMath = "";
+// Metadata is just a string to string map.
+private alias options/metadata = (std/core/list :: V -> V)<(std/core/string, std/core/string)> = 1;
+fun fromMeta : (opts : options/options, mdata : options/metadata) -> options/options;

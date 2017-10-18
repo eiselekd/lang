@@ -1,0 +1,157 @@
+// Defines the context for _inline_ elements.
+module interface inline
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+// Log messages
+import std/log = std/log = "";
+// Common types and operations
+import common = common = "";
+// Attibute operations: parsing, transform text, expand keys, etc.
+import attributes = attributes = "";
+// Align code blocks
+import codeAlign = codeAlign = "";
+// Syntax highlighting
+import hilite = hilite = "";
+private alias common/grammar<a,b> :: (V, V) -> V = (std/core/list :: V -> V)<(common/rule :: (V, V) -> V)<a,b>> = 1;
+type authorinfo {
+  con Authorinfo(name: std/core/string, address: std/core/string, email: std/core/string, note: std/core/string) : (name : std/core/string, address : std/core/string, email : std/core/string, note : std/core/string) -> authorinfo;
+};
+alias cells = (std/core/list :: V -> V)<(std/core/list :: V -> V)<(std/core/string, common/attrs)>> = 1;
+rectype rec footnote {
+  con Footnote(footnoteNum: std/core/string, footnoteContent: (inlineContext) -> std/core/string, footnoteCaption: std/core/string) : (footnoteNum : std/core/string, footnoteContent : (inlineContext) -> std/core/string, footnoteCaption : std/core/string) -> footnote;
+};
+/* --------------------------------------
+ The context for inline elements 
+---------------------------------------- */
+rectype rec inlineContext {
+  con InlineContext(grammar: ((common/grammar :: (V, V) -> V)<std/core/string,inlineContext> == 1 (std/core/list :: V -> V)<(common/rule :: (V, V) -> V)<std/core/string,inlineContext>>), links: (std/dict/dict :: V -> V)<common/link>, labels: (std/dict/dict :: V -> V)<common/label>, footnotes: (std/dict/dict :: V -> V)<footnote>, defaults: attributes/rules, metadata: (std/dict/dict :: V -> V)<std/core/string>, mathinfos: (std/dict/dict :: V -> V)<common/mathinfo>, embedinfos: (std/dict/dict :: V -> V)<common/embedinfo>, citestyle: common/citestyle, xsanitize: std/core/bool, bench: std/core/bool, verbose: std/core/int, mathStatic: std/core/bool, highlight: std/core/bool, starBold: std/core/bool, sandbox: std/core/bool, prettyAlign: std/core/int, xfmtCmd: (ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string, xfmtEscape: (ctx : inlineContext, body : std/core/string, allowEntity : std/core/bool) -> std/core/string, xfmtLink: (ctx : inlineContext, isImage : std/core/bool, link : common/link, content : std/core/string) -> std/core/string, xfmtFootnote: (context : inlineContext, id : std/core/string, fn : footnote) -> std/core/string, xfmtTable: (context : inlineContext, head : (std/core/list :: V -> V)<common/row>, body : (std/core/list :: V -> V)<common/row>, colattrs : (std/core/list :: V -> V)<common/attrs>, attrs : common/attrs) -> std/core/string, xfmtEnv: (context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string, xfmtCodePlain: (context : inlineContext, txt : std/core/string, startline : std/core/bool) -> std/core/string, xfmtCodeToken: (context : inlineContext, classes : (std/core/list :: V -> V)<std/core/string>, txt : std/core/string, lang : std/core/string, attrs : common/attrs) -> std/core/string, xfmtLineInfo: (context : inlineContext, lineInfo : std/core/string) -> std/core/string, xfmtCodeTable: (context : inlineContext, ct : codeAlign/codeTable, attrs : common/attrs) -> std/core/string, xfmtMathCmd: (ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string, xfmtMathEnv: (context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string, fmt: common/formatter) : (grammar : ((common/grammar :: (V, V) -> V)<std/core/string,inlineContext> == 1 (std/core/list :: V -> V)<(common/rule :: (V, V) -> V)<std/core/string,inlineContext>>), links : (std/dict/dict :: V -> V)<common/link>, labels : (std/dict/dict :: V -> V)<common/label>, footnotes : (std/dict/dict :: V -> V)<footnote>, defaults : attributes/rules, metadata : (std/dict/dict :: V -> V)<std/core/string>, mathinfos : (std/dict/dict :: V -> V)<common/mathinfo>, embedinfos : (std/dict/dict :: V -> V)<common/embedinfo>, citestyle : common/citestyle, xsanitize : std/core/bool, bench : std/core/bool, verbose : std/core/int, mathStatic : std/core/bool, highlight : std/core/bool, starBold : std/core/bool, sandbox : std/core/bool, prettyAlign : std/core/int, xfmtCmd : (ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string, xfmtEscape : (ctx : inlineContext, body : std/core/string, allowEntity : std/core/bool) -> std/core/string, xfmtLink : (ctx : inlineContext, isImage : std/core/bool, link : common/link, content : std/core/string) -> std/core/string, xfmtFootnote : (context : inlineContext, id : std/core/string, fn : footnote) -> std/core/string, xfmtTable : (context : inlineContext, head : (std/core/list :: V -> V)<common/row>, body : (std/core/list :: V -> V)<common/row>, colattrs : (std/core/list :: V -> V)<common/attrs>, attrs : common/attrs) -> std/core/string, xfmtEnv : (context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string, xfmtCodePlain : (context : inlineContext, txt : std/core/string, startline : std/core/bool) -> std/core/string, xfmtCodeToken : (context : inlineContext, classes : (std/core/list :: V -> V)<std/core/string>, txt : std/core/string, lang : std/core/string, attrs : common/attrs) -> std/core/string, xfmtLineInfo : (context : inlineContext, lineInfo : std/core/string) -> std/core/string, xfmtCodeTable : (context : inlineContext, ct : codeAlign/codeTable, attrs : common/attrs) -> std/core/string, xfmtMathCmd : (ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string, xfmtMathEnv : (context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string, fmt : common/formatter) -> inlineContext;
+};
+type titleinfo {
+  con Titleinfo(title: std/core/string, subtitle: std/core/string, authors: (std/core/list :: V -> V)<authorinfo>, note: std/core/string) : (title : std/core/string, subtitle : std/core/string, authors : (std/core/list :: V -> V)<authorinfo>, note : std/core/string) -> titleinfo;
+};
+// Automatically generated. Retrieves the `name` constructor field of the ":authorinfo" type.
+fun name : (authorinfo : authorinfo) -> std/core/string;
+// Automatically generated. Retrieves the `address` constructor field of the ":authorinfo" type.
+fun address : (authorinfo : authorinfo) -> std/core/string;
+// Automatically generated. Retrieves the `email` constructor field of the ":authorinfo" type.
+fun email : (authorinfo : authorinfo) -> std/core/string;
+// Automatically generated. Retrieves the `note` constructor field of the ":authorinfo" type.
+fun note : (authorinfo : authorinfo) -> std/core/string;
+fun (.copy) : (authorinfo, name : ?std/core/string, address : ?std/core/string, email : ?std/core/string, note : ?std/core/string) -> authorinfo;
+// Automatically generated. Retrieves the `footnoteNum` constructor field of the ":footnote" type.
+fun footnoteNum : (footnote : footnote) -> std/core/string;
+// Automatically generated. Retrieves the `footnoteContent` constructor field of the ":footnote" type.
+fun footnoteContent : (footnote : footnote) -> ((inlineContext) -> std/core/string);
+// Automatically generated. Retrieves the `footnoteCaption` constructor field of the ":footnote" type.
+fun footnoteCaption : (footnote : footnote) -> std/core/string;
+fun (.copy) .1 : (footnote, footnoteNum : ?std/core/string, footnoteContent : ?(inlineContext) -> std/core/string, footnoteCaption : ?std/core/string) -> footnote;
+// Automatically generated. Retrieves the `grammar` constructor field of the ":inlineContext" type.
+fun grammar : (inlineContext : inlineContext) -> (common/grammar :: (V, V) -> V)<std/core/string,inlineContext>;
+// Automatically generated. Retrieves the `links` constructor field of the ":inlineContext" type.
+fun links : (inlineContext : inlineContext) -> (std/dict/dict :: V -> V)<common/link>;
+// Automatically generated. Retrieves the `labels` constructor field of the ":inlineContext" type.
+fun labels : (inlineContext : inlineContext) -> (std/dict/dict :: V -> V)<common/label>;
+// Automatically generated. Retrieves the `footnotes` constructor field of the ":inlineContext" type.
+fun footnotes : (inlineContext : inlineContext) -> (std/dict/dict :: V -> V)<footnote>;
+// Automatically generated. Retrieves the `defaults` constructor field of the ":inlineContext" type.
+fun defaults : (inlineContext : inlineContext) -> attributes/rules;
+// Automatically generated. Retrieves the `metadata` constructor field of the ":inlineContext" type.
+fun metadata : (inlineContext : inlineContext) -> (std/dict/dict :: V -> V)<std/core/string>;
+// Automatically generated. Retrieves the `mathinfos` constructor field of the ":inlineContext" type.
+fun mathinfos : (inlineContext : inlineContext) -> (std/dict/dict :: V -> V)<common/mathinfo>;
+// Automatically generated. Retrieves the `embedinfos` constructor field of the ":inlineContext" type.
+fun embedinfos : (inlineContext : inlineContext) -> (std/dict/dict :: V -> V)<common/embedinfo>;
+// Automatically generated. Retrieves the `citestyle` constructor field of the ":inlineContext" type.
+fun citestyle : (inlineContext : inlineContext) -> common/citestyle;
+// Automatically generated. Retrieves the `xsanitize` constructor field of the ":inlineContext" type.
+fun xsanitize : (inlineContext : inlineContext) -> std/core/bool;
+// Automatically generated. Retrieves the `bench` constructor field of the ":inlineContext" type.
+fun bench : (inlineContext : inlineContext) -> std/core/bool;
+// Automatically generated. Retrieves the `verbose` constructor field of the ":inlineContext" type.
+fun verbose : (inlineContext : inlineContext) -> std/core/int;
+// Automatically generated. Retrieves the `mathStatic` constructor field of the ":inlineContext" type.
+fun mathStatic : (inlineContext : inlineContext) -> std/core/bool;
+// Automatically generated. Retrieves the `highlight` constructor field of the ":inlineContext" type.
+fun highlight : (inlineContext : inlineContext) -> std/core/bool;
+// Automatically generated. Retrieves the `starBold` constructor field of the ":inlineContext" type.
+fun starBold : (inlineContext : inlineContext) -> std/core/bool;
+// Automatically generated. Retrieves the `sandbox` constructor field of the ":inlineContext" type.
+fun sandbox : (inlineContext : inlineContext) -> std/core/bool;
+// Automatically generated. Retrieves the `prettyAlign` constructor field of the ":inlineContext" type.
+fun prettyAlign : (inlineContext : inlineContext) -> std/core/int;
+// Automatically generated. Retrieves the `xfmtCmd` constructor field of the ":inlineContext" type.
+fun xfmtCmd : (inlineContext : inlineContext) -> ((ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtEscape` constructor field of the ":inlineContext" type.
+fun xfmtEscape : (inlineContext : inlineContext) -> ((ctx : inlineContext, body : std/core/string, allowEntity : std/core/bool) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtLink` constructor field of the ":inlineContext" type.
+fun xfmtLink : (inlineContext : inlineContext) -> ((ctx : inlineContext, isImage : std/core/bool, link : common/link, content : std/core/string) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtFootnote` constructor field of the ":inlineContext" type.
+fun xfmtFootnote : (inlineContext : inlineContext) -> ((context : inlineContext, id : std/core/string, fn : footnote) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtTable` constructor field of the ":inlineContext" type.
+fun xfmtTable : (inlineContext : inlineContext) -> ((context : inlineContext, head : (std/core/list :: V -> V)<common/row>, body : (std/core/list :: V -> V)<common/row>, colattrs : (std/core/list :: V -> V)<common/attrs>, attrs : common/attrs) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtEnv` constructor field of the ":inlineContext" type.
+fun xfmtEnv : (inlineContext : inlineContext) -> ((context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtCodePlain` constructor field of the ":inlineContext" type.
+fun xfmtCodePlain : (inlineContext : inlineContext) -> ((context : inlineContext, txt : std/core/string, startline : std/core/bool) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtCodeToken` constructor field of the ":inlineContext" type.
+fun xfmtCodeToken : (inlineContext : inlineContext) -> ((context : inlineContext, classes : (std/core/list :: V -> V)<std/core/string>, txt : std/core/string, lang : std/core/string, attrs : common/attrs) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtLineInfo` constructor field of the ":inlineContext" type.
+fun xfmtLineInfo : (inlineContext : inlineContext) -> ((context : inlineContext, lineInfo : std/core/string) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtCodeTable` constructor field of the ":inlineContext" type.
+fun xfmtCodeTable : (inlineContext : inlineContext) -> ((context : inlineContext, ct : codeAlign/codeTable, attrs : common/attrs) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtMathCmd` constructor field of the ":inlineContext" type.
+fun xfmtMathCmd : (inlineContext : inlineContext) -> ((ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string);
+// Automatically generated. Retrieves the `xfmtMathEnv` constructor field of the ":inlineContext" type.
+fun xfmtMathEnv : (inlineContext : inlineContext) -> ((context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string);
+// Automatically generated. Retrieves the `fmt` constructor field of the ":inlineContext" type.
+fun fmt : (inlineContext : inlineContext) -> common/formatter;
+fun (.copy) .2 : (inlineContext, grammar : ?(common/grammar :: (V, V) -> V)<std/core/string,inlineContext>, links : ?(std/dict/dict :: V -> V)<common/link>, labels : ?(std/dict/dict :: V -> V)<common/label>, footnotes : ?(std/dict/dict :: V -> V)<footnote>, defaults : ?attributes/rules, metadata : ?(std/dict/dict :: V -> V)<std/core/string>, mathinfos : ?(std/dict/dict :: V -> V)<common/mathinfo>, embedinfos : ?(std/dict/dict :: V -> V)<common/embedinfo>, citestyle : ?common/citestyle, xsanitize : ?std/core/bool, bench : ?std/core/bool, verbose : ?std/core/int, mathStatic : ?std/core/bool, highlight : ?std/core/bool, starBold : ?std/core/bool, sandbox : ?std/core/bool, prettyAlign : ?std/core/int, xfmtCmd : ?(ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string, xfmtEscape : ?(ctx : inlineContext, body : std/core/string, allowEntity : std/core/bool) -> std/core/string, xfmtLink : ?(ctx : inlineContext, isImage : std/core/bool, link : common/link, content : std/core/string) -> std/core/string, xfmtFootnote : ?(context : inlineContext, id : std/core/string, fn : footnote) -> std/core/string, xfmtTable : ?(context : inlineContext, head : (std/core/list :: V -> V)<common/row>, body : (std/core/list :: V -> V)<common/row>, colattrs : (std/core/list :: V -> V)<common/attrs>, attrs : common/attrs) -> std/core/string, xfmtEnv : ?(context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string, xfmtCodePlain : ?(context : inlineContext, txt : std/core/string, startline : std/core/bool) -> std/core/string, xfmtCodeToken : ?(context : inlineContext, classes : (std/core/list :: V -> V)<std/core/string>, txt : std/core/string, lang : std/core/string, attrs : common/attrs) -> std/core/string, xfmtLineInfo : ?(context : inlineContext, lineInfo : std/core/string) -> std/core/string, xfmtCodeTable : ?(context : inlineContext, ct : codeAlign/codeTable, attrs : common/attrs) -> std/core/string, xfmtMathCmd : ?(ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string, xfmtMathEnv : ?(context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string, fmt : ?common/formatter) -> inlineContext;
+// Automatically generated. Retrieves the `title` constructor field of the ":titleinfo" type.
+fun title : (titleinfo : titleinfo) -> std/core/string;
+// Automatically generated. Retrieves the `subtitle` constructor field of the ":titleinfo" type.
+fun subtitle : (titleinfo : titleinfo) -> std/core/string;
+// Automatically generated. Retrieves the `authors` constructor field of the ":titleinfo" type.
+fun authors : (titleinfo : titleinfo) -> (std/core/list :: V -> V)<authorinfo>;
+// Automatically generated. Retrieves the `note` constructor field of the ":titleinfo" type.
+fun note .1 : (titleinfo : titleinfo) -> std/core/string;
+fun (.copy) .3 : (titleinfo, title : ?std/core/string, subtitle : ?std/core/string, authors : ?(std/core/list :: V -> V)<authorinfo>, note : ?std/core/string) -> titleinfo;
+fun sanitize : (context : inlineContext) -> std/core/bool;
+// Copy an ":inlineContext"
+fun copy : (self : inlineContext, grammar : ?(common/grammar :: (V, V) -> V)<std/core/string,inlineContext>, links : ?(std/dict/dict :: V -> V)<common/link>, labels : ?(std/dict/dict :: V -> V)<common/label>, footnotes : ?(std/dict/dict :: V -> V)<footnote>, defaults : ?attributes/rules, metadata : ?(std/dict/dict :: V -> V)<std/core/string>, mathinfos : ?(std/dict/dict :: V -> V)<common/mathinfo>, embedinfos : ?(std/dict/dict :: V -> V)<common/embedinfo>, citestyle : ?common/citestyle, sanitize : ?std/core/bool, bench : ?std/core/bool, verbose : ?std/core/int, mathStatic : ?std/core/bool, highlight : ?std/core/bool, starBold : ?std/core/bool, sandbox : ?std/core/bool, prettyAlign : ?std/core/int, xfmtCmd : ?(ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string, xfmtEscape : ?(ctx : inlineContext, body : std/core/string, allowEntity : std/core/bool) -> std/core/string, xfmtLink : ?(ctx : inlineContext, isImage : std/core/bool, link : common/link, content : std/core/string) -> std/core/string, xfmtFootnote : ?(context : inlineContext, id : std/core/string, fn : footnote) -> std/core/string, xfmtTable : ?(context : inlineContext, head : (std/core/list :: V -> V)<common/row>, body : (std/core/list :: V -> V)<common/row>, colattrs : (std/core/list :: V -> V)<common/attrs>, attrs : common/attrs) -> std/core/string, xfmtEnv : ?(context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string, xfmtCodePlain : ?(context : inlineContext, txt : std/core/string, startline : std/core/bool) -> std/core/string, xfmtCodeToken : ?(context : inlineContext, classes : (std/core/list :: V -> V)<std/core/string>, txt : std/core/string, lang : std/core/string, attrs : common/attrs) -> std/core/string, xfmtLineInfo : ?(context : inlineContext, lineInfo : std/core/string) -> std/core/string, xfmtCodeTable : ?(context : inlineContext, ct : codeAlign/codeTable, attrs : common/attrs) -> std/core/string, xfmtMathCmd : ?(ctx : inlineContext, cmd : std/core/string, body : std/core/string, attrs : common/attrs) -> std/core/string, xfmtMathEnv : ?(context : inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string, fmt : ?common/formatter) -> inlineContext;
+fun fmtCmd : (context : inlineContext, cmd : std/core/string, txt : std/core/string, attrs : ?common/attrs) -> std/core/string;
+fun fmtCodePlain : (context : inlineContext, txt : std/core/string, startline : ?std/core/bool) -> std/core/string;
+fun fmtCodeTable : (context : inlineContext, ct : codeAlign/codeTable, attrs : ?common/attrs) -> std/core/string;
+fun fmtCodeToken : (context : inlineContext, classes : (std/core/list :: V -> V)<std/core/string>, txt : std/core/string, lang : std/core/string, attrs : common/attrs) -> std/core/string;
+fun fmtEnv : (context : inlineContext, env : std/core/string, txt : std/core/string, attrs : ?common/attrs) -> std/core/string;
+fun fmtEscape : (context : inlineContext, txt : std/core/string) -> std/core/string;
+fun fmtEscapePre : (context : inlineContext, txt : std/core/string) -> std/core/string;
+fun fmtFootnote : (context : inlineContext, id : std/core/string, fn : footnote) -> std/core/string;
+fun fmtLineInfo : (context : inlineContext, lineInfo : std/core/string) -> std/core/string;
+fun fmtLink : (context : inlineContext, isImage : std/core/bool, link : common/link, content : std/core/string) -> std/core/string;
+fun fmtMathCmd : (context : inlineContext, cmd : std/core/string, txt : std/core/string, attrs : ?common/attrs) -> std/core/string;
+fun fmtMathEnv : (context : inlineContext, env : std/core/string, txt : std/core/string, attrs : ?common/attrs) -> std/core/string;
+fun fmtText : (context : inlineContext, txt : std/core/string) -> std/core/string;
+fun parseLineInfo : (lineInfo : std/core/string) -> (std/core/string, std/core/int);
+// Parse _inline_ markdown elements and return formatted html
+fun formatInline : (context : inlineContext, txt : std/core/string, attrs : ?common/attrs) -> std/core/string;
+fun logDataLine : (attrs : common/attrs) -> ();
+fun mathPreX : (txt : std/core/string) -> std/core/string;
+fun mathPre : (txt : std/core/string) -> std/core/string;
+fun mathPreBlock : (txt : std/core/string) -> std/core/string;
+fun pick : forall<a> (fmt : common/formatter, htmlElem : a, texElem : a) -> a;

@@ -1,0 +1,52 @@
+// Attibute operations: parsing, transform text, expand keys, etc.
+module interface attributes
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+// Common types and operations
+import common = common = "";
+// Parsing and formatting of html entities (for TeX output)
+import entity = entity = "";
+// The parsing and evaluation of expressions
+import expression = expression = "";
+;
+type rules {
+  
+};
+// Automatically generated. Retrieves the `elem` constructor field of the ":pattern" type.
+// Automatically generated. Retrieves the `name` constructor field of the ":pattern" type.
+// Automatically generated. Retrieves the `classes` constructor field of the ":pattern" type.
+// Automatically generated. Retrieves the `attrselectors` constructor field of the ":pattern" type.
+// Automatically generated. Retrieves the `weight` constructor field of the ":pattern" type.
+// Automatically generated. Retrieves the `rules` constructor field of the ":rules" type.
+// insert a pattern value sorted on weight, from low to high
+// expand keys in a string
+fun expandKeys : (txt : std/core/string, metadata : (std/dict/dict :: V -> V)<std/core/string>) -> std/core/string;
+fun expandKeys .1 : (txt : std/core/string, source : std/core/string, attrs : common/attrs, labels : (std/dict/dict :: V -> V)<common/label>, metadata : (std/dict/dict :: V -> V)<std/core/string>) -> std/core/string;
+// Parse an attribute string
+fun extendAttrs : (attrs0 : common/attrs, attrsStr : std/core/string, source : std/core/string) -> common/attrs;
+fun mergeDefault : (attrs : common/attrs, def : common/attrs) -> common/attrs;
+fun parseAttrs : (attrStr : std/core/string, elemName : ?std/core/string, source : ?std/core/string) -> common/attrs;
+// remove all grouping from a regular expression
+// perform a mapping.
+val emptyRules : rules;
+fun expand : (attrs : common/attrs, metadata : (std/dict/dict :: V -> V)<std/core/string>, labels : ?(std/dict/dict :: V -> V)<common/label>) -> common/attrs;
+fun expandKeyName : (name : std/core/string, labels : (std/dict/dict :: V -> V)<common/label>, metadata : (std/dict/dict :: V -> V)<std/core/string>) -> std/core/string;
+fun matchRules : (r : rules, elementName : std/core/string, attrs : common/attrs) -> common/attrs;
+fun rulesFromMeta : (metadata : (std/core/list :: V -> V)<(std/core/string, std/core/string)>) -> rules;
+fun transformText : (attrs : common/attrs, txt : std/core/string, labels : (std/dict/dict :: V -> V)<common/label>, metadata : (std/dict/dict :: V -> V)<std/core/string>) -> std/core/string;

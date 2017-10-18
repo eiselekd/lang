@@ -1,0 +1,28 @@
+// Log messages
+module interface std/log
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+// Stateful functions can manipulate heap ":h" using allocations, reads and writes.
+private alias std/core/st<(h :: H)> :: H -> E = <(std/core/read :: H -> X)<(h :: H)>,(std/core/write :: H -> X)<(h :: H)>,(std/core/alloc :: H -> X)<(h :: H)>> = 1;
+// Total function that logs a message in a certain log "logName".
+// Has no observable effect but see "withLog".
+fun log : (logName : std/core/string, message : std/core/string) -> ();
+// Get the current log. Since this is in the "io" effect, "withLog" is preferred.
+fun getLog : (logName : std/core/string) -> <(std/core/io :: E)> std/core/string;
+// Disable logging completely.
+fun nolog : () -> <(std/core/st :: H -> E)<(std/core/global :: H)>> ();
+// Encloses a possibly total "action" and returns its result together
+// with the contents of a log named "logName". The contents of the log
+// are non-deterministically determined. However, in practice, they contain
+// any messages that were recorded in the "action" by calls to "log".
+// However, if "nolog" was called, the log is always empty.
+fun withLog : forall<a,(e :: E)> (logName : std/core/string, action : () -> <(std/core/ndet :: X)|(e :: E)> a) -> <(std/core/ndet :: X)|(e :: E)> (std/core/string, a);

@@ -1,0 +1,67 @@
+// The parsing and formatting of _inline_ elements (i.e. emphasis, links, etc.)
+module interface formatInline
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/*
+Basic cryptography. 
+*/
+import std/crypto = std/crypto = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// Common types and operations
+import common = common = "";
+// Attibute operations: parsing, transform text, expand keys, etc.
+import attributes = attributes = "";
+// Defines the context for _inline_ elements.
+import inline = inline = "";
+// Formatting of  HTML elements 
+import htmlFormatter = htmlFormatter = "";
+// Parsing and formatting of html entities (for TeX output)
+import entity = entity = "";
+// Syntax highlighting
+import hilite = hilite = "";
+// Align code blocks
+import codeAlign = codeAlign = "";
+private alias common/grammar<a,b> :: (V, V) -> V = (std/core/list :: V -> V)<(common/rule :: (V, V) -> V)<a,b>> = 1;
+;
+;
+// Automatically generated. Retrieves the `name` constructor field of the ":cite" type.
+// Automatically generated. Retrieves the `pre` constructor field of the ":cite" type.
+// Automatically generated. Retrieves the `post` constructor field of the ":cite" type.
+// Automatically generated. Retrieves the `modifier` constructor field of the ":cite" type.
+// Automatically generated. Retrieves the `number` constructor field of the ":cite" type.
+// Automatically generated. Retrieves the `year` constructor field of the ":cite" type.
+// Automatically generated. Retrieves the `authors` constructor field of the ":cite" type.
+// Automatically generated. Retrieves the `ordinal` constructor field of the ":cite" type.
+// Apply defaults
+//val attrs    = @"\{:?((?:[^\}\n]|\\\})*)\}"
+// Format attributes
+// get and format default attributes
+//val rxCodeEscaped = regex(@"\\\((?:(\d+):)?((?:[^\\\r\n]|\\\n|\\[^\)])*)\\\)")
+fun fmtCode : (context : inline/inlineContext, env0 : std/core/string, txt : std/core/string, attrs0 : ?common/attrs) -> std/core/string;
+fun fmtMathImg : (context : inline/inlineContext, mi : common/mathinfo, txt : std/core/string, mtxt : std/core/string, attrs : common/attrs) -> std/core/string;
+fun fmtMath : (context : inline/inlineContext, isDisplay : std/core/bool, txt0 : std/core/string, attrs : ?common/attrs, lineInfo : ?std/core/string) -> std/core/string;
+// Format a span element
+// Format a citation link
+fun inlineGrammar : (fmt : common/formatter, bench : ?std/core/bool) -> (common/grammar :: (V, V) -> V)<std/core/string,inline/inlineContext>;
+val rxLink : std/regex/regex;

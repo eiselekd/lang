@@ -1,0 +1,27 @@
+module interface texCommon
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+// Common types and operations
+import common = common = "";
+val optarg : std/core/string;
+val optargs : std/core/string;
+val texarg : std/core/string;
+// captures most tex commands
+val rxTexCmd : std/core/string;
+val texAccents : (std/dict/dict :: V -> V)<std/core/string>;
+val texargs : std/core/string;
+val texlen : std/core/string;
+val texdim : std/core/string;

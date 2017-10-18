@@ -1,0 +1,34 @@
+// Parsing and formatting of html entities (for TeX output)
+module interface entity
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Common types and operations
+import common = common = "";
+// Log messages
+import std/log = std/log = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+;
+// Automatically generated. Retrieves the `ename` constructor field of the ":entity" type.
+// Automatically generated. Retrieves the `ecode` constructor field of the ":entity" type.
+// Automatically generated. Retrieves the `ecmd` constructor field of the ":entity" type.
+// Automatically generated. Retrieves the `emath` constructor field of the ":entity" type.
+// The entity table
+fun entityNameAsNum : (name : std/core/string) -> (std/core/maybe :: V -> V)<std/core/string>;
+fun entityNameToNum : (name : std/core/string) -> std/core/string;
+// Convert an html entity to a unicode number
+fun entityToNum : (entity : std/core/string) -> (std/core/maybe :: V -> V)<std/core/int>;
+// Convert an html entity to a LaTeX command.
+// Takes as input the string between the `&` and `;` of a HTML entity.
+fun entityToTex : (entity : std/core/string) -> std/core/string;
+fun logEntities : () -> ();
+// Translate a TeX command to an entity (or empty if unknown)
+fun texCmdToEntity : (cmd : std/core/string) -> std/core/string;

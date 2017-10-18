@@ -1,0 +1,100 @@
+// The parsing and evaluation of expressions
+module interface expression
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+// Common types and operations
+import common = common = "";
+infixl 5 (<*)
+infixl 5 (*>)
+infixl 5 (<*>)
+infixl 6 ($>)
+infixl 6 (<$>)
+type constant {
+  con Int(i: std/core/int) : (i : std/core/int) -> constant;
+  con Bool(b: std/core/bool) : (b : std/core/bool) -> constant;
+  con String(s: std/core/string) : (s : std/core/string) -> constant;
+  con Regex(r: std/regex/regex) : (r : std/regex/regex) -> constant;
+  con Null : constant;
+};
+type rec expr {
+  con UnOp(op: std/core/string, expr: expr) : (op : std/core/string, expr : expr) -> expr;
+  con BinOp(op: std/core/string, left: expr, right: expr) : (op : std/core/string, left : expr, right : expr) -> expr;
+  con If(cond: expr, ethen: expr, eelse: expr) : (cond : expr, ethen : expr, eelse : expr) -> expr;
+  con Const(c: constant) : (c : constant) -> expr;
+  con Var(v: std/core/string, display: std/core/string) : (v : std/core/string, display : std/core/string) -> expr;
+};
+;
+// Automatically generated. Retrieves the `i` constructor field of the ":constant" type.
+fun i : (constant : constant) -> <(std/core/exn :: E)> std/core/int;
+// Automatically generated. Retrieves the `b` constructor field of the ":constant" type.
+fun b : (constant : constant) -> <(std/core/exn :: E)> std/core/bool;
+// Automatically generated. Retrieves the `s` constructor field of the ":constant" type.
+fun s : (constant : constant) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Retrieves the `r` constructor field of the ":constant" type.
+fun r : (constant : constant) -> <(std/core/exn :: E)> std/regex/regex;
+// Automatically generated. Tests for the "Int" constructor of the ":constant" type.
+fun isInt : (constant : constant) -> std/core/bool;
+// Automatically generated. Tests for the "Bool" constructor of the ":constant" type.
+fun isBool : (constant : constant) -> std/core/bool;
+// Automatically generated. Tests for the "String" constructor of the ":constant" type.
+fun isString : (constant : constant) -> std/core/bool;
+// Automatically generated. Tests for the "Regex" constructor of the ":constant" type.
+fun isRegex : (constant : constant) -> std/core/bool;
+// Automatically generated. Tests for the "Null" constructor of the ":constant" type.
+fun isNull : (constant : constant) -> std/core/bool;
+// Automatically generated. Retrieves the `op` constructor field of the ":expr" type.
+fun op : (expr : expr) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Retrieves the `expr` constructor field of the ":expr" type.
+fun expr : (expr : expr) -> <(std/core/exn :: E)> expr;
+// Automatically generated. Retrieves the `left` constructor field of the ":expr" type.
+fun left : (expr : expr) -> <(std/core/exn :: E)> expr;
+// Automatically generated. Retrieves the `right` constructor field of the ":expr" type.
+fun right : (expr : expr) -> <(std/core/exn :: E)> expr;
+// Automatically generated. Retrieves the `cond` constructor field of the ":expr" type.
+fun cond : (expr : expr) -> <(std/core/exn :: E)> expr;
+// Automatically generated. Retrieves the `ethen` constructor field of the ":expr" type.
+fun ethen : (expr : expr) -> <(std/core/exn :: E)> expr;
+// Automatically generated. Retrieves the `eelse` constructor field of the ":expr" type.
+fun eelse : (expr : expr) -> <(std/core/exn :: E)> expr;
+// Automatically generated. Retrieves the `c` constructor field of the ":expr" type.
+fun c : (expr : expr) -> <(std/core/exn :: E)> constant;
+// Automatically generated. Retrieves the `v` constructor field of the ":expr" type.
+fun v : (expr : expr) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Retrieves the `display` constructor field of the ":expr" type.
+fun display : (expr : expr) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Tests for the "UnOp" constructor of the ":expr" type.
+fun isUnOp : (expr : expr) -> std/core/bool;
+// Automatically generated. Tests for the "BinOp" constructor of the ":expr" type.
+fun isBinOp : (expr : expr) -> std/core/bool;
+// Automatically generated. Tests for the "If" constructor of the ":expr" type.
+fun isIf : (expr : expr) -> std/core/bool;
+// Automatically generated. Tests for the "Const" constructor of the ":expr" type.
+fun isConst : (expr : expr) -> std/core/bool;
+// Automatically generated. Tests for the "Var" constructor of the ":expr" type.
+fun isVar : (expr : expr) -> std/core/bool;
+fun cint : (c : constant) -> constant;
+fun show .1 : (c : constant) -> std/core/string;
+fun show : (expr : expr, outer : ?std/core/bool) -> std/core/string;
+fun bool : (c : constant) -> <(std/core/exn :: X)> std/core/bool;
+fun string : (c : constant) -> std/core/string;
+fun evalExpr : forall<(e :: E)> (expr : expr, lookup : (std/core/string, std/core/string) -> <(std/core/exn :: X)|(e :: E)> constant) -> <(std/core/exn :: X)|(e :: E)> constant;
+fun evaluate : forall<a,(e :: E)> (expr : std/core/string, eval : (expr) -> <(std/core/exn :: X)|(e :: E)> a, default : a) -> (e :: E) a;
+fun parseAttrSelectors : (pat : std/core/string) -> (std/core/list :: V -> V)<expr>;

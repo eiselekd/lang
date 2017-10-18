@@ -1,0 +1,43 @@
+// Formatting of CSS values in LaTex
+module interface cssFormatter
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+// Common types and operations
+import common = common = "";
+fun isBraced : (s : std/core/string) -> std/core/bool;
+fun braced : (s : std/core/string) -> std/core/string;
+fun cssBool : (v0 : std/core/string) -> std/core/string;
+fun cssColor : (v0 : std/core/string) -> std/core/string;
+fun cssColorArg : (v : std/core/string) -> std/core/string;
+fun cssColorCmd : (v : std/core/string) -> std/core/string;
+fun cssIsLength : (term : std/core/string) -> std/core/bool;
+// Split multiple CSS values that can be separated by spaces (like `margin`)
+fun cssSplitValues : (s : std/core/string) -> (std/core/list :: V -> V)<std/core/string>;
+// Expand keys that define multiple values at once; ie. border may have `border-(width|color|style)` values.
+// Expand keys that stand for multiple keys; i.e. `margin` is a shorthand for `margin-(top|right|bottom|left)`.
+fun cssExpandKeys : (kvs0 : (std/dict/dict :: V -> V)<std/core/string>) -> (std/dict/dict :: V -> V)<std/core/string>;
+fun cssValue : (v : std/core/string) -> std/core/string;
+fun cssWidth : (v0 : std/core/string, auto : ?std/core/string, percOf : ?std/core/string, defunit : ?std/core/string) -> std/core/string;
+fun cssFontLength : (v : std/core/string) -> std/core/string;
+fun cssHeight : (v : std/core/string, auto : ?std/core/string) -> std/core/string;
+fun cssIsBlock : (kvs : (std/dict/dict :: V -> V)<std/core/string>) -> std/core/bool;
+fun cssIsInlineBlock : (kvs : (std/dict/dict :: V -> V)<std/core/string>) -> std/core/bool;
+fun cssPercentage : (v0 : std/core/string) -> std/core/string;
+// Split comma seperated CSS values (like `font-family`)
+fun cssSplitList : (s : std/core/string) -> (std/core/list :: V -> V)<std/core/string>;

@@ -1,0 +1,196 @@
+// The parsing and formatting of TeX blocks.
+//
+// The capabilities are fairly limited and mostly geared to be able to
+// parse bibtex entries. Accent and special character commands are quite well
+// recognized in order to allow author names with correct accent characters.
+module interface texParserItems
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/*
+Basic cryptography. 
+*/
+import std/crypto = std/crypto = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// Common types and operations
+import common = common = "";
+// Parsing and formatting of html entities (for TeX output)
+import entity = entity = "";
+import texCommon = texCommon = "";
+// The parsing and formatting of TeX blocks.
+//
+// The capabilities are fairly limited and mostly geared to be able to
+// parse bibtex entries. Accent and special character commands are quite well
+// recognized in order to allow author names with correct accent characters.
+import texParserBase = texParserBase = "";
+val rxCentering : std/regex/regex;
+val rxFrameTitle : std/regex/regex;
+val rxLabel : std/regex/regex;
+val rxNonIdChar : std/regex/regex;
+fun toIdentifier : (s : std/core/string) -> std/core/string;
+fun beamerExtract : forall<a> (content : std/core/string, context : a) -> (std/core/string, std/core/string, (std/core/list :: V -> V)<std/core/string>, std/core/string, std/core/string);
+val rxKeyVal : std/regex/regex;
+fun beamerOptions : (opts : std/core/string) -> (std/core/string, (std/core/list :: V -> V)<std/core/string>);
+fun parseColor : (c : std/core/string) -> std/core/string;
+fun parseColors : (r : std/core/string, g : std/core/string, b : std/core/string) -> std/core/string;
+fun parseFloatColor : (c : std/core/string) -> std/core/string;
+fun parseFloatColors : (r : std/core/string, g : std/core/string, b : std/core/string) -> std/core/string;
+fun extractColorX : (model : std/core/string, value : std/core/string) -> std/core/string;
+fun extractColor : (model : std/core/string, value : std/core/string) -> (std/core/list :: V -> V)<std/core/string>;
+val rxCaption : std/regex/regex;
+fun extractLabelCaption : (content : std/core/string, context : texParserBase/texContext, defCaption : ?std/core/string, defLabel : ?std/core/string) -> (std/core/string, (std/core/list :: V -> V)<std/core/string>, std/core/string, std/core/string);
+val rxAuthorTitle : std/regex/regex;
+val rxAuthorYear : std/regex/regex;
+val rxNewblock : std/regex/regex;
+val rxNonSearch : std/regex/regex;
+val rxSpaces : std/regex/regex;
+fun makeBibitem : (context : texParserBase/texContext, keyx : std/core/string, labx : std/core/string, content : std/core/string) -> std/core/string;
+val rxCiteSep : std/regex/regex;
+val rxHline : std/regex/regex;
+val rxMathNl : std/regex/regex;
+val rxNoAlign : std/regex/regex;
+val rxNonLetter : std/regex/regex;
+val rxNoSpec : std/regex/regex;
+val rxRowEnd : std/regex/regex;
+val rxRowNl : std/regex/regex;
+val rxSpec : std/regex/regex;
+val rxUrlReserved : std/regex/regex;
+fun texAccent : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texAcks : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texAlign : (s : std/core/string) -> std/core/string;
+fun texAlwaysIgnore : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texAlwaysIgnore3 : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texAlwaysIgnore4 : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texAlwaysIgnore5 : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texAppendix : forall<a> (_cap : std/regex/matched, _context : a) -> std/core/string;
+fun texAttribute : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texBblName : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texBeginCaptionBlock : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texLength : (w : std/core/string) -> std/core/string;
+fun texBeginMinipage : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texBibinfo : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texBibitem : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texBibitemCiteApa : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texBibitemCiteAuthorYear : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texBibitemCiteName : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texBibliography : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texCaptionedXX : (env : std/core/string, body : std/core/string, caption : std/core/string, extraAttrs : (std/core/list :: V -> V)<std/core/string>, context : texParserBase/texContext) -> std/core/string;
+fun texCaptionedX : (cap : std/regex/matched, extraAttrs : (std/core/list :: V -> V)<std/core/string>, context : texParserBase/texContext) -> std/core/string;
+fun texCaptioned : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texChar : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texCite : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texCiteAuthorYear : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texClassCmd : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texCode : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texColorBox : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texColumn : forall<a> (cap : std/regex/matched, context : a) -> std/core/string;
+fun texCommandClass : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texComment : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texDash : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun urlEncode : (txt : std/core/string) -> std/core/string;
+fun texDoi : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texQuot : (quot : std/core/string, cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texDquot : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texEmph : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texEmptyLine : forall<a,b> (_cap : a, _context : b) -> std/core/string;
+fun texEndCaptionBlock : forall<a> (cap : std/regex/matched, context : a) -> std/core/string;
+/* use entity for these commands */
+val texEntities : (std/dict/dict :: V -> V)<std/core/string>;
+fun texEntityCmd : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+val texEntityCmd0 : std/core/string;
+fun texEnvBegin : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texEnvEnd : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texFilename : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+val texFontSizeMap : (std/dict/dict :: V -> V)<std/core/string>;
+fun texFontSize : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+val texFontSizes : std/core/string;
+fun texFootnote : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texFrameX : (options : std/core/string, argTitle : std/core/string, argSubtitle : std/core/string, body : std/core/string, context : texParserBase/texContext) -> std/core/string;
+fun texFrame : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texFrameCmd : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texGenericCommand : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texGroup : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texHarvarditem : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texHSkip : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texHSpace : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texIgnore : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texImage : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+/* --------------------------------------
+ Latex block functions 
+---------------------------------------- */
+fun texInclude : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texIndent : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texInst : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texItemX : (bullet : std/core/string, caption : std/core/string, context : texParserBase/texContext) -> std/core/string;
+fun texItem : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texItemPause : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texKeep : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texLabeled : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texLineBreak : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texList : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texListing : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texListingEnd : forall<a,b> (_cap : a, _context : b) -> std/core/string;
+fun texMakeTitle : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texMathDisplay : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texMathEnv : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texMathInline : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texMathSnippet : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texMBox : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texMonospace : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texNoIndent : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texNormal : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texOther : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texPageBreak : forall<a> (_cap : std/regex/matched, _context : a) -> std/core/string;
+fun texVAlign : (s : std/core/string) -> std/core/string;
+fun texParBox : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texRaiseBox : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texRaw : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texRef : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texRoman : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texRule : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texSans : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+/* sections, sizes, etc */
+val texsects : (std/core/list :: V -> V)<std/core/string>;
+val texsect : std/core/string;
+fun texSection : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texSkip : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texSlanted : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texSmallcaps : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texSquot : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texStrong : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texTabularDo : (pos : std/core/string, width : std/core/string, spec : std/core/string, content : std/core/string, cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texTabular : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texTabularX : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texTextColor : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texTheBibliography : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texTikzCmd : forall<a> (cap : std/regex/matched, context : a) -> std/core/string;
+fun texTikzEnv : forall<a> (cap : std/regex/matched, context : a) -> std/core/string;
+fun texToc : forall<a> (_cap : std/regex/matched, _context : a) -> std/core/string;
+fun texToday : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texTof : forall<a> (_cap : std/regex/matched, _context : a) -> std/core/string;
+fun texUncover : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texUpright : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texUrl : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texUrlPrefix : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texVSkip : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texVSpace : forall<a> (cap : std/regex/matched, _context : a) -> std/core/string;
+fun texVSpacePara : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;
+fun texWrapFigure : (cap : std/regex/matched, context : texParserBase/texContext) -> std/core/string;

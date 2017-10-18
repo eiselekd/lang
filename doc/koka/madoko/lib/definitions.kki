@@ -1,0 +1,93 @@
+// Process definitions: links, footnotes, labels, and counters
+module interface definitions
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+// Log messages
+import std/log = std/log = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+// Attibute operations: parsing, transform text, expand keys, etc.
+import attributes = attributes = "";
+// The grammar and parsing of markdown _blocks_ (i.e. paragraphs, lists, tables, etc.)
+import block = block = "";
+// Defines the context for _inline_ elements.
+import inline = inline = "";
+// Format _block_ elements and and their inline elements.
+import formatBlock = formatBlock = "";
+// The parsing and formatting of _inline_ elements (i.e. emphasis, links, etc.)
+import formatInline = formatInline = "";
+// The parsing and formatting of TeX blocks.
+//
+// The capabilities are fairly limited and mostly geared to be able to
+// parse bibtex entries. Accent and special character commands are quite well
+// recognized in order to allow author names with correct accent characters.
+import texParser = texParser = "";
+// Metadata is just a string to string map.
+private alias options/metadata = (std/core/list :: V -> V)<(std/core/string, std/core/string)> = 1;
+;
+;
+;
+;
+// Automatically generated. Retrieves the `width` constructor field of the ":format" type.
+// Automatically generated. Retrieves the `digits` constructor field of the ":format" type.
+// Automatically generated. Retrieves the `items` constructor field of the ":format" type.
+// Automatically generated. Retrieves the `start` constructor field of the ":format" type.
+// Automatically generated. Retrieves the `end` constructor field of the ":format" type.
+// Automatically generated. Retrieves the `item` constructor field of the ":format" type.
+// Automatically generated. Tests for the "Arabic0" constructor of the ":format" type.
+// Automatically generated. Tests for the "Arabic" constructor of the ":format" type.
+// Automatically generated. Tests for the "Decimal0" constructor of the ":format" type.
+// Automatically generated. Tests for the "Decimal" constructor of the ":format" type.
+// Automatically generated. Tests for the "Lowercase" constructor of the ":format" type.
+// Automatically generated. Tests for the "Uppercase" constructor of the ":format" type.
+// Automatically generated. Tests for the "LowerRoman" constructor of the ":format" type.
+// Automatically generated. Tests for the "UpperRoman" constructor of the ":format" type.
+// Automatically generated. Tests for the "EntityList" constructor of the ":format" type.
+// Automatically generated. Tests for the "UnicodeBase" constructor of the ":format" type.
+// Automatically generated. Tests for the "Entity" constructor of the ":format" type.
+// Automatically generated. Retrieves the `value` constructor field of the ":counter" type.
+// Automatically generated. Retrieves the `format` constructor field of the ":counter" type.
+// Automatically generated. Tests for the "ParNone" constructor of the ":parinfo" type.
+// Automatically generated. Tests for the "ParEnded" constructor of the ":parinfo" type.
+// Automatically generated. Tests for the "ParBlock" constructor of the ":parinfo" type.
+// Automatically generated. Retrieves the `level` constructor field of the ":secinfo" type.
+// Automatically generated. Retrieves the `secMax` constructor field of the ":secinfo" type.
+// Automatically generated. Retrieves the `secBase` constructor field of the ":secinfo" type.
+// Automatically generated. Retrieves the `secDefaults` constructor field of the ":secinfo" type.
+// increment or set a count to a value
+// reset lower counters (ie. for h1-h2, reset h1-h2-h3, h1-h2-h3-h4, ...)
+// adjust a counter
+// Create a table of contents
+// expand the counters in a string
+// expand counters in label,
+// Fast version for benchmarking
+// Sets new attributes for a block, and applies conversion to text
+// Full version that does attribute processing
+// Visits all blocks and returns a dictionary of links, labels, footnotes,
+// a footnote block, and a table-of-contents block. 
+fun parseDefinitions : (fcontext : formatBlock/formatContext, blocks : (std/core/list :: V -> V)<block/block>, metadata : options/metadata, tocDepth : ?std/core/int, secBase : ?std/core/int, secDepth : ?std/core/int) -> <(std/core/div :: X)> ((std/core/list :: V -> V)<block/block>, formatBlock/formatContext);
+// Parse source into blocks (see "parseBlocks") and 
+// process all definitions (see "parseDefinitions").
+fun parseBody : (fcontext : formatBlock/formatContext, lineNo : std/core/int, src : std/core/string, metadata : options/metadata, tocDepth : std/core/int, secBase : std/core/int, secDepth : std/core/int) -> <(std/core/div :: X)> ((std/core/list :: V -> V)<block/block>, formatBlock/formatContext);

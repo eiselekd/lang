@@ -1,0 +1,10 @@
+// Export the version of the program.
+module interface version
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Do not edit the version, it is set in the Jakefile from package.json
+val version : std/core/string;

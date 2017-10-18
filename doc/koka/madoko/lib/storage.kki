@@ -1,0 +1,83 @@
+// Provide client/server storage
+// This module provides file access operations. On the web client, these
+// operations only provide accesss to a global object of files which is
+// *not* persistent. This code is mainly to ensure we can share as much
+// code as possible between client and server.
+module interface storage
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// Log messages
+import std/log = std/log = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+// A binary buffer
+type buffer {
+  
+};
+// Automatically generated. Retrieves the `obj` constructor field of the ":buffer" type.
+fun cwd : () -> <(std/core/io :: E)> std/core/string;
+fun length : (b : buffer) -> std/core/int;
+fun xnormalize : (path : std/core/string) -> std/core/string;
+fun checkSandbox : (path : std/core/string) -> <(std/core/io :: E)> std/core/string;
+// In the browser, removes all files.
+fun clear : () -> <(std/core/io :: E)> ();
+fun copyFile : (fnameOld : std/core/string, fnameNew : std/core/string) -> <(std/core/io :: E)> ();
+fun enforceSandbox : (roots : ?(std/core/list :: V -> V)<std/core/string>) -> <(std/core/io :: E)> ();
+fun fexistsSync : (fileName : std/core/string) -> <(std/core/io :: E)> std/core/bool;
+fun mkdirp : (dir : std/core/string, mode : ?std/core/int) -> <(std/core/io :: E)> ();
+// Read a binary file synchronously (using base64 encoding)
+fun readBase64FileSync : (fileName : std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> std/core/string;
+// Try to a binary file synchronously (using base64 encoding)
+fun tryReadBase64File : (fileName : std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> (std/core/either :: (V, V) -> V)<std/core/exception,std/core/string>;
+// Try to read a binary file in base64; return a default value in case of an error.
+fun readBase64FileDef : (fileName : std/core/string, def : std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> std/core/string;
+// Read a binary file into a buffer
+fun readFileSync : (fileName : std/core/string) -> <(std/core/io :: E)> buffer;
+fun readInt1 : (b : buffer, ofs : std/core/int) -> std/core/int;
+fun readInt4 : (b : buffer, ofs : std/core/int, bigendian : ?std/core/bool) -> std/core/int;
+// Read a text file synchronously (using UTF8 encoding)
+fun readTextFileSync : (fileName : std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> std/core/string;
+// Try to a text file synchronously (using UTF8 encoding)
+fun tryReadTextFile : (fileName : std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> (std/core/either :: (V, V) -> V)<std/core/exception,std/core/string>;
+// Try to read a text file; return a default value in case of an error.
+fun readTextFileDef : (fileName : std/core/string, def : std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> std/core/string;
+// Read a text file synchronously (using UTF8 encoding) without sandbox restrictions
+fun readTextFileNoSandbox : (fileName : std/core/string) -> <(std/core/io :: E)> std/core/string;
+fun relative : (from : std/core/string, to : std/core/string) -> std/core/string;
+fun rename : (fnameOld : std/core/string, fnameNew : std/core/string) -> <(std/core/io :: E)> ();
+// Search for a file along a list of directories
+fun searchFileSync : (dirs : (std/core/list :: V -> V)<std/core/string>, fname : std/core/string) -> <(std/core/io :: E)> (std/core/maybe :: V -> V)<std/core/string>;
+fun toBase64 : (b : buffer) -> std/core/string;
+// Write a text file synchronously (using UTF8 encoding)
+fun writeTextFileSync : (fileName : std/core/string, content : std/core/string) -> <(std/core/io :: E)> ();
+// Try to write a text file synchronously (using UTF8 encoding). 
+// Returns "True" if successful.
+fun tryWriteTextFile : (fileName : std/core/string, content : std/core/string) -> <(std/core/io :: E)> std/core/bool;
+fun tryCopyTextFile : (fileName : std/core/string, outName : std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> std/core/bool;
+fun tryCopyTextFileFromTo : (fname : std/core/string, srcDir : std/core/string, outDir : std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> std/core/bool;
+// try to ead a binary file into a buffer
+fun tryReadFileSync : (fileName : std/core/string) -> <(std/core/io :: E)> (std/core/maybe :: V -> V)<buffer>;
+fun tryRename : (fnameOld : std/core/string, fnameNew : std/core/string) -> <(std/core/io :: E)> ();
+fun unlinkSync : (fileName : std/core/string) -> <(std/core/io :: E)> ();
+// Delete a file
+fun tryUnlinkSync : (fname : std/core/string) -> <(std/core/io :: E)> ();
+// Write a binary file synchronously (using base64 encoding)
+fun writeBase64FileSync : (fileName : std/core/string, content : std/core/string) -> <(std/core/io :: E)> ();
+// Try to write a binary file synchronously (using base64 encoding). 
+// Returns "True" if successful.
+fun tryWriteBase64File : (fileName : std/core/string, content : std/core/string) -> <(std/core/io :: E)> std/core/bool;
+// In the browser, removes all files.

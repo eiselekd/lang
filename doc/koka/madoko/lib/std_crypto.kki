@@ -1,0 +1,13 @@
+/*
+Basic cryptography. 
+*/
+module interface std/crypto
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Compute an md5 hash of a string.
+fun md5 : (s : std/core/string) -> std/core/string;
+// Compute an md5 hash of a string.

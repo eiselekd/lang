@@ -1,0 +1,19 @@
+// Setting sandboxed options
+module interface optionsSandbox
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+fun updateSandbox : (options : options/options, key : std/core/string, lvalue : std/core/string, value : std/core/string, ivalue : std/core/int) -> options/options;

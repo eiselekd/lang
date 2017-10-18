@@ -1,0 +1,80 @@
+// The parsing and formatting of TeX blocks.
+//
+// The capabilities are fairly limited and mostly geared to be able to
+// parse bibtex entries. Accent and special character commands are quite well
+// recognized in order to allow author names with correct accent characters.
+module interface texParserBase
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/*
+Basic cryptography. 
+*/
+import std/crypto = std/crypto = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// Common types and operations
+import common = common = "";
+// Parsing and formatting of html entities (for TeX output)
+import entity = entity = "";
+import texCommon = texCommon = "";
+private alias common/grammar<a,b> :: (V, V) -> V = (std/core/list :: V -> V)<(common/rule :: (V, V) -> V)<a,b>> = 1;
+rectype rec texContext {
+  con TexContext(grammar: ((common/grammar :: (V, V) -> V)<std/core/string,texContext> == 1 (std/core/list :: V -> V)<(common/rule :: (V, V) -> V)<std/core/string,texContext>>), citestyle: common/citestyle, bststyle: std/core/string, ignore: std/core/bool, name: std/core/string, texparse: (context : texContext, input : std/core/string) -> std/core/string) : (grammar : ((common/grammar :: (V, V) -> V)<std/core/string,texContext> == 1 (std/core/list :: V -> V)<(common/rule :: (V, V) -> V)<std/core/string,texContext>>), citestyle : common/citestyle, bststyle : std/core/string, ignore : std/core/bool, name : std/core/string, texparse : (context : texContext, input : std/core/string) -> std/core/string) -> texContext;
+};
+;
+/* --------------------------------------
+ The context for latex elements 
+---------------------------------------- */
+alias texRule = (common/rule :: (V, V) -> V)<std/core/string,texContext> = 1;
+// Automatically generated. Retrieves the `grammar` constructor field of the ":texContext" type.
+fun grammar : (texContext : texContext) -> (common/grammar :: (V, V) -> V)<std/core/string,texContext>;
+// Automatically generated. Retrieves the `citestyle` constructor field of the ":texContext" type.
+fun citestyle : (texContext : texContext) -> common/citestyle;
+// Automatically generated. Retrieves the `bststyle` constructor field of the ":texContext" type.
+fun bststyle : (texContext : texContext) -> std/core/string;
+// Automatically generated. Retrieves the `ignore` constructor field of the ":texContext" type.
+fun ignore : (texContext : texContext) -> std/core/bool;
+// Automatically generated. Retrieves the `name` constructor field of the ":texContext" type.
+fun name : (texContext : texContext) -> std/core/string;
+// Automatically generated. Retrieves the `texparse` constructor field of the ":texContext" type.
+fun texparse : (texContext : texContext) -> ((context : texContext, input : std/core/string) -> std/core/string);
+fun (.copy) : (texContext, grammar : ?(common/grammar :: (V, V) -> V)<std/core/string,texContext>, citestyle : ?common/citestyle, bststyle : ?std/core/string, ignore : ?std/core/bool, name : ?std/core/string, texparse : ?(context : texContext, input : std/core/string) -> std/core/string) -> texContext;
+// Automatically generated. Retrieves the `regex` constructor field of the ":mRule" type.
+// Automatically generated. Retrieves the `keys` constructor field of the ":mRule" type.
+// Automatically generated. Retrieves the `values` constructor field of the ":mRule" type.
+// Automatically generated. Retrieves the `replacer` constructor field of the ":mRule" type.
+fun (.createTexContext) : (grammar : (common/grammar :: (V, V) -> V)<std/core/string,texContext>, citestyle : ?common/citestyle, bststyle : std/core/string, ignore : ?std/core/bool, name : ?std/core/string, texparse : (context : texContext, input : std/core/string) -> std/core/string) -> texContext;
+/* don't include these as packages */
+val stdPackages : std/core/string;
+fun unbrace : (s : std/core/string) -> std/core/string;
+fun parse : (txt : std/core/string, context : texContext) -> std/core/string;
+val texargg : std/core/string;
+fun indent4 : (txt : std/core/string) -> std/core/string;
+fun joinAttrs : (keyvals : (std/core/list :: V -> V)<std/core/string>) -> std/core/string;
+fun quote : (s : std/core/string) -> std/core/string;
+val rxNl : std/regex/regex;
+fun makeAttr : (key : std/core/string, value : std/core/string) -> std/core/string;
+val overlay : std/core/string;
+fun singleAttr : (key : std/core/string, value : std/core/string) -> std/core/string;
+val special : std/core/string;
+fun texDocClass : (cap : std/regex/matched, context : texContext) -> std/core/string;
+fun trimNL : (s : std/core/string) -> std/core/string;
+fun trimx : (s : std/core/string, n : std/core/int) -> std/core/string;

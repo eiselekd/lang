@@ -1,0 +1,105 @@
+/*
+Parsing of command line flags.
+*/
+module interface std/flags
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/*
+Access to the program environment and commmand line arguments.
+
+Print the environment: "env.list.map(fun(p) { p.fst + ""="" + p.snd }).join(""\n"").print"
+
+Note: we view the environment and command line as (total) constants in the
+program. i.e. as if the program is only compiled at the point when both the 
+environment and command line is supplied. 
+*/
+import std/env = std/env = "";
+// An alias for the empty effect.
+private alias std/core/total :: E = std/core/(<>) = 1;
+;
+// Specifies the argument of an option
+type optionArg <a> :: V -> V {
+  // For a flag `foo` Automatically enables forms `--nofoo` and `--foo=true|false`.
+  con Flag(default: (a, std/core/bool) -> a) : forall<a> (default : (a, std/core/bool) -> a) -> (optionArg :: V -> V)<a>;
+  // A required argument.
+  con Req(parse: (a, std/core/string) -> a, help: std/core/string) : forall<a> (parse : (a, std/core/string) -> a, help : std/core/string) -> (optionArg :: V -> V)<a>;
+  // An optional argument.
+  con Opt(parse: (a, (std/core/maybe :: V -> V)<std/core/string>) -> a, help: std/core/string) : forall<a> (parse : (a, (std/core/maybe :: V -> V)<std/core/string>) -> a, help : std/core/string) -> (optionArg :: V -> V)<a>;
+};
+// Specifies a single option
+// For example: "Option(""h?"",[""help""],Flag(Help),""show help information"")".
+type option <a> :: V -> V {
+  // Specifies a single option
+// For example: "Option(""h?"",[""help""],Flag(Help),""show help information"")".
+  con Option(shortNames: std/core/string, longNames: (std/core/list :: V -> V)<std/core/string>, arg: (optionArg :: V -> V)<a>, help: std/core/string, llongNames: (std/core/list :: V -> V)<std/core/string>) : forall<a> (shortNames : std/core/string, longNames : (std/core/list :: V -> V)<std/core/string>, arg : (optionArg :: V -> V)<a>, help : std/core/string, llongNames : (std/core/list :: V -> V)<std/core/string>) -> (option :: V -> V)<a>;
+};
+// Specifies how to handle options that follow nonOption command line arguments.
+type optionOrder <a> :: V -> V {
+  // Allow options to be permuted with nonFlag arguments
+  con Permute : forall<a> (optionOrder :: V -> V)<a>;
+  // Flags following nonOption arguments are treated as arguments
+  con Preorder : forall<a> (optionOrder :: V -> V)<a>;
+  // Wrap each nonOption argument into an option
+  con Wrap(wrap: (std/core/string) -> a) : forall<a> (wrap : (std/core/string) -> a) -> (optionOrder :: V -> V)<a>;
+};
+;
+// Automatically generated. Retrieves the `set` constructor field of the ":flagKind" type.
+// Automatically generated. Retrieves the `arg` constructor field of the ":flagKind" type.
+// Automatically generated. Retrieves the `msg` constructor field of the ":flagKind" type.
+// Automatically generated. Tests for the "Flg" constructor of the ":flagKind" type.
+// Automatically generated. Tests for the "Arg" constructor of the ":flagKind" type.
+// Automatically generated. Tests for the "End" constructor of the ":flagKind" type.
+// Automatically generated. Tests for the "Unknown" constructor of the ":flagKind" type.
+// Automatically generated. Tests for the "Error" constructor of the ":flagKind" type.
+// Automatically generated. Retrieves the `default` constructor field of the ":optionArg" type.
+fun default : forall<a> (optionArg : (optionArg :: V -> V)<a>) -> <(std/core/exn :: E)> ((a, std/core/bool) -> a);
+// Automatically generated. Retrieves the `help` constructor field of the ":optionArg" type.
+fun help : forall<a> (optionArg : (optionArg :: V -> V)<a>) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Tests for the "Flag" constructor of the ":optionArg" type.
+fun isFlag : forall<a> (optionArg : (optionArg :: V -> V)<a>) -> std/core/bool;
+// Automatically generated. Tests for the "Req" constructor of the ":optionArg" type.
+fun isReq : forall<a> (optionArg : (optionArg :: V -> V)<a>) -> std/core/bool;
+// Automatically generated. Tests for the "Opt" constructor of the ":optionArg" type.
+fun isOpt : forall<a> (optionArg : (optionArg :: V -> V)<a>) -> std/core/bool;
+// Automatically generated. Retrieves the `shortNames` constructor field of the ":option" type.
+fun shortNames : forall<a> (option : (option :: V -> V)<a>) -> std/core/string;
+// Automatically generated. Retrieves the `longNames` constructor field of the ":option" type.
+fun longNames : forall<a> (option : (option :: V -> V)<a>) -> (std/core/list :: V -> V)<std/core/string>;
+// Automatically generated. Retrieves the `arg` constructor field of the ":option" type.
+fun arg .1 : forall<a> (option : (option :: V -> V)<a>) -> (optionArg :: V -> V)<a>;
+// Automatically generated. Retrieves the `help` constructor field of the ":option" type.
+fun help .1 : forall<a> (option : (option :: V -> V)<a>) -> std/core/string;
+// Automatically generated. Retrieves the `llongNames` constructor field of the ":option" type.
+fun llongNames : forall<a> (option : (option :: V -> V)<a>) -> (std/core/list :: V -> V)<std/core/string>;
+fun (.copy) : forall<a> ((option :: V -> V)<a>, shortNames : ?std/core/string, longNames : ?(std/core/list :: V -> V)<std/core/string>, arg : ?(optionArg :: V -> V)<a>, help : ?std/core/string, llongNames : ?(std/core/list :: V -> V)<std/core/string>) -> (option :: V -> V)<a>;
+// Automatically generated. Retrieves the `wrap` constructor field of the ":optionOrder" type.
+fun wrap : forall<a> (optionOrder : (optionOrder :: V -> V)<a>) -> <(std/core/exn :: E)> ((std/core/string) -> a);
+// Automatically generated. Tests for the "Permute" constructor of the ":optionOrder" type.
+fun isPermute : forall<a> (optionOrder : (optionOrder :: V -> V)<a>) -> std/core/bool;
+// Automatically generated. Tests for the "Preorder" constructor of the ":optionOrder" type.
+fun isPreorder : forall<a> (optionOrder : (optionOrder :: V -> V)<a>) -> std/core/bool;
+// Automatically generated. Tests for the "Wrap" constructor of the ":optionOrder" type.
+fun isWrap : forall<a> (optionOrder : (optionOrder :: V -> V)<a>) -> std/core/bool;
+// Automatically generated. Retrieves the `verbose` constructor field of the ":testOptions" type.
+// Automatically generated. Retrieves the `version` constructor field of the ":testOptions" type.
+// Automatically generated. Retrieves the `name` constructor field of the ":testOptions" type.
+// Automatically generated. Retrieves the `output` constructor field of the ":testOptions" type.
+// Automatically generated. Retrieves the `arguments` constructor field of the ":testOptions" type.
+// Specifies a single option
+// For example: "Option(""h?"",[""help""],Flag(Help),""show help information"")".
+fun (.createOption) : forall<a> (shortNames : std/core/string, longNames : (std/core/list :: V -> V)<std/core/string>, arg : (optionArg :: V -> V)<a>, help : std/core/string, llongNames : ?(std/core/list :: V -> V)<std/core/string>) -> (option :: V -> V)<a>;
+// Unzip a list of triples into three lists
+// Return a nicely formatted string describing the usage of a command,
+// consisting of a "header" followed by the descriptions of the "flags".
+fun usageInfo : forall<a> (flags : (std/core/list :: V -> V)<(option :: V -> V)<a>>, header : std/core/string) -> std/core/string;
+// Parse the command line arguments "args" (see "std/env/argv")
+// according to the flag descriptions "flags". Takes an optional argument
+// "ordering" that specifies how flags are handled that follow nonFlag arguments.
+// The default ordering is "Permute". Returns three lists: the list of parsed options,
+// a list of nonOption arguments, and a list of potential error messages.
+fun parse : forall<a> (initial : a, flags : (std/core/list :: V -> V)<(option :: V -> V)<a>>, args : (std/core/list :: V -> V)<std/core/string>, ordering : ?(optionOrder :: V -> V)<a>) -> (std/core/total :: E) (a, (std/core/list :: V -> V)<std/core/string>, (std/core/list :: V -> V)<std/core/string>);
+fun test : (cmdargs : (std/core/list :: V -> V)<std/core/string>) -> <(std/core/console :: X)> ();

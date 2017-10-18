@@ -1,0 +1,28 @@
+/*---------------------------------------------------------------------------
+  Copyright 2013 Microsoft Corporation.
+ 
+  This is free software; you can redistribute it and/or modify it under the
+  terms of the Apache License, Version 2.0. A copy of the License can be
+  found in the file "license.txt" at the root of this distribution.
+---------------------------------------------------------------------------*/
+module interface process
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+// Stateful functions can manipulate heap ":h" using allocations, reads and writes.
+private alias std/core/st<(h :: H)> :: H -> E = <(std/core/read :: H -> X)<(h :: H)>,(std/core/write :: H -> X)<(h :: H)>,(std/core/alloc :: H -> X)<(h :: H)>> = 1;
+// quote file and command names for shell execution
+fun quote : (s : std/core/string) -> std/core/string;
+fun system : forall<(e :: E)> (cmd : std/core/string, callback : (std/core/int, std/core/string, std/core/string) -> <(std/core/io :: E)|(e :: E)> (), timeout : ?std/core/int, cwd : ?std/core/string, env : ?(std/core/list :: V -> V)<(std/core/string, std/core/string)>) -> <(std/core/io :: E)|(e :: E)> ();

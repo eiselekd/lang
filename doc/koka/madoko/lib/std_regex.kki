@@ -1,0 +1,100 @@
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+module interface std/regex
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+type groups {
+  
+};
+// The result of a regular expression match, where "index" is the index in the
+// original source string where the match begins, "next" is the index just after
+// this match ("next == index + min(1,matched.length)"), "matched" is the content that
+// was matched, and "groups" is a vector that contains the content for each 
+// capture group (where "groups[0] == matched").
+type matched {
+  // The result of a regular expression match, where "index" is the index in the
+// original source string where the match begins, "next" is the index just after
+// this match ("next == index + min(1,matched.length)"), "matched" is the content that
+// was matched, and "groups" is a vector that contains the content for each 
+// capture group (where "groups[0] == matched").
+  con Matched(index: std/core/int, next: std/core/int, matched: std/core/string, groups: groups) : (index : std/core/int, next : std/core/int, matched : std/core/string, groups : groups) -> matched;
+};
+// Abstract type of a regular expression object
+type regex {
+  
+};
+// Automatically generated. Retrieves the `grp` constructor field of the ":groups" type.
+// Automatically generated. Retrieves the `index` constructor field of the ":matched" type.
+fun index : (matched : matched) -> std/core/int;
+// Automatically generated. Retrieves the `next` constructor field of the ":matched" type.
+fun next : (matched : matched) -> std/core/int;
+// Automatically generated. Retrieves the `matched` constructor field of the ":matched" type.
+fun matched : (matched : matched) -> std/core/string;
+// Automatically generated. Retrieves the `groups` constructor field of the ":matched" type.
+fun groups : (matched : matched) -> groups;
+fun (.copy) .1 : (matched, index : ?std/core/int, next : ?std/core/int, matched : ?std/core/string, groups : ?groups) -> matched;
+// Automatically generated. Retrieves the `obj` constructor field of the ":regex" type.
+// Return the string captured by a particular group or the empty string.
+fun [] : (groups : groups, index : std/core/int) -> std/core/string;
+// For alternative regular expressions, return the alternative that was matched.
+// If this was not an alternative regex, returns "-1"
+fun alternative : (groups : groups) -> std/core/int;
+// Find a match for a regular expression starting at start position "start" (by default "0").
+// See also "contains"
+// (note: this function is called |exec| in JavaScript).
+fun find : (s : std/core/string, regex : regex, start : ?std/core/int) -> (std/core/maybe :: V -> V)<matched>;
+// Does a regular expression pattern occur in a string "s"?
+// (note: called `test` in javascript)
+fun contains : (s : std/core/string, r : regex, start : ?std/core/int) -> std/core/bool;
+// Find all matches for a regular expression in a string.
+fun findAll : (s : std/core/string, regex : regex, start : ?std/core/int) -> (std/core/vector :: V -> V)<matched>;
+// Returns "True" if a particular capture group actually matched.
+// This is used if the group can match, but may capture the empty string.
+fun matchedOn : (groups : groups, index : std/core/int) -> std/core/bool;
+// Return first group that was matched (or -1 if nothing was matched) 
+fun firstMatchedOn : (groups : groups, start : ?std/core/int, end : ?std/core/int) -> std/core/int;
+// Return the first matched group (or "" if nothing matched) starting at "start"
+// and returning at most group "end"
+fun firstMatched : (groups : groups, start : ?std/core/int, end : ?std/core/int) -> std/core/string;
+// Replace the all occurrences of "regex" by the result of the replacement function "repl" in a string "s".
+fun replaceAll : forall<(e :: E)> (s : std/core/string, regex : regex, repl : (matched : matched) -> (e :: E) std/core/string, start : ?std/core/int) -> (e :: E) std/core/string;
+// Replace all ocurrences of "regex" by the result of a replacement string "repl" in a string "s".
+fun replaceAll .1 : (s : std/core/string, regex : regex, repl : std/core/string, start : ?std/core/int) -> std/core/string;
+// Create a new regular expression. Takes two optional parameters. Set "ignoreCase" to "True"
+// to ignore uppercase/lowercase distinction. If  "multiline" is set to "True", then "^" and "$"
+// match also the beginning and end of every line (instead of the entire input).
+fun regex : (regex : std/core/string, ignorecase : ?std/core/bool, multiline : ?std/core/bool) -> regex;
+// Return the pattern as a string
+fun source : (r : regex) -> std/core/string;
+// How many groups are captured by this regex?
+fun groupsCount : (r : regex) -> std/core/int;
+// Create a new _alternative_ regular expression. 
+// Matches any of the given patterns but the groups are local to each alternative.
+// See "alternative" to find out which alternative was matched. Contains an optimization
+// where a common prefix of all patterns is lifted out of the alternative to increase efficiency.
+// Takes two optional parameters. Set "ignoreCase" to "True"
+// to ignore uppercase/lowercase distinction. If  "multiline" is set to "True", then "^" and "$"
+// match also the beginning and end of every line (instead of the entire input).  
+// Note: currently only supported in the javascript backend.
+fun regexAlt : (regexs : (std/core/list :: V -> V)<std/core/string>, ignorecase : ?std/core/bool, multiline : ?std/core/bool) -> regex;
+// Replace the first occurrence of "regex" by the result of the replacement function "repl" in a string "s".
+fun replace : forall<(e :: E)> (s : std/core/string, regex : regex, repl : (matched : matched) -> (e :: E) std/core/string, start : ?std/core/int) -> (e :: E) std/core/string;
+// Replace the first occurrence of "regex" by the result a replacement string "repl" in a string "s".
+// The replacement string can contain `$$` for a `$` sign, `$n` for a capture group,
+// `$&` for the entire match (`==$0`).
+fun replace .1 : (s : std/core/string, regex : regex, repl : std/core/string, start : ?std/core/int) -> std/core/string;
+// Split a string "s" in at most "n" parts using a regular expression "r" as separator.
+fun split : (s : std/core/string, r : regex, n : ?std/core/int, start : ?std/core/int) -> (std/core/vector :: V -> V)<std/core/string>;
+// Split a string "s" over separator "sep" where "sep" does not occur in 
+// _tokens_ matching "exclude".
+// For example: `splitExclude("comma,'sep,arated',values", regex(","),regex("'[^']*'|[^',]"))`
+fun splitExclude : (s : std/core/string, sep : regex, exclude : regex) -> (std/core/list :: V -> V)<std/core/string>;
+// For alternative regular expressions, return the alternative that was matched.
+// If this was not an alternative regex, returns "-1"

@@ -1,0 +1,373 @@
+// Common types and operations
+module interface common
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* --------------------------------------
+ Attributes 
+---------------------------------------- */
+type formatter {
+  con FmtHtml : formatter;
+  con FmtTex : formatter;
+};
+type input {
+  con Pre : input;
+  con MathPre : input;
+  con Math : input;
+  con MathDefs : input;
+  con Tex : input;
+  con Raw(only: (std/core/maybe :: V -> V)<formatter>) : (only : (std/core/maybe :: V -> V)<formatter>) -> input;
+  con Markdown(only: (std/core/maybe :: V -> V)<formatter>) : (only : (std/core/maybe :: V -> V)<formatter>) -> input;
+};
+// Attributes
+type attrs {
+  // Attributes
+  con Attrs(empty: std/core/bool, sticky: std/core/bool, defaults: std/core/bool, text: std/core/string, replacers: (std/core/list :: V -> V)<std/core/string>, notag: std/core/bool, tight: std/core/bool, input: input, elem: std/core/string, texelem: std/core/string, htmlelem: std/core/string, name: std/core/string, label: std/core/string, source: std/core/string, lineNo: std/core/int, classes: (std/core/list :: V -> V)<std/core/string>, counters: (std/core/list :: V -> V)<(std/core/string, std/core/string)>, keyvals: (std/core/list :: V -> V)<(std/core/string, std/core/string)>) : (empty : std/core/bool, sticky : std/core/bool, defaults : std/core/bool, text : std/core/string, replacers : (std/core/list :: V -> V)<std/core/string>, notag : std/core/bool, tight : std/core/bool, input : input, elem : std/core/string, texelem : std/core/string, htmlelem : std/core/string, name : std/core/string, label : std/core/string, source : std/core/string, lineNo : std/core/int, classes : (std/core/list :: V -> V)<std/core/string>, counters : (std/core/list :: V -> V)<(std/core/string, std/core/string)>, keyvals : (std/core/list :: V -> V)<(std/core/string, std/core/string)>) -> attrs;
+};
+type cell {
+  con Cell(text: std/core/string, cellAttrs: attrs) : (text : std/core/string, cellAttrs : attrs) -> cell;
+};
+type row {
+  con Row(cells: (std/core/list :: V -> V)<cell>, rowAttrs: attrs) : (cells : (std/core/list :: V -> V)<cell>, rowAttrs : attrs) -> row;
+};
+type citemode {
+  con Numeric : citemode;
+  con Natural : citemode;
+  con Textual : citemode;
+  con Super : citemode;
+  con Auto : citemode;
+};
+type citestyle {
+  con Citestyle(mode: citemode, open: std/core/string, close: std/core/string, citesep: std/core/string, aysep: std/core/string, yysep: std/core/string, sort: std/core/bool, compress: std/core/bool) : (mode : citemode, open : std/core/string, close : std/core/string, citesep : std/core/string, aysep : std/core/string, yysep : std/core/string, sort : std/core/bool, compress : std/core/bool) -> citestyle;
+};
+// Info for files to embed. Used in a browser
+type embedinfo {
+  // Info for files to embed. Used in a browser
+  con Embedinfo(embedName: std/core/string, embedData: std/core/string) : (embedName : std/core/string, embedData : std/core/string) -> embedinfo;
+};
+// A grammar rule. When "regex" matches, "action" is called with the
+// capture groups and the a parser context ":c". The action returns
+// results of type ":a" (":block" for the block grammar, and ":string"
+// for the inline grammar)
+type rule <a,b> :: (V, V) -> V {
+  // A grammar rule. When "regex" matches, "action" is called with the
+// capture groups and the a parser context ":c". The action returns
+// results of type ":a" (":block" for the block grammar, and ":string"
+// for the inline grammar)
+  con Rule(name: std/core/string, regex: std/regex/regex, action: (cap : std/regex/matched, context : b) -> a) : forall<a,b> (name : std/core/string, regex : std/regex/regex, action : (cap : std/regex/matched, context : b) -> a) -> (rule :: (V, V) -> V)<a,b>;
+};
+alias grammar<a,b> :: (V, V) -> V = (std/core/list :: V -> V)<(rule :: (V, V) -> V)<a,b>> = 1;
+// A label is created for every element with an id.
+type label {
+  // A label is created for every element with an id.
+  con Label(element: std/core/string, labelText: std/core/string, labelCaption: std/core/string, labelAttrs: attrs) : (element : std/core/string, labelText : std/core/string, labelCaption : std/core/string, labelAttrs : attrs) -> label;
+};
+type rec lineMap {
+  con End : lineMap;
+  con Include(line: std/core/int, start: std/core/int, count: std/core/int, fileName: std/core/string, lineMap: lineMap, rest: lineMap) : (line : std/core/int, start : std/core/int, count : std/core/int, fileName : std/core/string, lineMap : lineMap, rest : lineMap) -> lineMap;
+};
+// A url link.
+type link {
+  // A url link.
+  con Link(href: std/core/string, title: std/core/string, linkattrs: attrs, linkid: std/core/string) : (href : std/core/string, title : std/core/string, linkattrs : attrs, linkid : std/core/string) -> link;
+};
+// Info for static math based on images
+type mathinfo {
+  // Info for static math based on images
+  con Mathinfo(imageName: std/core/string, page: std/core/int, height: std/core/double, width: std/core/double, depth: std/core/double, iheight: std/core/double, iwidth: std/core/double, bboxFuzz: std/core/double, size: std/core/int, imageData: std/core/string, originalData: std/core/string) : (imageName : std/core/string, page : std/core/int, height : std/core/double, width : std/core/double, depth : std/core/double, iheight : std/core/double, iwidth : std/core/double, bboxFuzz : std/core/double, size : std/core/int, imageData : std/core/string, originalData : std/core/string) -> mathinfo;
+};
+type mathkind {
+  con Plain : mathkind;
+  con Full : mathkind;
+};
+type mathrender {
+  con Png : mathrender;
+  con Svg : mathrender;
+};
+type rec peano {
+  con Succ(prev: peano) : (prev : peano) -> peano;
+  con Zero : peano;
+};
+// Automatically generated. Tests for the "FmtHtml" constructor of the ":formatter" type.
+fun isFmtHtml : (formatter : formatter) -> std/core/bool;
+// Automatically generated. Tests for the "FmtTex" constructor of the ":formatter" type.
+fun isFmtTex : (formatter : formatter) -> std/core/bool;
+// Automatically generated. Retrieves the `only` constructor field of the ":input" type.
+fun only : (input : input) -> <(std/core/exn :: E)> (std/core/maybe :: V -> V)<formatter>;
+// Automatically generated. Tests for the "Pre" constructor of the ":input" type.
+fun isPre : (input : input) -> std/core/bool;
+// Automatically generated. Tests for the "MathPre" constructor of the ":input" type.
+fun isMathPre : (input : input) -> std/core/bool;
+// Automatically generated. Tests for the "Math" constructor of the ":input" type.
+fun isMath : (input : input) -> std/core/bool;
+// Automatically generated. Tests for the "MathDefs" constructor of the ":input" type.
+fun isMathDefs : (input : input) -> std/core/bool;
+// Automatically generated. Tests for the "Tex" constructor of the ":input" type.
+fun isTex : (input : input) -> std/core/bool;
+// Automatically generated. Tests for the "Raw" constructor of the ":input" type.
+fun isRaw : (input : input) -> std/core/bool;
+// Automatically generated. Tests for the "Markdown" constructor of the ":input" type.
+fun isMarkdown : (input : input) -> std/core/bool;
+// Automatically generated. Retrieves the `empty` constructor field of the ":attrs" type.
+fun empty : (attrs : attrs) -> std/core/bool;
+// Automatically generated. Retrieves the `sticky` constructor field of the ":attrs" type.
+fun sticky : (attrs : attrs) -> std/core/bool;
+// Automatically generated. Retrieves the `defaults` constructor field of the ":attrs" type.
+fun defaults : (attrs : attrs) -> std/core/bool;
+// Automatically generated. Retrieves the `text` constructor field of the ":attrs" type.
+fun text : (attrs : attrs) -> std/core/string;
+// Automatically generated. Retrieves the `replacers` constructor field of the ":attrs" type.
+fun replacers : (attrs : attrs) -> (std/core/list :: V -> V)<std/core/string>;
+// Automatically generated. Retrieves the `notag` constructor field of the ":attrs" type.
+fun notag : (attrs : attrs) -> std/core/bool;
+// Automatically generated. Retrieves the `tight` constructor field of the ":attrs" type.
+fun tight : (attrs : attrs) -> std/core/bool;
+// Automatically generated. Retrieves the `input` constructor field of the ":attrs" type.
+fun input : (attrs : attrs) -> input;
+// Automatically generated. Retrieves the `elem` constructor field of the ":attrs" type.
+fun elem : (attrs : attrs) -> std/core/string;
+// Automatically generated. Retrieves the `texelem` constructor field of the ":attrs" type.
+fun texelem : (attrs : attrs) -> std/core/string;
+// Automatically generated. Retrieves the `htmlelem` constructor field of the ":attrs" type.
+fun htmlelem : (attrs : attrs) -> std/core/string;
+// Automatically generated. Retrieves the `name` constructor field of the ":attrs" type.
+fun name : (attrs : attrs) -> std/core/string;
+// Automatically generated. Retrieves the `label` constructor field of the ":attrs" type.
+fun label : (attrs : attrs) -> std/core/string;
+// Automatically generated. Retrieves the `source` constructor field of the ":attrs" type.
+fun source : (attrs : attrs) -> std/core/string;
+// Automatically generated. Retrieves the `lineNo` constructor field of the ":attrs" type.
+fun lineNo : (attrs : attrs) -> std/core/int;
+// Automatically generated. Retrieves the `classes` constructor field of the ":attrs" type.
+fun classes : (attrs : attrs) -> (std/core/list :: V -> V)<std/core/string>;
+// Automatically generated. Retrieves the `counters` constructor field of the ":attrs" type.
+fun counters : (attrs : attrs) -> (std/core/list :: V -> V)<(std/core/string, std/core/string)>;
+// Automatically generated. Retrieves the `keyvals` constructor field of the ":attrs" type.
+fun keyvals : (attrs : attrs) -> (std/core/list :: V -> V)<(std/core/string, std/core/string)>;
+fun (.copy) : (attrs, empty : ?std/core/bool, sticky : ?std/core/bool, defaults : ?std/core/bool, text : ?std/core/string, replacers : ?(std/core/list :: V -> V)<std/core/string>, notag : ?std/core/bool, tight : ?std/core/bool, input : ?input, elem : ?std/core/string, texelem : ?std/core/string, htmlelem : ?std/core/string, name : ?std/core/string, label : ?std/core/string, source : ?std/core/string, lineNo : ?std/core/int, classes : ?(std/core/list :: V -> V)<std/core/string>, counters : ?(std/core/list :: V -> V)<(std/core/string, std/core/string)>, keyvals : ?(std/core/list :: V -> V)<(std/core/string, std/core/string)>) -> attrs;
+// Automatically generated. Retrieves the `text` constructor field of the ":cell" type.
+fun text .1 : (cell : cell) -> std/core/string;
+// Automatically generated. Retrieves the `cellAttrs` constructor field of the ":cell" type.
+fun cellAttrs : (cell : cell) -> attrs;
+fun (.copy) .1 : (cell, text : ?std/core/string, cellAttrs : ?attrs) -> cell;
+// Automatically generated. Retrieves the `cells` constructor field of the ":row" type.
+fun cells : (row : row) -> (std/core/list :: V -> V)<cell>;
+// Automatically generated. Retrieves the `rowAttrs` constructor field of the ":row" type.
+fun rowAttrs : (row : row) -> attrs;
+fun (.copy) .2 : (row, cells : ?(std/core/list :: V -> V)<cell>, rowAttrs : ?attrs) -> row;
+// Automatically generated. Tests for the "Numeric" constructor of the ":citemode" type.
+fun isNumeric : (citemode : citemode) -> std/core/bool;
+// Automatically generated. Tests for the "Natural" constructor of the ":citemode" type.
+fun isNatural : (citemode : citemode) -> std/core/bool;
+// Automatically generated. Tests for the "Textual" constructor of the ":citemode" type.
+fun isTextual : (citemode : citemode) -> std/core/bool;
+// Automatically generated. Tests for the "Super" constructor of the ":citemode" type.
+fun isSuper : (citemode : citemode) -> std/core/bool;
+// Automatically generated. Tests for the "Auto" constructor of the ":citemode" type.
+fun isAuto : (citemode : citemode) -> std/core/bool;
+// Automatically generated. Retrieves the `mode` constructor field of the ":citestyle" type.
+fun mode : (citestyle : citestyle) -> citemode;
+// Automatically generated. Retrieves the `open` constructor field of the ":citestyle" type.
+fun open : (citestyle : citestyle) -> std/core/string;
+// Automatically generated. Retrieves the `close` constructor field of the ":citestyle" type.
+fun close : (citestyle : citestyle) -> std/core/string;
+// Automatically generated. Retrieves the `citesep` constructor field of the ":citestyle" type.
+fun citesep : (citestyle : citestyle) -> std/core/string;
+// Automatically generated. Retrieves the `aysep` constructor field of the ":citestyle" type.
+fun aysep : (citestyle : citestyle) -> std/core/string;
+// Automatically generated. Retrieves the `yysep` constructor field of the ":citestyle" type.
+fun yysep : (citestyle : citestyle) -> std/core/string;
+// Automatically generated. Retrieves the `sort` constructor field of the ":citestyle" type.
+fun sort : (citestyle : citestyle) -> std/core/bool;
+// Automatically generated. Retrieves the `compress` constructor field of the ":citestyle" type.
+fun compress : (citestyle : citestyle) -> std/core/bool;
+fun (.copy) .3 : (citestyle, mode : ?citemode, open : ?std/core/string, close : ?std/core/string, citesep : ?std/core/string, aysep : ?std/core/string, yysep : ?std/core/string, sort : ?std/core/bool, compress : ?std/core/bool) -> citestyle;
+// Automatically generated. Retrieves the `embedName` constructor field of the ":embedinfo" type.
+fun embedName : (embedinfo : embedinfo) -> std/core/string;
+// Automatically generated. Retrieves the `embedData` constructor field of the ":embedinfo" type.
+fun embedData : (embedinfo : embedinfo) -> std/core/string;
+fun (.copy) .4 : (embedinfo, embedName : ?std/core/string, embedData : ?std/core/string) -> embedinfo;
+// Automatically generated. Retrieves the `name` constructor field of the ":rule" type.
+fun name .1 : forall<a,b> (rule : (rule :: (V, V) -> V)<a,b>) -> std/core/string;
+// Automatically generated. Retrieves the `regex` constructor field of the ":rule" type.
+fun regex : forall<a,b> (rule : (rule :: (V, V) -> V)<a,b>) -> std/regex/regex;
+// Automatically generated. Retrieves the `action` constructor field of the ":rule" type.
+fun action : forall<a,b> (rule : (rule :: (V, V) -> V)<a,b>) -> ((cap : std/regex/matched, context : b) -> a);
+fun (.copy) .5 : forall<a,b> ((rule :: (V, V) -> V)<a,b>, name : ?std/core/string, regex : ?std/regex/regex, action : ?(cap : std/regex/matched, context : b) -> a) -> (rule :: (V, V) -> V)<a,b>;
+// Automatically generated. Retrieves the `element` constructor field of the ":label" type.
+fun element : (label : label) -> std/core/string;
+// Automatically generated. Retrieves the `labelText` constructor field of the ":label" type.
+fun labelText : (label : label) -> std/core/string;
+// Automatically generated. Retrieves the `labelCaption` constructor field of the ":label" type.
+fun labelCaption : (label : label) -> std/core/string;
+// Automatically generated. Retrieves the `labelAttrs` constructor field of the ":label" type.
+fun labelAttrs : (label : label) -> attrs;
+fun (.copy) .6 : (label, element : ?std/core/string, labelText : ?std/core/string, labelCaption : ?std/core/string, labelAttrs : ?attrs) -> label;
+// Automatically generated. Retrieves the `line` constructor field of the ":lineMap" type.
+fun line : (lineMap : lineMap) -> <(std/core/exn :: E)> std/core/int;
+// Automatically generated. Retrieves the `start` constructor field of the ":lineMap" type.
+fun start : (lineMap : lineMap) -> <(std/core/exn :: E)> std/core/int;
+// Automatically generated. Retrieves the `count` constructor field of the ":lineMap" type.
+fun count : (lineMap : lineMap) -> <(std/core/exn :: E)> std/core/int;
+// Automatically generated. Retrieves the `fileName` constructor field of the ":lineMap" type.
+fun fileName : (lineMap : lineMap) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Retrieves the `lineMap` constructor field of the ":lineMap" type.
+fun lineMap : (lineMap : lineMap) -> <(std/core/exn :: E)> lineMap;
+// Automatically generated. Retrieves the `rest` constructor field of the ":lineMap" type.
+fun rest : (lineMap : lineMap) -> <(std/core/exn :: E)> lineMap;
+// Automatically generated. Tests for the "End" constructor of the ":lineMap" type.
+fun isEnd : (lineMap : lineMap) -> std/core/bool;
+// Automatically generated. Tests for the "Include" constructor of the ":lineMap" type.
+fun isInclude : (lineMap : lineMap) -> std/core/bool;
+// Automatically generated. Retrieves the `href` constructor field of the ":link" type.
+fun href : (link : link) -> std/core/string;
+// Automatically generated. Retrieves the `title` constructor field of the ":link" type.
+fun title : (link : link) -> std/core/string;
+// Automatically generated. Retrieves the `linkattrs` constructor field of the ":link" type.
+fun linkattrs : (link : link) -> attrs;
+// Automatically generated. Retrieves the `linkid` constructor field of the ":link" type.
+fun linkid : (link : link) -> std/core/string;
+fun (.copy) .7 : (link, href : ?std/core/string, title : ?std/core/string, linkattrs : ?attrs, linkid : ?std/core/string) -> link;
+// Automatically generated. Retrieves the `imageName` constructor field of the ":mathinfo" type.
+fun imageName : (mathinfo : mathinfo) -> std/core/string;
+// Automatically generated. Retrieves the `page` constructor field of the ":mathinfo" type.
+fun page : (mathinfo : mathinfo) -> std/core/int;
+// Automatically generated. Retrieves the `height` constructor field of the ":mathinfo" type.
+fun height : (mathinfo : mathinfo) -> std/core/double;
+// Automatically generated. Retrieves the `width` constructor field of the ":mathinfo" type.
+fun width : (mathinfo : mathinfo) -> std/core/double;
+// Automatically generated. Retrieves the `depth` constructor field of the ":mathinfo" type.
+fun depth : (mathinfo : mathinfo) -> std/core/double;
+// Automatically generated. Retrieves the `iheight` constructor field of the ":mathinfo" type.
+fun iheight : (mathinfo : mathinfo) -> std/core/double;
+// Automatically generated. Retrieves the `iwidth` constructor field of the ":mathinfo" type.
+fun iwidth : (mathinfo : mathinfo) -> std/core/double;
+// Automatically generated. Retrieves the `bboxFuzz` constructor field of the ":mathinfo" type.
+fun bboxFuzz : (mathinfo : mathinfo) -> std/core/double;
+// Automatically generated. Retrieves the `size` constructor field of the ":mathinfo" type.
+fun size : (mathinfo : mathinfo) -> std/core/int;
+// Automatically generated. Retrieves the `imageData` constructor field of the ":mathinfo" type.
+fun imageData : (mathinfo : mathinfo) -> std/core/string;
+// Automatically generated. Retrieves the `originalData` constructor field of the ":mathinfo" type.
+fun originalData : (mathinfo : mathinfo) -> std/core/string;
+fun (.copy) .8 : (mathinfo, imageName : ?std/core/string, page : ?std/core/int, height : ?std/core/double, width : ?std/core/double, depth : ?std/core/double, iheight : ?std/core/double, iwidth : ?std/core/double, bboxFuzz : ?std/core/double, size : ?std/core/int, imageData : ?std/core/string, originalData : ?std/core/string) -> mathinfo;
+// Automatically generated. Tests for the "Plain" constructor of the ":mathkind" type.
+fun isPlain : (mathkind : mathkind) -> std/core/bool;
+// Automatically generated. Tests for the "Full" constructor of the ":mathkind" type.
+fun isFull : (mathkind : mathkind) -> std/core/bool;
+// Automatically generated. Tests for the "Png" constructor of the ":mathrender" type.
+fun isPng : (mathrender : mathrender) -> std/core/bool;
+// Automatically generated. Tests for the "Svg" constructor of the ":mathrender" type.
+fun isSvg : (mathrender : mathrender) -> std/core/bool;
+// Automatically generated. Retrieves the `prev` constructor field of the ":peano" type.
+fun prev : (peano : peano) -> <(std/core/exn :: E)> peano;
+// Automatically generated. Tests for the "Succ" constructor of the ":peano" type.
+fun isSucc : (peano : peano) -> std/core/bool;
+// Automatically generated. Tests for the "Zero" constructor of the ":peano" type.
+fun isZero : (peano : peano) -> std/core/bool;
+fun (==) : (x : formatter, y : formatter) -> std/core/bool;
+fun (.createMarkdown) : (only : ?(std/core/maybe :: V -> V)<formatter>) -> input;
+// Attributes
+fun (.createAttrs) : (empty : ?std/core/bool, sticky : ?std/core/bool, defaults : ?std/core/bool, text : ?std/core/string, replacers : ?(std/core/list :: V -> V)<std/core/string>, notag : ?std/core/bool, tight : ?std/core/bool, input : ?input, elem : ?std/core/string, texelem : ?std/core/string, htmlelem : ?std/core/string, name : ?std/core/string, label : ?std/core/string, source : ?std/core/string, lineNo : ?std/core/int, classes : ?(std/core/list :: V -> V)<std/core/string>, counters : ?(std/core/list :: V -> V)<(std/core/string, std/core/string)>, keyvals : ?(std/core/list :: V -> V)<(std/core/string, std/core/string)>) -> attrs;
+val attrsNone : attrs;
+fun (.createCell) : (text : std/core/string, cellAttrs : ?attrs) -> cell;
+fun (.createCitestyle) : (mode : citemode, open : std/core/string, close : std/core/string, citesep : std/core/string, aysep : std/core/string, yysep : std/core/string, sort : ?std/core/bool, compress : ?std/core/bool) -> citestyle;
+// A label is created for every element with an id.
+fun (.createLabel) : (element : std/core/string, labelText : std/core/string, labelCaption : std/core/string, labelAttrs : ?attrs) -> label;
+// A url link.
+fun (.createLink) : (href : std/core/string, title : ?std/core/string, linkattrs : ?attrs, linkid : ?std/core/string) -> link;
+fun (.createRaw) : (only : ?(std/core/maybe :: V -> V)<formatter>) -> input;
+fun (.createRow) : (cells : (std/core/list :: V -> V)<cell>, rowAttrs : ?attrs) -> row;
+fun contains : (xs : (std/core/list :: V -> V)<std/core/string>, s : std/core/string) -> std/core/bool;
+fun addClass : (attrs : attrs, cname : std/core/string) -> attrs;
+fun addClasses : (attrs : attrs, classes : (std/core/list :: V -> V)<std/core/string>) -> attrs;
+fun showFormatter : (f : formatter) -> std/core/string;
+fun showInput : (r : input) -> std/core/string;
+fun addInputClass : (attrs : attrs) -> attrs;
+fun addKeyval : (attrs : attrs, key : std/core/string, value : std/core/string) -> attrs;
+fun addKeyvalIfNotEmpty : (attrs : attrs, key : std/core/string, value : std/core/string) -> attrs;
+fun hasKey : (attrs : attrs, key : std/core/string) -> (std/core/maybe :: V -> V)<std/core/string>;
+fun addKeyvalIfNotExist : (attrs : attrs, key : std/core/string, value : std/core/string) -> attrs;
+fun addKeyvals : (attrs : attrs, kvs : (std/core/list :: V -> V)<(std/core/string, std/core/string)>) -> attrs;
+val citeAuto : citestyle;
+val citeNatural : citestyle;
+val citeNumeric : citestyle;
+// Combine rules into one regular expression. 
+// For inline expressions, this does not improve the performance much.
+fun combineRules : forall<a,b> (rules : (std/core/list :: V -> V)<(rule :: (V, V) -> V)<a,b>>) -> (rule :: (V, V) -> V)<a,b>;
+// A definition identifier is always lower case and sequences of spaces are replaced by a single space.
+// Used for links for example.
+fun definitionId : (s : std/core/string) -> std/core/string;
+fun elementName : (attrs : attrs, def : std/core/string) -> std/core/string;
+/* --------------------------------------
+ Expand list style patterns
+---------------------------------------- */
+fun expandChoices : (s : std/core/string) -> (std/core/list :: V -> V)<std/core/string>;
+// Normalize an identifier: just keep letters, digits, underscores, colons, stars, and dashes,
+// replace whitespace, colons, and stars by a dash, and convert to lower case. 
+fun normalizeId : (txt : std/core/string) -> std/core/string;
+// Generate a fresh id if it is not specified
+fun generateHeaderId : (attrs : attrs, heading : std/core/string, pre : ?std/core/string) -> attrs;
+fun hasClass : (attrs : attrs, className : std/core/string) -> std/core/bool;
+fun hasBoolKey : (attrs : attrs, key : std/core/string) -> std/core/bool;
+fun htmlEscape : (s : std/core/string, allowEntity : ?std/core/bool) -> std/core/string;
+fun isNumCite : (cs : citestyle) -> std/core/bool;
+// Join lines that were broken using `\` followed by a newline.
+fun joinLines : (s : std/core/string) -> std/core/string;
+fun json : (s : std/core/string) -> std/core/string;
+fun logLocation : (lineInfo : std/core/string, logname : ?std/core/string) -> ();
+fun lookupKey : (attrs : attrs, key : std/core/string, def : std/core/string) -> std/core/string;
+// Generic rule matcher: takes a list of rules and applies the action that matches
+// on the given "src". Returns the result of the action and the string following the
+// match.
+fun matchRules : forall<a,b> (rules : (grammar :: (V, V) -> V)<a,b>, context : b, src : std/core/string, def : (std/core/string) -> a) -> (a, std/core/int, std/core/string);
+fun mimeFromExt : (fname : std/core/string) -> std/core/string;
+fun newLink : (href : std/core/string, title : ?std/core/string, linkattrs : ?attrs, linkid : ?std/core/string, bench : std/core/bool) -> link;
+fun unquote : (s : std/core/string) -> std/core/string;
+fun parseCiteStyle : (text : std/core/string) -> (std/core/maybe :: V -> V)<citestyle>;
+// Warning messages get logged
+fun warning : (message : std/core/string, logname : ?std/core/string) -> ();
+fun parseCiteStyleDef : (text : std/core/string, def : ?citestyle) -> citestyle;
+fun peano : (n : std/core/int) -> peano;
+val peano10 : peano;
+val peanoN : peano;
+// Picks path that first matches one of the given (lower-case) extensions, or the last one if none matched.
+fun pickExtension : (exts : (std/core/list :: V -> V)<std/core/string>, paths : (std/core/list :: V -> V)<std/core/string>) -> std/core/string;
+fun relative : (path : std/core/string) -> std/core/bool;
+fun removeKeys : (attrs : attrs, keys : (std/core/list :: V -> V)<std/core/string>) -> attrs;
+fun reverse : (lineMap : lineMap) -> lineMap;
+// This is just for statistics
+fun ruleRemove : forall<a,b> (grammar : (grammar :: (V, V) -> V)<a,b>, pred : std/core/bool, names : (std/core/list :: V -> V)<std/core/string>) -> (grammar :: (V, V) -> V)<a,b>;
+// Replace a rule in a grammar by another one, if the rule name is a prefix of the name of the new rule.
+fun ruleReplace : forall<a,b> (grammar : (grammar :: (V, V) -> V)<a,b>, pred : std/core/bool, rule : (rule :: (V, V) -> V)<a,b>) -> (grammar :: (V, V) -> V)<a,b>;
+fun show : (cm : citemode) -> std/core/string;
+fun show .1 : (cs : citestyle) -> std/core/string;
+fun show .2 : (m : mathrender) -> std/core/string;
+fun show .3 : (m : mathkind) -> std/core/string;
+fun show .4 : (attrs : attrs) -> std/core/string;
+fun setLineNo : (attrs : attrs, line : std/core/int, dataline : std/core/string) -> attrs;
+fun showMime : (m : mathrender) -> std/core/string;
+// Split semi-colon seperated paths into parts
+fun splitPaths : (paths : std/core/string) -> (std/core/list :: V -> V)<std/core/string>;
+fun traceRuleHist : () -> ();
+fun translateLine : (lineInfos : lineMap, lineNo : std/core/int) -> std/core/string;
+fun trimLines : (s : std/core/string) -> std/core/string;
+fun unindent : (txt : std/core/string) -> std/core/string;

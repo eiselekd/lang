@@ -1,0 +1,55 @@
+/*---------------------------------------------------------------------------
+  Copyright 2015 Microsoft Corporation.
+ 
+  This is free software; you can redistribute it and/or modify it under the
+  terms of the Apache License, Version 2.0. A copy of the License can be
+  found in the file "license.txt" at the root of this distribution.
+---------------------------------------------------------------------------*/
+module interface runcsl
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// The parsing and formatting of TeX blocks.
+//
+// The capabilities are fairly limited and mostly geared to be able to
+// parse bibtex entries. Accent and special character commands are quite well
+// recognized in order to allow author names with correct accent characters.
+import texParser = texParser = "";
+type citeinfo {
+  con Citeinfo(id: std/core/string, lineinfo: std/core/string) : (id : std/core/string, lineinfo : std/core/string) -> citeinfo;
+};
+type cslresult {
+  con Cslresult(bibliography: std/core/string, bib: std/core/string, warnings: std/core/string, errors: std/core/string, citeformat: std/core/string) : (bibliography : std/core/string, bib : std/core/string, warnings : std/core/string, errors : std/core/string, citeformat : std/core/string) -> cslresult;
+};
+type fileinfo {
+  con Fileinfo(filename: std/core/string, contents: std/core/string) : (filename : std/core/string, contents : std/core/string) -> fileinfo;
+};
+// Automatically generated. Retrieves the `id` constructor field of the ":citeinfo" type.
+fun id : (citeinfo : citeinfo) -> std/core/string;
+// Automatically generated. Retrieves the `lineinfo` constructor field of the ":citeinfo" type.
+fun lineinfo : (citeinfo : citeinfo) -> std/core/string;
+fun (.copy) : (citeinfo, id : ?std/core/string, lineinfo : ?std/core/string) -> citeinfo;
+// Automatically generated. Retrieves the `bibliography` constructor field of the ":cslresult" type.
+fun bibliography : (cslresult : cslresult) -> std/core/string;
+// Automatically generated. Retrieves the `bib` constructor field of the ":cslresult" type.
+fun bib : (cslresult : cslresult) -> std/core/string;
+// Automatically generated. Retrieves the `warnings` constructor field of the ":cslresult" type.
+fun warnings : (cslresult : cslresult) -> std/core/string;
+// Automatically generated. Retrieves the `errors` constructor field of the ":cslresult" type.
+fun errors : (cslresult : cslresult) -> std/core/string;
+// Automatically generated. Retrieves the `citeformat` constructor field of the ":cslresult" type.
+fun citeformat : (cslresult : cslresult) -> std/core/string;
+fun (.copy) .1 : (cslresult, bibliography : ?std/core/string, bib : ?std/core/string, warnings : ?std/core/string, errors : ?std/core/string, citeformat : ?std/core/string) -> cslresult;
+// Automatically generated. Retrieves the `filename` constructor field of the ":fileinfo" type.
+fun filename : (fileinfo : fileinfo) -> std/core/string;
+// Automatically generated. Retrieves the `contents` constructor field of the ":fileinfo" type.
+fun contents : (fileinfo : fileinfo) -> std/core/string;
+fun (.copy) .2 : (fileinfo, filename : ?std/core/string, contents : ?std/core/string) -> fileinfo;
+fun runCsl : (citations : (std/core/list :: V -> V)<citeinfo>, bibs : (std/core/list :: V -> V)<fileinfo>, bibstyle : fileinfo, madokoStyle : fileinfo, localeStyle : fileinfo, id : std/core/string, attrs0 : std/core/string) -> cslresult;

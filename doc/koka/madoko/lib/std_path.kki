@@ -1,0 +1,50 @@
+/*
+Handle and transform file paths 
+*/
+module interface std/path
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+// Platform specific directory separator (`/` or `\`)
+val sep : std/core/string;
+// Join arguments using the platform specific directory separator  
+// Note: unlike NodeJS the resulting path is not yet normalized
+fun combine : (path1 : std/core/string, path2 : std/core/string) -> std/core/string;
+// Join a list of paths 
+fun combine .1 : (paths : (std/core/list :: V -> V)<std/core/string>) -> std/core/string;
+// Return the directory name portion of the path (excluding the directory separator).
+// Return an empty string if no directory part exists in the path.  
+// `dirname("foo/bar.ext") == "foo")`
+fun dirname : (p : std/core/string) -> std/core/string;
+// Return the extension (including the `.`)  
+// `extname("foo.ext") == ".ext"`, `extname("bla.") == "."`, `extname("bla") == ""` 
+fun extname : (p : std/core/string) -> std/core/string;
+// Return the base name (file name) portion of the path.
+// `basename("foo/bar.ext") == "bar.ext"`
+fun basename : (p : std/core/string) -> std/core/string;
+// Remove the extension from a path
+fun noext : (path : std/core/string) -> std/core/string;
+// Return the stem name portion of the path, i.e. without directory or extension.
+// `stemname("foo/bar.ext") == "bar"`
+fun stemname : (p : std/core/string) -> std/core/string;
+// Append to the stem name of a path
+fun appendStem : (path : std/core/string, extra : std/core/string) -> std/core/string;
+// Change the extension of a path
+fun changeExt : (path : std/core/string, ext : std/core/string) -> std/core/string;
+// If a path has no extension, set it to the provided one.
+fun defaultExt : (fname : std/core/string, ext : std/core/string) -> std/core/string;
+// Platform specific path delimiter when specifying a list o paths (`:` or `;`)
+val delimiter : std/core/string;
+// Return the full normalized path
+fun normalize : (p : std/core/string) -> <(std/core/io :: E)> std/core/string;
+fun programPath : () -> <(std/core/io :: E)> std/core/string;
+// Return the full normalized path
+// Return the base name (file name) portion of the path.
+// `basename("foo/bar.ext") == "bar.ext"`
+// Return the extension (including the `.`)  
+// `extname("foo.ext") == ".ext"`, `extname("bla.") == "."`, `extname("bla") == ""` 

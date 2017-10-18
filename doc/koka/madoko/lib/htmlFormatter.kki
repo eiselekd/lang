@@ -1,0 +1,61 @@
+// Formatting of  HTML elements 
+module interface htmlFormatter
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+// Log messages
+import std/log = std/log = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// Common types and operations
+import common = common = "";
+// Defines the context for _inline_ elements.
+import inline = inline = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+// Align code blocks
+import codeAlign = codeAlign = "";
+// Attibute operations: parsing, transform text, expand keys, etc.
+import attributes = attributes = "";
+// output a html tag with a given body and attributes
+fun tag : (tagName : std/core/string, body : std/core/string, attrs : ?std/core/string) -> std/core/string;
+// Format attributes. If none, return the empty string, otherwise start with a space
+fun htmlFormat : (attrs : common/attrs, tag : std/core/string, sanitize : ?std/core/bool) -> std/core/string;
+/* --------------------------------------
+  Full header 
+---------------------------------------- */
+/* --------------------------------------
+  Title 
+---------------------------------------- */
+fun fmtHtmlCmd : (context : inline/inlineContext, cmd : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string;
+fun fmtHtmlCodeToken : (context : inline/inlineContext, classes0 : (std/core/list :: V -> V)<std/core/string>, txt : std/core/string, lang : std/core/string, attrs : common/attrs) -> std/core/string;
+fun fmtHtmlCodePlain : (context : inline/inlineContext, txt : std/core/string, startline : std/core/bool) -> std/core/string;
+// output a html block tag
+fun fmtHtmlCodeTable : (context : inline/inlineContext, ct : codeAlign/codeTable, attrs : common/attrs) -> std/core/string;
+// output a html block tag
+fun tagEnv : (tagName : std/core/string, body : std/core/string, attrs : ?common/attrs, sanitize : ?std/core/bool) -> std/core/string;
+fun fmtHtmlEnv : (context : inline/inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string;
+fun fmtHtmlEscape : (context : inline/inlineContext, txt : std/core/string, allowEntity : std/core/bool) -> std/core/string;
+fun fmtHtmlFootnote : (context : inline/inlineContext, id : std/core/string, fn : inline/footnote) -> std/core/string;
+fun fmtHtmlFull : (html : std/core/string, options : options/options, metadata : (std/dict/dict :: V -> V)<std/core/string>) -> std/core/string;
+fun fmtHtmlLineInfo : (context : inline/inlineContext, lineInfo : std/core/string) -> std/core/string;
+fun fmtHtmlLink : (context : inline/inlineContext, isImage : std/core/bool, link : common/link, content : std/core/string) -> std/core/string;
+fun fmtHtmlSvg : (context : inline/inlineContext, svg : std/core/string, attrs : common/attrs, alt : std/core/string) -> std/core/string;
+fun fmtHtmlTable : (context : inline/inlineContext, head : (std/core/list :: V -> V)<common/row>, body : (std/core/list :: V -> V)<common/row>, colattrs : (std/core/list :: V -> V)<common/attrs>, attrs : common/attrs) -> std/core/string;

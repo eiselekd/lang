@@ -1,0 +1,1113 @@
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+module interface std/core
+infixr 80 (^)
+infixl 70 (*)
+infixl 70 (%)
+infixl 70 (/)
+infixl 70 cdiv
+infixl 70 cmod
+infixr 60 (+)
+infixr 60 (-)
+infix 40 (!=)
+infix 40 (==)
+infix 40 (<=)
+infix 40 (>=)
+infix 40 (<)
+infix 40 (>)
+infixr 30 (&&)
+infixr 20 (||)
+// The unit type ":()" is inhabited by just a single value, namely "()".
+// See also the ":void" type and the ":bool" type.
+type () {
+  // The unit type ":()" is inhabited by just a single value, namely "()".
+// See also the ":void" type and the ":bool" type.
+  con () : ();
+};
+// The alloc effect signifies a function may allocate in a heap ":h"
+type alloc <(h :: H)> :: H -> X ;
+// The read effect: signifies that a function may read from from heap ":h".
+type read <(h :: H)> :: H -> X ;
+// The write effect: signifies that a function may write to heap ":h".
+type write <(h :: H)> :: H -> X ;
+// The _total_ effect represents the absence of any effect.
+type <> :: E ;
+// The effect constructor extends an effect with another effect.
+type <|> <(a :: X),(e :: E)> :: (X, E) -> E ;
+// Stateful functions can manipulate heap ":h" using allocations, reads and writes.
+alias st<(h :: H)> :: H -> E = <(read :: H -> X)<(h :: H)>,(write :: H -> X)<(h :: H)>,(alloc :: H -> X)<(h :: H)>> = 1;
+// The ":ui" effect signifies a function may access the graphics system
+type ui :: X ;
+// The divergence effect: a divergent function may not terminate.
+type div :: X ;
+// The exception effect: a partial function may raise an exception.
+type exn :: X ;
+// The ":net" effect signifies a function may access the network
+type net :: X ;
+// The console effect signifies that a function may read or write to the console.
+type console :: X ;
+// The ":file" effect signifies a function may access the file system
+type file :: X ;
+// The ":global" heap is a special heap constant to denote the global shared heap
+type global :: H ;
+// NonDeterminism: a nonDeterministic function may return varying
+// results even when called with the same input values.
+type ndet :: X ;
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+alias io :: E = <(exn :: X),(div :: X),(ndet :: X),(console :: X),(net :: X),(file :: X),(ui :: X),((st :: H -> E)<(global :: H)> == 1 <(read :: H -> X)<(global :: H)>,(write :: H -> X)<(global :: H)>,(alloc :: H -> X)<(global :: H)>>)> = 2;
+// A pair of values ":a" and ":b".
+type (,) <a,b> :: (V, V) -> V {
+  // A pair of values ":a" and ":b".
+  con (,)(fst: a, snd: b) : forall<a,b> (fst : a, snd : b) -> (a, b);
+};
+// An any type. Used for external calls
+type any ;
+// A 32-bit signed integer (using two's complement to represent negative numbers).
+type int ;
+// A reference ":ref<h,a>" points to a value of type ":a" in heap ":h".
+type ref <(h :: H),a> :: (H, V) -> V ;
+// A triple of values.
+type (,,) <a,b,c> :: (V, V, V) -> V {
+  // A triple of values.
+  con (,,)(fst: a, snd: b, thd: c) : forall<a,b,c> (fst : a, snd : b, thd : c) -> (a, b, c);
+};
+// A quadruple of values.
+type (,,,) <a,b,c,d> :: (V, V, V, V) -> V {
+  // A quadruple of values.
+  con (,,,)(fst: a, snd: b, thd: c, field4: d) : forall<a,b,c,d> (fst : a, snd : b, thd : c, field4 : d) -> (a, b, c, d);
+};
+// A quintuple of values.
+type (,,,,) <a,b,c,d,a1> :: (V, V, V, V, V) -> V {
+  // A quintuple of values.
+  con (,,,,)(fst: a, snd: b, thd: c, field4: d, field5: a1) : forall<a,b,c,d,a1> (fst : a, snd : b, thd : c, field4 : d, field5 : a1) -> (a, b, c, d, a1);
+};
+// The type of mutable arrays. See also ":vector" for immutable arrays.
+type array <(h :: H),a> :: (H, V) -> V ;
+// Represents values that are computed asynchronously
+type async <a> :: V -> V ;
+// The ":blocking" effect signifies that a function may block
+type blocking :: X ;
+// The type of booleans has two inhabitants: "True" and "False".
+type bool {
+  con False : bool;
+  con True : bool;
+};
+// A unicode character
+type char ;
+// A 64-bit IEEE 754 floating point value
+type double ;
+// The choice type represents one of two possible types ":a" or ":b".
+type either <a,b> :: (V, V) -> V {
+  con Left(left: a) : forall<a,b> (left : a) -> (either :: (V, V) -> V)<a,b>;
+  con Right(left: b) : forall<a,b> (left : b) -> (either :: (V, V) -> V)<a,b>;
+};
+// Exceptions
+type exception ;
+// The predicate ":hdiv<h,a,e>" signifies that if the type ":a" contains a reference to ":h",
+// then the effect ":e" must contain the divergent effect (":div"). This constraint is generated
+// when writing to the heap (see "(!)") and is necessary to catch cases where code can diverge
+// by storing selfReferential functions in the heap.
+type hdiv <(h :: H),a,(e :: E)> :: (H, V, E) -> P ;
+// The type of lists, which can be either empty ("Nil") or an element followed
+// by a list ("Cons").
+type rec list <a> :: V -> V {
+  // The empty list.
+  con Nil : forall<a> (list :: V -> V)<a>;
+  // A `head`  element followed by the `tail`  of the list.
+  con Cons(head: a, tail: (list :: V -> V)<a>) : forall<a> (head : a, tail : (list :: V -> V)<a>) -> (list :: V -> V)<a>;
+};
+// The ":maybe" type is used to represent either a value ("Just(x)") or "Nothing".
+// This type is often used to represent values that can be _null_.
+type maybe <a> :: V -> V {
+  con Nothing : forall<a> (maybe :: V -> V)<a>;
+  con Just(unJust: a) : forall<a> (unJust : a) -> (maybe :: V -> V)<a>;
+};
+// Optional is used internally by the compiler to pass optional arguments.
+// It is usually displayed as ":?a" for some type ":a".
+type optional <a> :: V -> V {
+  // The "Optional" constructor is used when an optional argument is given.
+  con Optional(value: a) : forall<a> (value : a) -> ?a;
+  // "None" is used when an optional argument is not provided.
+  con None : forall<a> ?a;
+};
+// An enumeration to represent order
+type order {
+  con Lt : order;
+  con Eq : order;
+  con Gt : order;
+};
+type primarray <a> :: V -> V ;
+// An alias for pure effects: a pure function always returns the same result
+// when called with the same arguments but may not terminate or raise an exception.
+alias pure :: E = <(exn :: X),(div :: X)> = 1;
+// A ":stream" is a co-inductive type reprenting an infinite list of elements.
+cotype rec stream <a> :: V -> V {
+  con Next(head: a, tail: (stream :: V -> V)<a>) : forall<a> (head : a, tail : (stream :: V -> V)<a>) -> (stream :: V -> V)<a>;
+};
+// A unicode string
+type string ;
+// An alias for the empty effect.
+alias total :: E = <> = 1;
+// The type of immutable arrays is called ":vector".
+type vector <a> :: V -> V ;
+// The ":void" type is empty and has no constructors.
+// See also the ":()" unit type and the ":bool" type.
+type void ;
+// Raise a pattern match exception. This is function is used internally by the
+// compiler to generate error messages on pattern match failures.
+fun patternMatchError : forall<a> (range : string, def : string) -> <(exn :: X)> a;
+fun (.copy) : (()) -> ();
+// Automatically generated. Retrieves the `fst` constructor field of the ":(,)" type.
+fun fst : forall<a,b> ((a, b)) -> a;
+// Automatically generated. Retrieves the `snd` constructor field of the ":(,)" type.
+fun snd : forall<a,b> ((a, b)) -> b;
+fun (.copy) .1 : forall<a,b> ((a, b), fst : ?a, snd : ?b) -> (a, b);
+// Automatically generated. Retrieves the `fst` constructor field of the ":(,,)" type.
+fun fst .1 : forall<a,b,c> ((a, b, c)) -> a;
+// Automatically generated. Retrieves the `snd` constructor field of the ":(,,)" type.
+fun snd .1 : forall<a,b,c> ((a, b, c)) -> b;
+// Automatically generated. Retrieves the `thd` constructor field of the ":(,,)" type.
+fun thd : forall<a,b,c> ((a, b, c)) -> c;
+fun (.copy) .2 : forall<a,b,c> ((a, b, c), fst : ?a, snd : ?b, thd : ?c) -> (a, b, c);
+// Automatically generated. Retrieves the `fst` constructor field of the ":(,,,)" type.
+fun fst .2 : forall<a,b,c,d> ((a, b, c, d)) -> a;
+// Automatically generated. Retrieves the `snd` constructor field of the ":(,,,)" type.
+fun snd .2 : forall<a,b,c,d> ((a, b, c, d)) -> b;
+// Automatically generated. Retrieves the `thd` constructor field of the ":(,,,)" type.
+fun thd .1 : forall<a,b,c,d> ((a, b, c, d)) -> c;
+// Automatically generated. Retrieves the `field4` constructor field of the ":(,,,)" type.
+fun field4 : forall<a,b,c,d> ((a, b, c, d)) -> d;
+fun (.copy) .3 : forall<a,b,c,d> ((a, b, c, d), fst : ?a, snd : ?b, thd : ?c, field4 : ?d) -> (a, b, c, d);
+// Automatically generated. Retrieves the `fst` constructor field of the ":(,,,,)" type.
+fun fst .3 : forall<a,b,c,d,a1> ((a, b, c, d, a1)) -> a;
+// Automatically generated. Retrieves the `snd` constructor field of the ":(,,,,)" type.
+fun snd .3 : forall<a,b,c,d,a1> ((a, b, c, d, a1)) -> b;
+// Automatically generated. Retrieves the `thd` constructor field of the ":(,,,,)" type.
+fun thd .2 : forall<a,b,c,d,a1> ((a, b, c, d, a1)) -> c;
+// Automatically generated. Retrieves the `field4` constructor field of the ":(,,,,)" type.
+fun field4 .1 : forall<a,b,c,d,a1> ((a, b, c, d, a1)) -> d;
+// Automatically generated. Retrieves the `field5` constructor field of the ":(,,,,)" type.
+fun field5 : forall<a,b,c,d,a1> ((a, b, c, d, a1)) -> a1;
+fun (.copy) .4 : forall<a,b,c,d,a1> ((a, b, c, d, a1), fst : ?a, snd : ?b, thd : ?c, field4 : ?d, field5 : ?a1) -> (a, b, c, d, a1);
+// Automatically generated. Tests for the "False" constructor of the ":bool" type.
+fun isFalse : (bool : bool) -> bool;
+// Automatically generated. Tests for the "True" constructor of the ":bool" type.
+fun isTrue : (bool : bool) -> bool;
+// Automatically generated. Tests for the "Left" constructor of the ":either" type.
+fun isLeft : forall<a,b> (either : (either :: (V, V) -> V)<a,b>) -> bool;
+// Automatically generated. Tests for the "Right" constructor of the ":either" type.
+fun isRight : forall<a,b> (either : (either :: (V, V) -> V)<a,b>) -> bool;
+// Automatically generated. Retrieves the `head` constructor field of the ":list" type.
+fun head : forall<a> (list : (list :: V -> V)<a>) -> <(exn :: E)> a;
+// Automatically generated. Retrieves the `tail` constructor field of the ":list" type.
+fun tail : forall<a> (list : (list :: V -> V)<a>) -> <(exn :: E)> (list :: V -> V)<a>;
+// Automatically generated. Tests for the "Nil" constructor of the ":list" type.
+fun isNil : forall<a> (list : (list :: V -> V)<a>) -> bool;
+// Automatically generated. Tests for the "Cons" constructor of the ":list" type.
+fun isCons : forall<a> (list : (list :: V -> V)<a>) -> bool;
+// Automatically generated. Retrieves the `unJust` constructor field of the ":maybe" type.
+fun unJust : forall<a> (maybe : (maybe :: V -> V)<a>) -> <(exn :: E)> a;
+// Automatically generated. Tests for the "Nothing" constructor of the ":maybe" type.
+fun isNothing : forall<a> (maybe : (maybe :: V -> V)<a>) -> bool;
+// Automatically generated. Tests for the "Just" constructor of the ":maybe" type.
+fun isJust : forall<a> (maybe : (maybe :: V -> V)<a>) -> bool;
+// Automatically generated. Retrieves the `value` constructor field of the ":optional" type.
+fun value : forall<a> (optional : ?a) -> <(exn :: E)> a;
+// Automatically generated. Tests for the "Optional" constructor of the ":optional" type.
+fun isOptional : forall<a> (optional : ?a) -> bool;
+// Automatically generated. Tests for the "None" constructor of the ":optional" type.
+fun isNone : forall<a> (optional : ?a) -> bool;
+// Automatically generated. Tests for the "Lt" constructor of the ":order" type.
+fun isLt : (order : order) -> bool;
+// Automatically generated. Tests for the "Eq" constructor of the ":order" type.
+fun isEq : (order : order) -> bool;
+// Automatically generated. Tests for the "Gt" constructor of the ":order" type.
+fun isGt : (order : order) -> bool;
+// Automatically generated. Retrieves the `head` constructor field of the ":stream" type.
+fun head .1 : forall<a> (stream : (stream :: V -> V)<a>) -> a;
+// Automatically generated. Retrieves the `tail` constructor field of the ":stream" type.
+fun tail .1 : forall<a> (stream : (stream :: V -> V)<a>) -> (stream :: V -> V)<a>;
+fun (.copy) .5 : forall<a> ((stream :: V -> V)<a>, head : ?a, tail : ?(stream :: V -> V)<a>) -> (stream :: V -> V)<a>;
+// The maximal integer value before overflow happens
+val maxInt : int;
+// Substract two character codePoints
+fun (-) .2 : (c : char, d : char) -> (total :: E) char;
+fun int .2 : (x : order) -> int;
+fun (<) .3 : (x : order, y : order) -> bool;
+fun (<) .4 : (x : bool, y : bool) -> bool;
+fun (==) .4 : (x : order, y : order) -> bool;
+fun order : (i : int) -> order;
+// Compare two strings
+fun compare .4 : (x : string, y : string) -> order;
+fun (<) .5 : (x : string, y : string) -> bool;
+fun (>) .3 : (x : order, y : order) -> bool;
+fun (>) .4 : (x : bool, y : bool) -> bool;
+fun (>) .5 : (x : string, y : string) -> bool;
+fun (==) .5 : (x : bool, y : bool) -> bool;
+fun compare : (x : char, y : char) -> order;
+fun compare .1 : (x : bool, y : bool) -> order;
+fun compare .2 : (x : int, y : int) -> order;
+fun compare .3 : (x : double, y : double) -> order;
+fun int .1 : (b : bool) -> int;
+// The minimal integer value before underflow happens
+val minInt : int;
+// convert a ":double" to an ":int" using "round" to round to its nearest integer.
+// If the double is larger than "maxInt" or smaller than "minInt" this returns "default" (=0)
+fun int .3 : (d : double, default : ?int) -> int;
+// Is a string empty?
+fun isEmpty : (s : string) -> bool;
+// Choose a non-empty string
+fun (||) .1 : (x : string, y : string) -> string;
+// Reverse a list.
+fun reverse : forall<a> (xs : (list :: V -> V)<a>) -> (list :: V -> V)<a>;
+// Append two lists.
+fun (+) .3 : forall<a> (xs : (list :: V -> V)<a>, ys : (list :: V -> V)<a>) -> (list :: V -> V)<a>;
+// Add two character code points
+fun (+) .4 : (c : char, d : char) -> (total :: E) char;
+fun (>=) .3 : (x : order, y : order) -> bool;
+fun (>=) .4 : (x : bool, y : bool) -> bool;
+fun (>=) .5 : (x : string, y : string) -> bool;
+// Euclidean-0 modulus. See "(/):(x : int, y : int) -> int" division for more information.
+fun (%) .1 : (x : int, y : int) -> int;
+// Euclidean-0 division.
+// Euclidean division is defined as: For any `D`  and `d`  where `d!=0` , we have:
+//
+// 1. `D == d*(D/d) + (D%d)` 
+// 2. `D%d`  is always positive where `0 <= D%d < abs(d)` 
+//
+// Moreover, Euclidean-0 is a total function, for the case where `d==0`  we have
+// that `D%0 == D`  and `D/0 == 0` . So property (1) still holds, but not property (2).
+// 
+// Useful laws that hold for Euclidean-0 division:
+//
+// * `D/(-d) == -(D/d)` 
+// * `D%(-d) == D%d` 
+// * ``D/(2^n) == D `sar` n        ``  (with `0 <= n <= 31`  and `2^n`  means `2`  to the power of `n` )
+// * `D%(2^n) == D & ((2^n) - 1)  `  (with `0 <= n <= 31`  and `2^n`  means `2`  to the power of `n` )
+//
+// Note that an interesting edge case is "minInt / -1" which equals "minInt" since in modulo 32-bit 
+// arithmetic "minInt == -1 * minInt == -1 * (minInt / -1) + (minInt % -1)" satisfying property (1).
+// Of course "(minInt + 1) / -1" is again positive (namely "maxInt").  
+// 
+// See also _Division and modulus for computer scientists, Daan Leijen, 2001_ for further information
+// available at: <http://research.microsoft.com/pubs/151917/divmodnote.pdf> .
+fun (/) .1 : (x : int, y : int) -> int;
+// Compose two functions "f" and "g".
+fun o : forall<a,b,c,(e :: E)> (f : (a) -> (e :: E) b, g : (c) -> (e :: E) a) -> ((x : c) -> (e :: E) b);
+// Negate an integer
+fun (~) : (i : int) -> (total :: E) int;
+fun (!=) .4 : (x : order, y : order) -> bool;
+fun (!=) .5 : (x : bool, y : bool) -> bool;
+fun (<=) .3 : (x : order, y : order) -> bool;
+fun (<=) .4 : (x : bool, y : bool) -> bool;
+fun (<=) .5 : (x : string, y : string) -> bool;
+// Get (zero-based) element `n`  of a list. Return a `:maybe` type.
+fun [] .4 : forall<a> (xs : (list :: V -> V)<a>, n : int) -> (maybe :: V -> V)<a>;
+// The identify function returns its argument unchanged.
+fun id : forall<a> (x : a) -> a;
+// When an asynchronous value is computed, call the specified "handler" (at most once).
+fun on : forall<a,b,(e :: E)> (async : (async :: V -> V)<a>, handler : (value : a) -> (e :: E) b) -> (e :: E) (async :: V -> V)<b>;
+// Raise an exception with a specified message.
+fun error : forall<a> (string) -> <(exn :: X)> a;
+// Negate an integer
+fun negate : (i : int) -> int;
+// Return the absolute value of an integer.
+// Raises an exception if the ":int" is "minInt"
+// (since the negation of "minInt" equals itself and is still negative)
+fun abs .1 : (i : int) -> <(exn :: X)> int;
+// Do all elements satisfy a predicate ?
+fun all : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, predicate : (a) -> (e :: E) bool) -> (e :: E) bool;
+// Are there any elements in a list that satisfy a predicate ?
+fun any : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, predicate : (a) -> (e :: E) bool) -> (e :: E) bool;
+// _Unsafe_. This function calls a function and pretends it did not have any effect at all.
+fun unsafeTotal : forall<a,(e :: E)> (action : () -> (e :: E) a) -> (total :: E) a;
+// _Unsafe_. This function removes the non-termination effect (":div") from the effect of an action
+fun unsafeNoDiv : forall<a,(e :: E)> (action : () -> <(div :: X)|(e :: E)> a) -> (e :: E) a;
+// Executes `action`  for each integer between `start`  upto `end`  (including both `start`  and `end` ).
+// If `start > end`  the function returns without any call to `action` .
+fun for : forall<(e :: E)> (start : int, end : int, action : (int) -> (e :: E) ()) -> (e :: E) ();
+// Returns the length of a list.
+fun length .3 : forall<a> (xs : (list :: V -> V)<a>) -> int;
+// Invoke "action" for each element of a list
+fun foreach : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, action : (a) -> (e :: E) ()) -> (e :: E) ();
+// Invoke a function "f" for each element in a an array `a`.   
+// Note: this can diverge by storing self referential functions in the array
+fun foreach .1 : forall<a,(e :: E),(h :: H)> (a : (array :: (H, V) -> V)<(h :: H),a>, f : (a) -> <(read :: H -> X)<(h :: H)>,(div :: X)|(e :: E)> ()) -> <(read :: H -> X)<(h :: H)>,(div :: X)|(e :: E)> ();
+// Invoke a function "f" for each element in a vector "v"
+fun foreach .2 : forall<a,(e :: E)> (v : (vector :: V -> V)<a>, f : (a) -> (e :: E) ()) -> (e :: E) ();
+// Invoke a function for each character in a string
+fun foreach .3 : forall<(e :: E)> (s : string, f : (char) -> (e :: E) ()) -> (e :: E) ();
+// Invoke "action" for each element of a list, passing also the position of the element.
+fun foreachIndexed : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, action : (int, a) -> (e :: E) ()) -> (e :: E) ();
+// Convert a list to an array.
+fun array .4 : forall<a,(h :: H)> (xs : (list :: V -> V)<a>) -> (array :: (H, V) -> V)<(h :: H),a>;
+// Copy an array
+fun copy : forall<a,(h :: H)> (self : (array :: (H, V) -> V)<(h :: H),a>) -> <(read :: H -> X)<(h :: H)>> (array :: (H, V) -> V)<(h :: H),a>;
+// Apply a function `f`  to each element of the input list in sequence where takes
+// both the index of the current element, the element itself, and the tail list as arguments.
+fun mapIndexedPeek : forall<a,b,(e :: E)> (xs : (list :: V -> V)<a>, f : (idx : int, value : a, rest : (list :: V -> V)<a>) -> (e :: E) b) -> (e :: E) (list :: V -> V)<b>;
+// Insert a separator `sep`  between all elements of a list `xs` .
+fun intersperse : forall<a> (xs : (list :: V -> V)<a>, sep : a) -> (list :: V -> V)<a>;
+// Concatenate all strings in a list
+fun join .3 : (xs : (list :: V -> V)<string>) -> string;
+// Concatenate all strings in a list using a specific separator
+fun join .4 : (xs : (list :: V -> V)<string>, sep : string) -> string;
+// Concatenate an array of strings with a separator "sep"
+fun join .5 : forall<(h :: H)> (v : (array :: (H, V) -> V)<(h :: H),string>, sep : string) -> <(read :: H -> X)<(h :: H)>> string;
+fun map : forall<a,b,(e :: E)> (t : (a, a), f : (a) -> (e :: E) b) -> (e :: E) (b, b);
+// Returns an integer list of increasing elements from `lo`  to `hi` 
+// (including both `lo`  and `hi` ).
+// If `lo > hi`  the function returns the empty list.
+fun list : (lo : int, hi : int) -> (total :: E) (list :: V -> V)<int>;
+// Apply a function `f`  to each element of the input list in sequence.
+fun map .3 : forall<a,b,(e :: E)> (xs : (list :: V -> V)<a>, f : (a) -> (e :: E) b) -> (e :: E) (list :: V -> V)<b>;
+// Create a list of characters from `lo`  to `hi`  (inclusive).
+fun list .1 : (lo : char, hi : char) -> (total :: E) (list :: V -> V)<char>;
+// Convert a ":maybe" type to a list type.
+fun list .2 : forall<a> (m : (maybe :: V -> V)<a>) -> (list :: V -> V)<a>;
+// Convert an array to a list
+fun list .3 : forall<a,(h :: H)> (a : (array :: (H, V) -> V)<(h :: H),a>) -> <(read :: H -> X)<(h :: H)>> (list :: V -> V)<a>;
+// Convert a vector to a list.
+fun list .4 : forall<a> (v : (vector :: V -> V)<a>) -> (list :: V -> V)<a>;
+// Convert a string to a list of characters
+fun list .5 : (s : string) -> (total :: E) (list :: V -> V)<char>;
+fun map .1 : forall<a,b,(e :: E)> (t : (a, a, a), f : (a) -> (e :: E) b) -> (e :: E) (b, b, b);
+fun map .2 : forall<a,b,(e :: E)> (t : (a, a, a, a), f : (a) -> (e :: E) b) -> (e :: E) (b, b, b, b);
+// Destructively apply function `f`  to each element in an array `a`.   
+// Note: this can diverge by storing self referential functions in the array
+fun map .4 : forall<a,(e :: E),(h :: H)> (a : (array :: (H, V) -> V)<(h :: H),a>, f : (a) -> <(st :: H -> E)<(h :: H)>,(div :: X)|(e :: E)> a) -> <(st :: H -> E)<(h :: H)>,(div :: X)|(e :: E)> (array :: (H, V) -> V)<(h :: H),a>;
+// Apply function "f" to each element in a vector "v"Ju
+fun map .5 : forall<a,b,(e :: E)> (v : (vector :: V -> V)<a>, f : (a) -> (e :: E) b) -> (e :: E) (vector :: V -> V)<b>;
+// Convert a list of characters to a string
+fun string .4 : (cs : (list :: V -> V)<char>) -> (total :: E) string;
+// Apply a function "f" to each character in a string
+fun map .6 : forall<(e :: E)> (s : string, f : (char) -> (e :: E) char) -> (e :: E) string;
+// Construct a string of `n`  characters `c`  (or the empty string if `n <= 0` )
+fun string .3 : (n : int, c : char) -> string;
+// Convert an array to a vector (to guarantee safety, a copy is made)
+fun vector .2 : forall<a,(h :: H)> (self : (array :: (H, V) -> V)<(h :: H),a>) -> <(read :: H -> X)<(h :: H)>> (vector :: V -> V)<a>;
+// Convert a list to a vector.
+fun vector .4 : forall<a> (xs : (list :: V -> V)<a>) -> (vector :: V -> V)<a>;
+// Create a new vector of length `n`  with initial elements `default` .
+fun vector .3 : forall<a> (n : int, default : a) -> (vector :: V -> V)<a>;
+// Return the maximum of two integers
+fun max : (i : int, j : int) -> int;
+// Returns the largest of two doubles
+fun max .1 : (x : double, y : double) -> double;
+// Return the minimum of two integers
+fun min : (i : int, j : int) -> int;
+// Returns the smallest of two doubles
+fun min .1 : (x : double, y : double) -> double;
+// Represents a value that is _not a number_ (NaN)
+val nan : double;
+// Returns "true" if the integer `i`  is an odd number.
+fun odd : (i : int) -> bool;
+// The number of bits in an ":int" (always 32)
+val bitsInt : int;
+// Arithmetic shift an ":int" to the right by "n" bits. Preserves the sign bit.
+// Returns "i" when "n" is negative. When "n >= bitsInt" returns either "-1" when "i<0", or "0" when "i>=0".
+fun sar : (i : int, n : int) -> int;
+// Shift an ":int" "i" to the left by "n" bits.
+// Returns "i" when "n" is negative, or "0" when "n >= bitsInt".
+fun shl : (i : int, n : int) -> int;
+// Logical shift an ":int" to the right by "n" bits. Shift in zeros from the left.
+// Returns "i" when "n" is negative, or "0" when "n >= bitsInt".
+fun shr : (i : int, n : int) -> int;
+// Fold a list from the left, i.e. `foldl([1,2],0,(+)) == (0+1)+2` 
+// Since "foldl" is tail recursive, it is preferred over "foldr" when using an associative function `f` 
+fun foldl : forall<a,b,(e :: E)> ((list :: V -> V)<a>, b, (b, a) -> (e :: E) b) -> (e :: E) b;
+// Return the sum of a list of integers
+fun sum : (xs : (list :: V -> V)<int>) -> int;
+// Return the sum of a list of doubles
+fun sum .1 : (xs : (list :: V -> V)<double>) -> double;
+// Zip two lists together by apply a function "f" to all corresponding elements
+// and their index in the list.
+// The returned list is only as long as the smallest input list.
+fun zipWithIndexed : forall<a,b,c,(e :: E)> (xs : (list :: V -> V)<a>, ys : (list :: V -> V)<b>, f : (int, a, b) -> (e :: E) c) -> (e :: E) (list :: V -> V)<c>;
+// Zip two lists together by pairing the corresponding elements.
+// The returned list is only as long as the smallest input list.
+fun zip : forall<a,b> (xs : (list :: V -> V)<a>, ys : (list :: V -> V)<b>) -> (list :: V -> V)<(a, b)>;
+// Right-align a string to width `width`  using `char`  (default is a space) to fill from the left.
+fun align : (s : string, width : int, char : ?char) -> string;
+// Apply a function "f" to a specified argument "x".
+fun apply : forall<a,b,(e :: E)> (f : (a) -> (e :: E) b, x : a) -> (e :: E) b;
+// The number of bits in a ":double" (64)
+val bitsDouble : int;
+fun bool : (i : int) -> bool;
+fun bool .1 : forall<a> (m : (maybe :: V -> V)<a>) -> bool;
+fun bool .2 : (s : string) -> bool;
+// Return a substring from start position "start" up to either the end of the string, 
+// or of at most length "len"
+fun substr .1 : (s : string, start : int, len : int) -> string;
+fun toUpper : (s : string) -> string;
+fun capitalize : (s : string) -> string;
+// Catch an exception raised by "error" and handle it.
+// Use "onExn" or "onFail" when appropiate.
+fun catch : forall<(e :: E),a> (action : () -> <(exn :: X)|(e :: E)> a, handler : (exception) -> (e :: E) a) -> (e :: E) a;
+// Return a positive random integer (including 0)
+fun randomInt : () -> <(ndet :: X)> int;
+// Returns one of its arguments `x`  or `y`  based on a non-deterministic choice.
+fun choose : forall<a> (x : a, y : a) -> <(ndet :: X)> a;
+// Fold a list from the right, i.e. `foldr([1,2],0,(+)) == 1+(2+0)` 
+// Note, "foldr" is less efficient than "foldl" as it reverses the list first. 
+fun foldr : forall<a,b,(e :: E)> (xs : (list :: V -> V)<a>, z : b, f : (a, b) -> (e :: E) b) -> (e :: E) b;
+// Concatenate all lists in a list (e.g. flatten the list)
+fun concat : forall<a> (xs : (list :: V -> V)<(list :: V -> V)<a>>) -> (list :: V -> V)<a>;
+// Concatenate the result lists from applying a function to all elements
+fun concat .1 : forall<a,b,(e :: E)> (xs : (list :: V -> V)<a>, f : (a) -> (e :: E) (list :: V -> V)<b>) -> (e :: E) (list :: V -> V)<b>;
+// Concatenate a list of ":maybe" values
+fun concatMaybe : forall<a> (xs : (list :: V -> V)<(maybe :: V -> V)<a>>) -> (list :: V -> V)<a>;
+fun conslist : forall<a> (elems : (primarray :: V -> V)<a>, tail : (list :: V -> V)<a>) -> (total :: E) (list :: V -> V)<a>;
+// The "const" functions returns its first argument and ignores the second.
+fun const : forall<a,b> (x : a, y : b) -> a;
+// Count the number of occurrences of a character in a string
+fun count .1 : (s : string, c : char) -> int;
+// Count the number of times a predicate is true for each character in a string
+fun count .2 : (s : string, pred : (char) -> bool) -> int;
+// Drop the first "n" elements of a list (or fewer if the list is shorter than "n")
+fun drop : forall<a> (xs : (list :: V -> V)<a>, n : int) -> (list :: V -> V)<a>;
+fun span : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, predicate : (a) -> (e :: E) bool) -> (e :: E) ((list :: V -> V)<a>, (list :: V -> V)<a>);
+// Drop all initial elements that satisfy `predicate` 
+fun dropWhile : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, predicate : (a) -> (e :: E) bool) -> (e :: E) (list :: V -> V)<a>;
+// Does string `s`  end with `post`  ?
+fun endsWith : (s : string, post : string) -> bool;
+// Returns "true" if the integer `i`  is an even number.
+fun even : (i : int) -> bool;
+// Left-align a string to width `width`  using `char`  (default is a space) to fill on the right.
+fun fill : (s : string, width : int, char : ?char) -> string;
+// Retain only those elements of a list that satisfy the given predicate "pred".
+// For example: "filter([1,2,3],odd) == [1,3]"
+fun filter : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, pred : (a) -> (e :: E) bool) -> (e :: E) (list :: V -> V)<a>;
+// Retain only those elements of a list that satisfy the given predicate "pred".
+// For example: "filterMap([1,2,3],fun(i) { if (odd(i)) then Nothing else Just(i*i) }) == [4]"
+fun filterMap : forall<a,b,(e :: E)> (xs : (list :: V -> V)<a>, pred : (a) -> (e :: E) (maybe :: V -> V)<b>) -> (e :: E) (list :: V -> V)<b>;
+// Match a ":maybe" value and either return a default value on "Nothing" or apply a function to the value on "Just"
+fun maybe : forall<a,b,(e :: E)> (m : (maybe :: V -> V)<a>, onNothing : b, onJust : (a) -> (e :: E) b) -> (e :: E) b;
+fun maybe .1 : forall<a,b> (e : (either :: (V, V) -> V)<a,b>) -> (maybe :: V -> V)<b>;
+// Convert a list to a ":maybe" type, using "Nothing" for an empty list, and otherwise "Just" on the head element.
+fun maybe .2 : forall<a> (xs : (list :: V -> V)<a>) -> (maybe :: V -> V)<a>;
+// Find the first element satisfying some predicate
+fun find : forall<a> (xs : (list :: V -> V)<a>, pred : (a) -> bool) -> (maybe :: V -> V)<a>;
+fun foldl1 : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, f : (a, a) -> <(exn :: X)|(e :: E)> a) -> <(exn :: X)|(e :: E)> a;
+fun foldr1 : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, f : (a, a) -> <(exn :: X)|(e :: E)> a) -> <(exn :: X)|(e :: E)> a;
+// Invoke "action" for each element of a list while "action" return "Nothing"
+fun foreachUntil : forall<a,b,(e :: E)> (xs : (list :: V -> V)<a>, action : (a) -> (e :: E) (maybe :: V -> V)<b>) -> (e :: E) (maybe :: V -> V)<b>;
+// Executes `action`  for each integer between `start`  upto `end`  (including both `start`  and `end` ).
+// If `start > end`  the function returns without any call to `action` .
+// If `action` returns "Just", the iteration is stopped and the result returned
+fun forWhile : forall<a,(e :: E)> (start : int, end : int, action : (int) -> (e :: E) (maybe :: V -> V)<a>) -> (e :: E) (maybe :: V -> V)<a>;
+// Invoke a function "f" for each element in a vector "v".
+// If "f" returns "Just", the iteration is stopped early and the result is returned.
+fun foreachWhile : forall<a,b,(e :: E)> (v : (vector :: V -> V)<a>, f : (a) -> (e :: E) (maybe :: V -> V)<b>) -> (e :: E) (maybe :: V -> V)<b>;
+// Return the host environment: `dotnet`, `browser`, (web)`worker`, or `nodejs`. 
+fun getHost : () -> <(ndet :: X)> string;
+// Generic show: shows the internal representation of an object as a string  
+// Note: this breaks parametricity so it should not be public
+// Print a string to the console
+// Return a system dependent description of an exception
+fun show : (exn : exception) -> string;
+// Convert an ":int" to a string
+fun show .1 : (i : int) -> string;
+// Show a ":double" as a string with a default `precision`  of `0` .
+// Pass a precision of `0`  (or less) to display numbers precisely.
+// Uses either "showFixed" or "showExp" depending on what is the most compact representation
+fun show .2 : (d : double, precision : ?int) -> string;
+// Show an ":int" as a hexadecimal value.
+// The `width`  parameter specifies how wide the hex value is where `0`  is used to align
+// Uses capital letters for hexadecimal digits by default.
+fun showHex : (i : int, width : ?int, useCapitals : ?bool) -> string;
+// Show a ":char" as a char literal
+fun show .3 : (c : char) -> string;
+// Show a string as a string literal
+fun show .4 : (s : string) -> string;
+// Convert a ":bool" to a string
+fun show .5 : (b : bool) -> string;
+// Convert a unit value "()" to a string
+fun show .6 : (u : ()) -> string;
+// Convert a list to a string
+fun show .7 : forall<a> (xs : (list :: V -> V)<a>, showElem : (a) -> string) -> string;
+// Print a string to the console.
+fun print : (s : string) -> <(console :: X)> ();
+// Print an integer to the console.
+fun print .1 : (i : int) -> <(console :: X)> ();
+// Print a character to the console.
+fun print .2 : (c : char) -> <(console :: X)> ();
+// Print a double to the console.
+fun print .3 : (d : double) -> <(console :: X)> ();
+// Print a boolean to the console
+fun print .4 : (b : bool) -> <(console :: X)> ();
+// Print a unit value to the console
+fun print .5 : (u : ()) -> <(console :: X)> ();
+// Generic print routine: prints the internal representation as a string to the console, 
+// including a final newline character.  
+// Note: this breaks parametricity so it should not be public
+// Print a string to the console, including a final newline character.
+// Print a string to the console, including a final newline character.
+fun println : (s : string) -> <(console :: X)> ();
+// Print an integer to the console, including a final newline character.
+fun println .1 : (i : int) -> <(console :: X)> ();
+// Print a character to the console, including a final newline character.
+fun println .2 : (c : char) -> <(console :: X)> ();
+// Print a double to the console, including a final newline character.
+fun println .3 : (d : double) -> <(console :: X)> ();
+// Print a boolean to the console, including a final newline character
+fun println .4 : (b : bool) -> <(console :: X)> ();
+// Print a unit value to the console, including a final newline character
+fun println .5 : (u : ()) -> <(console :: X)> ();
+// Generic print routine: prints the internal representation as a string to the console, including a final newline character.  
+// Note: this breaks parametricity so it should not be public
+// Ignore any Exceptions
+fun ignore : forall<(e :: E)> (action : () -> <(exn :: X)|(e :: E)> ()) -> (e :: E) ();
+// Returns the index of the first element where "pred" holds, or "-1" if no such element exists.
+fun indexOf .2 : forall<a> (xs : (list :: V -> V)<a>, pred : (a) -> bool) -> int;
+// Return the list without its last element.
+// Return an empty list for an empty list.
+fun init : forall<a> (xs : (list :: V -> V)<a>) -> (list :: V -> V)<a>;
+// Do not use. Used by the compiler for platforms that do not support 32 bit truncated division natively.
+fun intCdiv : (int, int) -> <(exn :: X)> int;
+// Do not use. Used by the compiler for platforms that do not support 32 bit truncated modulus natively.
+fun intCmod : (int, int) -> <(exn :: X)> int;
+// Do not use. Used by the compiler for platforms that do not support 32 bit multiplication natively.
+fun intMultiply : (int, int) -> int;
+// Is the character a lower-case ASCII character ?
+fun isLower : (c : char) -> bool;
+// Is the character an upper-case ASCII character ?
+fun isUpper : (c : char) -> bool;
+// Is the character an ASCII letter ?
+fun isAlpha : (c : char) -> bool;
+// Is the character an ASCII digit ?
+fun isDigit : (c : char) -> bool;
+// Is the character ASCII letter or digit?
+fun isAlphaNum : (c : char) -> bool;
+// Is the character an ASCII character, e.g. `c <= '\x7F'`  ?
+fun isAscii : (c : char) -> bool;
+// Is the character an ASCII control character, e.g. `c < ' '`  ?
+fun isControl : (c : char) -> bool;
+// Has an asynchronous value been computed?
+fun isDone : forall<a> (async : (async :: V -> V)<a>) -> bool;
+// Is the character an ASCII hexa-decimal digit ?
+fun isHexDigit : (c : char) -> bool;
+// Is this value equal to negative or positive infinity ?
+fun isInf : (double) -> bool;
+// Tests if a character is an element of `" \t\n\r"` 
+fun isWhite : (c : char) -> bool;
+// Return the last element of a list. Raise an exception if the empty list is passed.
+fun last : forall<a> (xs : (list :: V -> V)<a>) -> <(exn :: X)> a;
+// Take the first "n" elements of a list (or fewer if the list is shorter than "n")
+fun take : forall<a> (xs : (list :: V -> V)<a>, n : int) -> (list :: V -> V)<a>;
+// split a list at position `n` 
+fun split : forall<a> (xs : (list :: V -> V)<a>, n : int) -> ((list :: V -> V)<a>, (list :: V -> V)<a>);
+fun split .1 : (s : string, sep : string) -> (vector :: V -> V)<string>;
+// Split a string into at most "n" parts that were delimited by a string "sep". The delimeters are not included in the results (except for possibly the final part).
+// For example: "split(""1,2,3"","","",2) == [""1"",""2,3""]"
+fun split .2 : (s : string, sep : string, n : int) -> (vector :: V -> V)<string>;
+fun lines : (s : string) -> (vector :: V -> V)<string>;
+// Used by the compiler to wrap main console applications
+fun mainConsole : forall<a,(e :: E)> (main : () -> (e :: E) a) -> (e :: E) a;
+// Apply a function `f`  to each element of the input list in sequence where takes
+// both the index of the current element and the element itself as arguments.
+fun mapIndexed : forall<a,b,(e :: E)> (xs : (list :: V -> V)<a>, f : (idx : int, value : a) -> (e :: E) b) -> (e :: E) (list :: V -> V)<b>;
+// Apply a function `f`  to each element of the input list in sequence where `f` takes
+// both the current element and the tail list as arguments.
+fun mapPeek : forall<a,b,(e :: E)> (xs : (list :: V -> V)<a>, f : (value : a, rest : (list :: V -> V)<a>) -> (e :: E) b) -> (e :: E) (list :: V -> V)<b>;
+// Invoke "action" on each element of a list while "action" returns "Just"
+fun mapWhile : forall<a,b,(e :: E)> (xs : (list :: V -> V)<a>, action : (a) -> (e :: E) (maybe :: V -> V)<b>) -> (e :: E) (list :: V -> V)<b>;
+// The maximal double value
+val maxDouble : double;
+// Returns the largest element of a list of integers (or "0" for the empty list)
+fun maximum : (xs : (list :: V -> V)<int>) -> int;
+// Returns the largest element of a list of doubles (or "0" for the empty list)
+fun maximum .1 : (xs : (list :: V -> V)<double>) -> double;
+fun mbint : (m : (maybe :: V -> V)<int>) -> int;
+// Convert a ":maybe" string to a string using the empty sting for "Nothing"
+fun mbstring : (ms : (maybe :: V -> V)<string>) -> string;
+// The minimal double value
+val minDouble : double;
+// Returns the smallest element of a list of integers (or "0" for the empty list)
+fun minimum : (xs : (list :: V -> V)<int>) -> int;
+// Returns the smallest element of a list of doubles (or "0" for the empty list)
+fun minimum .1 : (xs : (list :: V -> V)<double>) -> double;
+// Negative infinity
+val negInf : double;
+// Is a string not empty?
+fun notEmpty : (s : string) -> bool;
+// Disable tracing completely.
+fun notrace : () -> <(st :: H -> E)<(global :: H)>> ();
+// Set a "handler" that is always called when the "action" finishes (either normally or with an exception).
+fun onExit : forall<a,(e :: E)> (handler : () -> (e :: E) (), action : () -> (e :: E) a) -> (e :: E) a;
+// Return a default value when an exception is raised
+fun onExn : forall<a,(e :: E)> (value : a, action : () -> <(exn :: X)|(e :: E)> a) -> (e :: E) a;
+// When an asynchronous value computation fails, call the specified "handler" (at most once).
+fun onExn .1 : forall<a,(e :: E)> (async : (async :: V -> V)<a>, handler : (exn : exception) -> (e :: E) a) -> (e :: E) (async :: V -> V)<a>;
+// Throw an exception
+fun throw : forall<a> (exception) -> <(exn :: X)> a;
+// Set a "handler" that is called when an exception is raised in the "action" block.
+fun onFail : forall<a,(e :: E)> (handler : () -> <(exn :: X)|(e :: E)> (), action : () -> <(exn :: X)|(e :: E)> a) -> <(exn :: X)|(e :: E)> a;
+// Set a "handler" that is called if "action" returns without raising an exception.
+fun onSuccess : forall<a,(e :: E)> (handler : () -> (e :: E) (), action : () -> (e :: E) a) -> (e :: E) a;
+// Parse digits in a "base" between 2 and 36 (default 10) given an initial value "acc" (default 0)
+// Returns "acc" on the empty string, and "Nothing" if an invalid digit is encountered.
+// Parse an integer. If an illegal digit character is encountered "Nothing" is returned.
+// An empty string will result in "Just(0)".
+// A string can start with a `-` sign for negative numbers, 
+// and with `0x` or `0X` for hexadecimal numbers (in which case the `hex` parameter is ignored).
+fun parseInt : (s : string, hex : ?bool) -> (maybe :: V -> V)<int>;
+fun parseFixed : (s : string) -> (maybe :: V -> V)<double>;
+fun parseFixedDefault : (s : string, default : ?double) -> double;
+// Parse an integer using `parseInt`. If an illegal digit character is encountered the 
+// `default` value is returned. An empty string will also result in `default`.
+fun parseIntDefault : (s : string, default : ?int, hex : ?bool) -> int;
+// Partition a list in two lists where the first list contains
+// those elements that satisfy the given predicate "pred".
+// For example: "partition([1,2,3],odd) == ([1,3],[2])"
+fun partition : forall<a> (xs : (list :: V -> V)<a>, pred : (a) -> bool) -> ((list :: V -> V)<a>, (list :: V -> V)<a>);
+// Positive infinity
+val posInf : double;
+// redirect "print" and "println" calls to a specified function.
+fun printRedirect : (print : (msg : string) -> <(console :: X)> ()) -> <(io :: E)> ();
+// Read a line from the console.
+fun readln : forall<(e :: E)> () -> <(console :: X)|(e :: E)> (async :: V -> V)<string>;
+// Read a line from the console and immediately supply a handler 
+// For convenience, returns a unit value. Use an explicit "on" if
+// the returned ":async" is needed.
+fun readln .1 : forall<a,(e :: E)> (handler : (string) -> <(console :: X)|(e :: E)> a) -> <(console :: X)|(e :: E)> ();
+// Displays "query" to the user (with a space attached) and invokes "handler" with 
+// the user's response. 
+fun question : forall<a,(e :: E)> (query : string, handler : (input : string) -> <(console :: X)|(e :: E)> a) -> <(console :: X)|(e :: E)> ();
+// Return a random number equal or larger than 0.0 and smaller than 1.0
+fun random : () -> <(ndet :: X)> double;
+// Remove those elements of a list that satisfy the given predicate "pred".
+// For example: "remove([1,2,3],odd) == [2]"
+fun remove : forall<a> (xs : (list :: V -> V)<a>, pred : (a) -> bool) -> (list :: V -> V)<a>;
+// The "repeat" function executes `action`  `n`  times.
+fun repeat : forall<(e :: E)> (n : int, action : () -> (e :: E) ()) -> (e :: E) ();
+// Create a list of `n`  repeated elementes `x` 
+fun replicate : forall<a> (x : a, n : int) -> (list :: V -> V)<a>;
+// Bitwise rotate an ":int" "n" bits to the left.
+// Does not rotate when "n" is negative.
+fun rotl : (i : int, n : int) -> int;
+// Bitwise rotate an ":int" "n" bits to the right.
+// Does not rotate when "n" is negative.
+fun rotr : (i : int, n : int) -> int;
+// Show a ":double" in exponential (scientific) notation 
+fun showExp : (d : double, precision : ?int) -> string;
+fun showFixed : (d : double, precision : ?int) -> string;
+// Returns a singleton list.
+fun single : forall<a> (x : a) -> (list :: V -> V)<a>;
+// Is `pre`  a prefix of `s`  ?
+fun startsWith : (s : string, pre : string) -> bool;
+// Keep only those initial elements that satisfy `predicate` 
+fun takeWhile : forall<a,(e :: E)> (xs : (list :: V -> V)<a>, predicate : (a) -> (e :: E) bool) -> (e :: E) (list :: V -> V)<a>;
+fun toLower : (s : string) -> string;
+// Trace a message used for debug purposes. 
+// The behaviour is system dependent. On a browser and node it uses
+// `console.log`  by default. 
+// Disabled if "notrace" is called.
+fun trace : (message : string) -> ();
+// Returns a unique integer (modulo 32-bits).
+fun unique : () -> <(ndet :: X)> int;
+fun unlines : (xs : (vector :: V -> V)<string>) -> string;
+fun unlist : forall<a> (list : (list :: V -> V)<a>) -> (total :: E) (primarray :: V -> V)<a>;
+// _Unsafe_. This function removes the exception effect (":exn") from the effect of an action
+fun unsafeNoExn : forall<a,(e :: E)> (action : () -> <(exn :: X)|(e :: E)> a) -> (e :: E) a;
+// Unzip a list of pairs into two lists
+fun unzip : forall<a,b> (xs : (list :: V -> V)<(a, b)>) -> ((list :: V -> V)<a>, (list :: V -> V)<b>);
+// The "while" function executes `action`  as long as `pred`  is "true".
+fun while : forall<(e :: E)> (predicate : () -> <(div :: X)|(e :: E)> bool, action : () -> <(div :: X)|(e :: E)> ()) -> <(div :: E)|(e :: E)> ();
+// Zip two lists together by apply a function "f" to all corresponding elements.
+// The returned list is only as long as the smallest input list.
+fun zipWith : forall<a,b,c,(e :: E)> (xs : (list :: V -> V)<a>, ys : (list :: V -> V)<b>, f : (a, b) -> (e :: E) c) -> (e :: E) (list :: V -> V)<c>;
+// Add the divergent effect to a function effect.
+external injectDiv : forall<a,b,(e :: E)> ((a) -> (e :: E) b) -> ((a) -> <(div :: X)|(e :: E)> b) = inline "#1";
+// Add the exception effect to a function effect.
+external injectExn : forall<a,b,(e :: E)> ((a) -> (e :: E) b) -> ((a) -> <(exn :: X)|(e :: E)> b) = inline "#1";
+// Add the state effect to a function effect.
+external injectSt : forall<a,b,(h :: H),(e :: E)> ((a) -> (e :: E) b) -> (total :: E) ((a) -> <(st :: H -> E)<(h :: H)>|(e :: E)> b) = inline "#1";
+// Add the "read" effect to a function effect.
+external injectRead : forall<a,b,(h :: H),(e :: E)> ((a) -> (e :: E) b) -> (total :: E) ((a) -> <(read :: H -> X)<(h :: H)>|(e :: E)> b) = inline "#1";
+// Add the "write" effect to a function effect.
+external injectWrite : forall<a,b,(h :: H),(e :: E)> ((a) -> (e :: E) b) -> (total :: E) ((a) -> <(write :: H -> X)<(h :: H)>|(e :: E)> b) = inline "#1";
+// Add the "ndet" effect to a function effect.
+external injectNdet : forall<a,b,(e :: E)> ((a) -> (e :: E) b) -> (total :: E) ((a) -> <(ndet :: X)|(e :: E)> b) = inline "#1";
+// Add the "io" effect to a function effect.
+external injectIo : forall<a,b,(e :: E)> ((a) -> (e :: E) b) -> (total :: E) ((a) -> <(io :: E)|(e :: E)> b) = inline "#1";
+// Return a system dependent description of an exception
+// Catch an exception raised by "error" and handle it.
+// Use "onExn" or "onFail" when appropiate.
+// Execute a "handler" no matter what exception was raised in "action".
+// Use of "onExit" is preferred (which has its arguments swapped).
+external finally : forall<(e :: E),a> (action : () -> (e :: E) a, handler : () -> (e :: E) ()) -> (e :: E) a {
+  cs inline "Primitive.Finally<##2>(#1,#2)";
+  js inline "$finally(#1,#2)";
+}
+// Raise an exception with a specified message.
+// Throw an exception
+// Raise a pattern match exception. This is function is used internally by the
+// compiler to generate error messages on pattern match failures.
+external (==) : (char, char) -> bool {
+  inline "(#1 == #2)";
+  js inline "(#1 === #2)";
+}
+external (!=) : (char, char) -> bool {
+  inline "(#1 != #2)";
+  js inline "(#1 !== #2)";
+}
+external (<=) : (char, char) -> bool = inline "(#1 <= #2)";
+external (>=) : (char, char) -> bool = inline "(#1 >= #2)";
+external (<) : (char, char) -> bool = inline "(#1 < #2)";
+external (>) : (char, char) -> bool = inline "(#1 > #2)";
+// Convert a character to its unicode code point
+external int : (char) -> int {
+  cs inline "(int)(#1)";
+  js inline "(#1).charCodeAt(0)";
+}
+// Convert a unicode code point to a character
+external char : (int) -> char {
+  cs inline "(char)(#1)";
+  js inline "String.fromCharCode(#1)";
+}
+external (&&) : (bool, bool) -> bool = inline "(#1 && #2)";
+external (||) : (bool, bool) -> bool = inline "(#1 || #2)";
+external not : (bool) -> bool = inline "!(#1)";
+external (!) : (bool) -> bool = inline "!(#1)";
+external (==) .1 : (int, int) -> bool {
+  inline "(#1 == #2)";
+  js inline "#1 === #2";
+}
+external (!=) .1 : (int, int) -> bool {
+  inline "(#1 != #2)";
+  js inline "#1 !== #2";
+}
+external (<=) .1 : (int, int) -> bool {
+  inline "(#1 <= #2)";
+  js inline "#1 <= #2";
+}
+external (>=) .1 : (int, int) -> bool {
+  inline "(#1 >= #2)";
+  js inline "#1 >= #2";
+}
+external (<) .1 : (int, int) -> bool {
+  inline "(#1 < #2)";
+  js inline "#1 < #2";
+}
+external (>) .1 : (int, int) -> bool {
+  inline "(#1 > #2)";
+  js inline "#1 > #2";
+}
+external (+) : (int, int) -> int {
+  cs inline "(#1 + #2)";
+  js inline "((#1 + #2)|0)";
+}
+external (-) : (int, int) -> int {
+  cs inline "(#1 - #2)";
+  js inline "((#1 - #2)|0)";
+}
+// Do not use. Used by the compiler for platforms that do not support 32 bit multiplication natively.
+external (*) : (int, int) -> int {
+  cs inline "(#1 * #2)";
+  js inline "$std_core.intMultiply(#1,#2)";
+}
+// Take the bitwise _and_ of two ":int"s
+external (&) : (int, int) -> int {
+  cs inline "((#1)&(#2))";
+  js inline "((#1)&(#2))";
+}
+// Take the bitwise _or_ of two ":int"s
+external (|) : (int, int) -> int {
+  cs inline "((#1)|(#2))";
+  js inline "((#1)|(#2))";
+}
+// Take the bitwise _xor_ of two ":int"s
+external (^) : (int, int) -> int {
+  cs inline "((#1)^(#2))";
+  js inline "((#1)^(#2))";
+}
+// Bitwise _not_ of an ":int", i.e. flips all bits.
+external not .1 : (i : int) -> int {
+  cs inline "(~(#1))";
+  js inline "(~(#1))";
+}
+// Do not use. Used by the compiler for platforms that do not support 32 bit truncated division natively.
+// Do not use. Used by the compiler for platforms that do not support 32 bit truncated modulus natively.
+// Truncated division (as in C). See also "(/):(x : int, y : int) -> int".
+external cdiv : (int, int) -> <(exn :: X)> int {
+  cs inline "(#1/#2)";
+  js inline "$std_core.intCdiv(#1,#2)";
+}
+// Truncated modulus (as in C). See also "(%):(x : int, y : int) -> int".
+external cmod : (int, int) -> <(exn :: X)> int {
+  cs inline "(#1 % #2)";
+  js inline "$std_core.intCmod(#1,#2)";
+}
+// Truncated division (as in C). See also "(/):(x : int, y : int) -> int".
+// Truncated modulus (as in C). See also "(%):(x : int, y : int) -> int".
+// Convert an integer to a double.
+external double : (int) -> double {
+  cs inline "(double)(#1)";
+  js inline "(#1)";
+}
+external (==) .2 : (double, double) -> bool {
+  inline "(#1 == #2)";
+  js inline "(#1 === #2)";
+}
+external (!=) .2 : (double, double) -> bool {
+  inline "(#1 != #2)";
+  js inline "(#1 !== #2)";
+}
+external (<=) .2 : (double, double) -> bool = inline "(#1 <= #2)";
+external (>=) .2 : (double, double) -> bool = inline "(#1 >= #2)";
+external (<) .2 : (double, double) -> bool = inline "(#1 < #2)";
+external (>) .2 : (double, double) -> bool = inline "(#1 > #2)";
+external (+) .1 : (double, double) -> double = inline "(#1 + #2)";
+external (-) .1 : (double, double) -> double = inline "(#1 - #2)";
+external (*) .1 : (double, double) -> double = inline "(#1 * #2)";
+external (/) : (double, double) -> double = inline "(#1 / #2)";
+external (%) : (double, double) -> double = inline "(#1 % #2)";
+// Convert a ":double" to ":int" using "round" to round the double to its nearest integer.
+// if the double is larger than "maxInt" or smaller than "minInt" just the lower 32 bits are returned.
+external unsafeInt : (double) -> int {
+  cs inline "(int)(#1)";
+  js inline "(#1 | 0)";
+}
+// Is this value equal to NaN ?
+external isNan : (double) -> bool {
+  cs inline "double.IsNaN(#1)";
+  js inline "isNaN(#1)";
+}
+// Is this value equal to negative or positive infinity ?
+// Is this value equal to positive infinity ?
+external isPosInf : (double) -> bool {
+  cs inline "double.IsPositiveInfinity(#1)";
+  js inline "((#1) === Number.POSITIVE_INFINITY)";
+}
+// Is this value equal to negative infinity ?
+external isNegInf : (double) -> bool {
+  cs inline "double.IsNegativeInfinity(#1)";
+  js inline "((#1) === Number.NEGATIVE_INFINITY)";
+}
+// Returns the value `d`  raised to the power `p` .
+external (^) .1 : (d : double, p : double) -> double {
+  cs inline "Math.Pow(#1,#2)";
+  js inline "((#1) ^ (#2))";
+}
+// Return the square root of a value `d` 
+// Returns "nan" if `d == nan`  or if `d`  is negative.
+// Returns "inf" if `d == inf` .
+external sqrt : (d : double) -> double {
+  cs inline "Math.Sqrt(#1)";
+  js inline "Math.sqrt(#1)";
+}
+// Return the absolute value of a ":double" `d` 
+external abs : (d : double) -> double {
+  cs inline "Math.Abs(#1)";
+  js inline "Math.abs(#1)";
+}
+// Return the largest integer equal or less than `d` 
+external floor : (d : double) -> double {
+  cs inline "Math.Floor(#1)";
+  js inline "Math.floor(#1)";
+}
+// Return the smallest integer equal or larger than `d` 
+external ceiling : (d : double) -> double {
+  cs inline "Math.Ceiling(#1)";
+  js inline "Math.ceiling(#1)";
+}
+// Return the integral part of a ":double" `d` .
+// If `d >= 0.0` , return the largest integer equal or less to `d` ,
+// If `d < 0.0` , return the smallest integer equal or larger to `d` .
+external trunc : (d : double) -> double {
+  cs inline "Math.Truncate(#1)";
+  js inline "Math.trunc(#1)";
+}
+// Round a double to its nearest integral value.
+// If the value is halfway between two integers, the value is rounded to the even one.
+external round : (d : double) -> double {
+  cs inline "Math.Round(#1)";
+  js inline "Math.round(#1)";
+}
+// used internally to have non-bound-checked access
+// Return the "index" element of an array. Raises an exception for out-of-bounds access.
+external [] : forall<(h :: H),a,(e :: E)> (self : (array :: (H, V) -> V)<(h :: H),a>, index : int) -> <(read :: H -> X)<(h :: H)>,(exn :: X)|(e :: E)> a with hdiv<(h :: H),a,(e :: E)> = inline "(#1)[#2]";
+// Return the length of an ":array".
+external length : forall<(h :: H),a> (self : (array :: (H, V) -> V)<(h :: H),a>) -> int {
+  cs inline "(#1 == null ? 0 : (#1).Length)";
+  js inline "(#1).length";
+}
+// Assign to element `i`  in an array `a` . May raise an out-of-bounds exception
+external [] .1 : forall<(h :: H),a> (a : (array :: (H, V) -> V)<(h :: H),a>, i : int, assigned : a) -> <(write :: H -> X)<(h :: H)>,(exn :: X)> () = inline "(#1)[#2] = #3";
+// Create a new array of length `n`  with initial elements `a` .
+external array : forall<(h :: H),a> (n : int, default : a) -> (array :: (H, V) -> V)<(h :: H),a> {
+  cs inline "Primitive.NewArray<##2>(#1,#2)";
+  js inline "Array(#2)";
+}
+// Create a zero length array
+external array .1 : forall<(h :: H),a> () -> (array :: (H, V) -> V)<(h :: H),a> {
+  cs inline "new ##2[0]";
+}
+// Return the element at position `index`  in vector `v` . Raise an out of bounds exception if `index < 0`  or `index >= v.length` .
+// Return the element at position `index`  in vector `v` . Raise an out of bounds exception if `index < 0`  or `index >= v.length` .
+external [] .2 : forall<a> (v : (vector :: V -> V)<a>, index : int) -> <(exn :: X)> a = inline "(#1)[#2]";
+// Return the length of a vector.
+external length .1 : forall<a> (v : (vector :: V -> V)<a>) -> int {
+  cs inline "(#1 == null ? 0 : (#1).Length)";
+  js inline "(#1).length";
+}
+// Create an empty vector.
+external vector : forall<a> () -> (vector :: V -> V)<a> {
+  cs inline "new ##1[0]";
+  js inline "[]";
+}
+// Convert a vector to an array (by making a copy)
+external array .2 : forall<(h :: H),a> (v : (vector :: V -> V)<a>) -> (array :: (H, V) -> V)<(h :: H),a> {
+  cs inline "(##2[])Array.Clone(#1)";
+  js inline "#1";
+}
+// Return the `n` th character in a string `s` .
+// Are two strings equal?
+external (==) .3 : (string, string) -> bool {
+  inline "(#1 == #2)";
+  js inline "(#1 === #2)";
+}
+// Are two strings not equal?
+external (!=) .3 : (string, string) -> bool {
+  inline "(#1 != #2)";
+  js inline "(#1 !== #2)";
+}
+// Append two strings.
+external (+) .2 : (string, string) -> string = inline "(#1 + #2)";
+// Return the `n` th character in a string `s` . 
+// Raise an out-of-bounds exception if "n < 0" or "n >= s.length".
+external [] .3 : (s : string, n : int) -> <(exn :: X)> char = inline "(#1)[#2]";
+// Return the length of a string.
+external length .2 : (s : string) -> int {
+  cs inline "(#1).Length";
+  js inline "(#1).length";
+}
+// Does string `s`  contain the character `c`  ?
+external indexOf : (s : string, c : char) -> int {
+  cs inline "(#1.IndexOf(#2))";
+  js inline "((#1).indexOf(#2))";
+}
+// Does string `s`  contain the character `c`  ?
+external lastIndexOf : (s : string, c : char) -> int {
+  cs inline "(#1.LastIndexOf(#2))";
+  js inline "((#1).lastIndexOf(#2))";
+}
+// Does string `s`  contain the string `sub`  ?
+external indexOf .1 : (s : string, sub : string) -> int {
+  cs inline "(#1.IndexOf(#2))";
+  js inline "((#1).indexOf(#2))";
+}
+// Does string `s`  contain the string `sub`  ?
+external lastIndexOf .1 : (s : string, sub : string) -> int {
+  cs inline "(#1.LastIndexOf(#2))";
+  js inline "((#1).lastIndexOf(#2))";
+}
+// Does string `s`  contain the character `c`  ?
+external contains : (s : string, c : char) -> bool {
+  cs inline "(#1.IndexOf(#2) >= 0)";
+  js inline "((#1).indexOf(#2) >= 0)";
+}
+// Is `pre`  a prefix of `s`  ?
+// Does string `s`  end with `post`  ?
+// Does string `s`  contain the string `sub`  ?
+external contains .1 : (s : string, sub : string) -> bool {
+  cs inline "((#1).Contains(#2))";
+  js inline "((#1).indexOf(#2) >= 0)";
+}
+// Concatenate a vector of strings
+external join : (v : (vector :: V -> V)<string>) -> string {
+  cs inline "String.Concat(#1)";
+  js inline "((#1).join(''))";
+}
+// Concatenate a vector of strings with a separator "sep"
+external join .1 : (v : (vector :: V -> V)<string>, sep : string) -> (total :: E) string {
+  cs inline "Primitive.Concat(#1,#2)";
+  js inline "((#1).join(#2))";
+}
+// Concatenate an array of strings
+external join .2 : forall<(h :: H)> (a : (array :: (H, V) -> V)<(h :: H),string>) -> <(read :: H -> X)<(h :: H)>> string {
+  cs inline "String.Concat(#1)";
+  js inline "((#1).join(''))";
+}
+// Concatenate an array of strings with a separator "sep"
+external substr : (s : string, start : int) -> string {
+  cs inline "((#1).Substring(#2))";
+  js inline "((#1).substr(#2))";
+}
+external substr1 : (s : string, start : int) -> string {
+  cs inline "((#1).Substring(#2))";
+  js inline "((#1).substr(#2 >=1 ? #2 : 1))";
+}
+// Replace every occurrence of "pattern" to "repl" in a string.
+external replaceAll : (s : string, pattern : string, repl : string) -> string {
+  cs inline "(#1).Replace(#2,#3)";
+  js inline "(#1).replace(new RegExp((#2).replace(/[\\\\\\$\\^*+\\-{}?().]/g,'\\\\$&'),'g'),#3)";
+}
+// Count occurences of "pattern" in a string.
+external count : (s : string, pattern : string) -> int {
+  cs inline "Primitive.Count(#1,#2)";
+  js inline "((#2) ? ((#1).match(new RegExp((#2).replace(/[\\\\\\$\\^*+\\-{}?().]/g,'\\\\$&'),'g'))||[]).length : 0)";
+}
+// Convert a string to a vector of characters.
+external vector .1 : (s : string) -> (vector :: V -> V)<char> {
+  cs inline "#1.ToCharArray()";
+  js inline "#1";
+}
+// Convert a string to an array of characters.
+external array .3 : forall<(h :: H)> (s : string) -> (array :: (H, V) -> V)<(h :: H),char> {
+  cs inline "#1.ToCharArray()";
+  js inline "#1";
+}
+// Convert an array of characters to a string.
+external string : forall<(h :: H)> ((array :: (H, V) -> V)<(h :: H),char>) -> <(read :: H -> X)<(h :: H)>> string {
+  cs inline "new String(#1)";
+  js inline "#1";
+}
+// Convert a vector of characters to a string.
+external string .1 : ((vector :: V -> V)<char>) -> string {
+  cs inline "new String(#1)";
+  js inline "#1";
+}
+// Generic show: shows the internal representation of an object as a string  
+// Note: this breaks parametricity so it should not be public
+// Generic formatting
+// Convert a character to a oneElement string
+external string .2 : (c : char) -> string {
+  cs inline "(new String(#1,1))";
+  js inline "(#1)";
+}
+// Print a string to the console, including a final newline character.
+// Print a string to the console
+// When an asynchronous value is computed, call the specified "handler" (at most once).
+// When an asynchronous value computation fails, call the specified "handler" (at most once).
+// Has an asynchronous value been computed?
+// Read a line from the console.
+// Used by the compiler to wrap main console applications
+// Allocate a fresh reference with an initial value.
+external ref : forall<(h :: H),a> (value : a) -> <(alloc :: H -> X)<(h :: H)>> (ref :: (H, V) -> V)<(h :: H),a> {
+  cs inline "new Ref<##1,##2>(#1)";
+  js inline "{ value: #1 }";
+}
+// Assign a new value to a reference.
+external set : forall<(h :: H),a> (ref : (ref :: (H, V) -> V)<(h :: H),a>, assigned : a) -> <(write :: H -> X)<(h :: H)>> () {
+  cs inline "#1.Set(#2)";
+  js inline "((#1).value = #2)";
+}
+// Read the value of reference.
+external (!) .1 : forall<(h :: H),a,(e :: E)> (ref : (ref :: (H, V) -> V)<(h :: H),a>) -> <(read :: H -> X)<(h :: H)>|(e :: E)> a with hdiv<(h :: H),a,(e :: E)> {
+  cs inline "#1.Value";
+  js inline "((#1).value)";
+}
+// If a heap effect is unobservable, the heap effect can be erased by using the "run" function.
+// See also: _State in Haskell, by Simon Peyton Jones and John Launchbury_.
+external run : forall<(e :: E),a> (action : forall<(h :: H)> () -> <(st :: H -> E)<(h :: H)>|(e :: E)> a) -> (e :: E) a {
+  cs inline "Primitive.Run<##2>(#1)";
+  js inline "((#1)())";
+}
+// Return a random number equal or larger than 0.0 and smaller than 1.0
+// Return a positive random integer (including 0)
+// Return the host environment: `dotnet`, `browser`, (web)`worker`, or `nodejs`. 

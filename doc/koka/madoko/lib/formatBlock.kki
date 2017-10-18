@@ -1,0 +1,61 @@
+// Format _block_ elements and and their inline elements.
+module interface formatBlock
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+// Log messages
+import std/log = std/log = "";
+// Common types and operations
+import common = common = "";
+// Attibute operations: parsing, transform text, expand keys, etc.
+import attributes = attributes = "";
+// The grammar and parsing of markdown _blocks_ (i.e. paragraphs, lists, tables, etc.)
+import block = block = "";
+// Defines the context for _inline_ elements.
+import inline = inline = "";
+// The parsing and formatting of _inline_ elements (i.e. emphasis, links, etc.)
+import formatInline = formatInline = "";
+// Formatting of  HTML elements 
+import htmlFormatter = htmlFormatter = "";
+type formatContext {
+  con FormatContext(inlineContext: inline/inlineContext, tocBlocks: (std/dict/dict :: V -> V)<(std/core/list :: V -> V)<block/block>>, footnoteBlock: block/block, headingBase: std/core/int, langPrefix: std/core/string, pedantic: std/core/bool, lineMap: common/lineMap, fmt: common/formatter) : (inlineContext : inline/inlineContext, tocBlocks : (std/dict/dict :: V -> V)<(std/core/list :: V -> V)<block/block>>, footnoteBlock : block/block, headingBase : std/core/int, langPrefix : std/core/string, pedantic : std/core/bool, lineMap : common/lineMap, fmt : common/formatter) -> formatContext;
+};
+// Automatically generated. Retrieves the `inlineContext` constructor field of the ":formatContext" type.
+fun inlineContext : (formatContext : formatContext) -> inline/inlineContext;
+// Automatically generated. Retrieves the `tocBlocks` constructor field of the ":formatContext" type.
+fun tocBlocks : (formatContext : formatContext) -> (std/dict/dict :: V -> V)<(std/core/list :: V -> V)<block/block>>;
+// Automatically generated. Retrieves the `footnoteBlock` constructor field of the ":formatContext" type.
+fun footnoteBlock : (formatContext : formatContext) -> block/block;
+// Automatically generated. Retrieves the `headingBase` constructor field of the ":formatContext" type.
+fun headingBase : (formatContext : formatContext) -> std/core/int;
+// Automatically generated. Retrieves the `langPrefix` constructor field of the ":formatContext" type.
+fun langPrefix : (formatContext : formatContext) -> std/core/string;
+// Automatically generated. Retrieves the `pedantic` constructor field of the ":formatContext" type.
+fun pedantic : (formatContext : formatContext) -> std/core/bool;
+// Automatically generated. Retrieves the `lineMap` constructor field of the ":formatContext" type.
+fun lineMap : (formatContext : formatContext) -> common/lineMap;
+// Automatically generated. Retrieves the `fmt` constructor field of the ":formatContext" type.
+fun fmt : (formatContext : formatContext) -> common/formatter;
+fun (.copy) : (formatContext, inlineContext : ?inline/inlineContext, tocBlocks : ?(std/dict/dict :: V -> V)<(std/core/list :: V -> V)<block/block>>, footnoteBlock : ?block/block, headingBase : ?std/core/int, langPrefix : ?std/core/string, pedantic : ?std/core/bool, lineMap : ?common/lineMap, fmt : ?common/formatter) -> formatContext;
+fun (.createFormatContext) : (inlineContext : inline/inlineContext, tocBlocks : (std/dict/dict :: V -> V)<(std/core/list :: V -> V)<block/block>>, footnoteBlock : block/block, headingBase : std/core/int, langPrefix : std/core/string, pedantic : std/core/bool, lineMap : common/lineMap, fmt : ?common/formatter) -> formatContext;
+//regex(@"^( |- |-- )*---+ *[- ]*[|+]*$")
+fun formatBlock : (context : formatContext, block : block/block) -> <(std/core/div :: E)> std/core/string;
+fun formatBlocksX : (context : formatContext, blocks : (std/core/list :: V -> V)<block/block>) -> <(std/core/div :: E)> std/core/string;
+// Format blocks into html and parse and format all inline elements 
+fun formatBlocks : (context : formatContext, blocks : (std/core/list :: V -> V)<block/block>) -> std/core/string;
+fun initialFormatContext : (icontext : inline/inlineContext, lineMap : common/lineMap, headingBase : std/core/int, pedantic : std/core/bool, fmt : common/formatter) -> formatContext;

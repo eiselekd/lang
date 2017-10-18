@@ -1,0 +1,71 @@
+// Process math statically as LaTeX generated snippets
+module interface mathStaticRun
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/*
+Access to the program environment and commmand line arguments.
+
+Print the environment: "env.list.map(fun(p) { p.fst + ""="" + p.snd }).join(""\n"").print"
+
+Note: we view the environment and command line as (total) constants in the
+program. i.e. as if the program is only compiled at the point when both the 
+environment and command line is supplied. 
+*/
+import std/env = std/env = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+// Provide client/server storage
+// This module provides file access operations. On the web client, these
+// operations only provide accesss to a global object of files which is
+// *not* persistent. This code is mainly to ensure we can share as much
+// code as possible between client and server.
+import storage = storage = "";
+/*---------------------------------------------------------------------------
+  Copyright 2013 Microsoft Corporation.
+ 
+  This is free software; you can redistribute it and/or modify it under the
+  terms of the Apache License, Version 2.0. A copy of the License can be
+  found in the file "license.txt" at the root of this distribution.
+---------------------------------------------------------------------------*/
+import process = process = "";
+// Parse math dimension file
+import mathParse = mathParse = "";
+// Process math statically as LaTeX generated snippets
+import mathStatic = mathStatic = "";
+// Running latex and bibtex
+import runLatex = runLatex = "";
+private alias mathStatic/pages = (std/core/list :: V -> V)<(std/core/int, std/core/int)> = 1;
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+// In order for glyphs to not be shared across pdf/dvi runs, we need to prefix
+// identifiers so they are distinct and do not become shared paths.
+// Glyph id's are of the form "g<fontid>-<charid>"
+// Scope CSS styles inside an SVG generated image such that we
+// can embed multiple inside one HTML file. We use first 6 letters of
+// the digest to uniquely name the SVG group from `page<no>` to `g-<digest>`.
+// Remove unnecessary parts of an svg to reduce the size (important since there
+// can be thousands in math-heavy documents)
+// fix up the tex file if we switch to PNG mode so PS specials are rendered correctly in TikZ/Pgf
+fun runMathStatic : (content : std/core/string, inName : std/core/string, outName : std/core/string, texNamePlain : std/core/string, texNameFull : std/core/string, plainPages : mathStatic/pages, fullPages : mathStatic/pages, oldMathPlain : std/core/string, oldMathFull : std/core/string, opts0 : options/options, continue : ((std/core/maybe :: V -> V)<((std/dict/dict :: V -> V)<common/mathinfo>, std/core/string)>) -> <(std/core/io :: E)> ()) -> <(std/core/io :: E)> ();

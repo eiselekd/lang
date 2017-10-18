@@ -1,0 +1,48 @@
+module interface includes
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+// Log messages
+import std/log = std/log = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+// The grammar and parsing of markdown _blocks_ (i.e. paragraphs, lists, tables, etc.)
+import block = block = "";
+// Provide client/server storage
+// This module provides file access operations. On the web client, these
+// operations only provide accesss to a global object of files which is
+// *not* persistent. This code is mainly to ensure we can share as much
+// code as possible between client and server.
+import storage = storage = "";
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+// Stateful functions can manipulate heap ":h" using allocations, reads and writes.
+private alias std/core/st<(h :: H)> :: H -> E = <(std/core/read :: H -> X)<(h :: H)>,(std/core/write :: H -> X)<(h :: H)>,(std/core/alloc :: H -> X)<(h :: H)>> = 1;
+;
+// Automatically generated. Retrieves the `fileName` constructor field of the ":snippet" type.
+// Automatically generated. Retrieves the `startLine` constructor field of the ":snippet" type.
+// Automatically generated. Retrieves the `content` constructor field of the ":snippet" type.
+fun trySearchReadTextFile : (fname : std/core/string, dirs : (std/core/list :: V -> V)<std/core/string>, ext : ?std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> (std/core/maybe :: V -> V)<(std/core/string, std/core/string)>;
+fun include : forall<a,(e :: E)> (text : std/core/string, fast : std/core/bool, inName : std/core/string, outName : std/core/string, dirs : (std/core/list :: V -> V)<std/core/string>, options : options/options, action : (std/core/string, common/lineMap) -> <(std/core/io :: E)|(e :: E)> a) -> <(std/core/io :: E)|(e :: E)> a;
+fun searchReadTextFileDef : (fname : std/core/string, def : std/core/string, dirs : (std/core/list :: V -> V)<std/core/string>, ext : ?std/core/string, required : ?std/core/bool) -> <(std/core/io :: E)> std/core/string;

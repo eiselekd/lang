@@ -1,0 +1,69 @@
+// Process the bilbliography
+module interface bibliography
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/*
+Basic cryptography. 
+*/
+import std/crypto = std/crypto = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+// Provide client/server storage
+// This module provides file access operations. On the web client, these
+// operations only provide accesss to a global object of files which is
+// *not* persistent. This code is mainly to ensure we can share as much
+// code as possible between client and server.
+import storage = storage = "";
+// The parsing and formatting of TeX blocks.
+//
+// The capabilities are fairly limited and mostly geared to be able to
+// parse bibtex entries. Accent and special character commands are quite well
+// recognized in order to allow author names with correct accent characters.
+import texParser = texParser = "";
+import includes = includes = "";
+/*---------------------------------------------------------------------------
+  Copyright 2015 Microsoft Corporation.
+ 
+  This is free software; you can redistribute it and/or modify it under the
+  terms of the Apache License, Version 2.0. A copy of the License can be
+  found in the file "license.txt" at the root of this distribution.
+---------------------------------------------------------------------------*/
+import runcsl = runcsl = "";
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+;
+// Automatically generated. Retrieves the `auxfile` constructor field of the ":auxinfo" type.
+// Automatically generated. Retrieves the `auxid` constructor field of the ":auxinfo" type.
+// Automatically generated. Retrieves the `style` constructor field of the ":auxinfo" type.
+// Find and copy bib files to the output directory, and return a `bibdata` command with md5 hash
+fun extractCitestyle : (opts : options/options, outName : std/core/string) -> <(std/core/io :: E)> options/options;
+// Write the final aux file; returns `True` if successful
+// Generate CSL bibliography; return `True` if successful
+fun genBibtex : forall<(e :: E)> (runBibtex : ((std/core/list :: V -> V)<std/core/string>, options/options, (err : std/core/bool) -> <(std/core/io :: E)|(e :: E)> ()) -> <(std/core/io :: E)> (), auxInfos : (std/core/list :: V -> V)<auxinfo>, outdir : std/core/string, searchDirs : (std/core/list :: V -> V)<std/core/string>, mopts : options/options, continue : (std/core/bool) -> <(std/core/io :: E)> ()) -> <(std/core/io :: E)> ();
+// split citations in different parts: one for each bibliography ([BIB=<id>] element)
+// Write citations to an aux file. Returns "True" if the bibliography data changed.
+fun writeCitationsData : (citeData : std/core/string, outName : std/core/string, searchDirs : (std/core/list :: V -> V)<std/core/string>, bibNames : (std/core/list :: V -> V)<std/core/string>, opts : options/options) -> <(std/core/io :: E)> (std/core/list :: V -> V)<auxinfo>;

@@ -1,0 +1,48 @@
+// Align code blocks
+module interface codeAlign
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+// Common types and operations
+import common = common = "";
+// Attibute operations: parsing, transform text, expand keys, etc.
+import attributes = attributes = "";
+type ccell {
+  con Ccell(span: std/core/int, center: std/core/bool, content: std/core/string) : (span : std/core/int, center : std/core/bool, content : std/core/string) -> ccell;
+};
+alias crow = (std/core/list :: V -> V)<ccell> = 1;
+type codeTable {
+  con CodeTable(columns: std/core/int, rows: (std/core/list :: V -> V)<(crow == 1 (std/core/list :: V -> V)<ccell>)>) : (columns : std/core/int, rows : (std/core/list :: V -> V)<(crow == 1 (std/core/list :: V -> V)<ccell>)>) -> codeTable;
+};
+// Automatically generated. Retrieves the `span` constructor field of the ":ccell" type.
+fun span : (ccell : ccell) -> std/core/int;
+// Automatically generated. Retrieves the `center` constructor field of the ":ccell" type.
+fun center : (ccell : ccell) -> std/core/bool;
+// Automatically generated. Retrieves the `content` constructor field of the ":ccell" type.
+fun content : (ccell : ccell) -> std/core/string;
+fun (.copy) : (ccell, span : ?std/core/int, center : ?std/core/bool, content : ?std/core/string) -> ccell;
+// Automatically generated. Retrieves the `columns` constructor field of the ":codeTable" type.
+fun columns : (codeTable : codeTable) -> std/core/int;
+// Automatically generated. Retrieves the `rows` constructor field of the ":codeTable" type.
+fun rows : (codeTable : codeTable) -> (std/core/list :: V -> V)<crow>;
+fun (.copy) .1 : (codeTable, columns : ?std/core/int, rows : ?(std/core/list :: V -> V)<crow>) -> codeTable;
+fun map : (ct : codeTable, f : (std/core/string, std/core/int) -> std/core/string) -> codeTable;
+fun isWhite : (s : std/core/string) -> std/core/bool;
+fun findAlignColumns : (line : std/core/string, rxSep : std/regex/regex) -> (std/core/list :: V -> V)<std/core/int>;
+fun show : (ct : codeTable) -> std/core/string;
+fun codeAlign : (txt : std/core/string, sep : ?std/core/int) -> codeTable;
+fun foldCodeTable : forall<a> (ct : codeTable, st : a, f : (std/core/string, a) -> (std/core/string, a)) -> codeTable;

@@ -1,0 +1,38 @@
+module interface std/date
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+type date ;
+// Get the day of the month, starting at 1
+fun day : (d : date) -> std/core/int;
+fun now : () -> <(std/core/ndet :: X)> date;
+fun hours : (date) -> std/core/int;
+// Return an ISO 8601 date-time string.
+// See <http://en.wikipedia.org/wiki/ISO_8601>
+fun isoDateTime : (date) -> std/core/string;
+// Return the date portion of an ISO date/time string.
+fun isoDate : (d : date) -> std/core/string;
+// Get the month, starting at 1
+fun month : (d : date) -> std/core/int;
+fun show2 : (i : std/core/int) -> std/core/string;
+// Get the year
+fun year : (d : date) -> std/core/int;
+// return the ISO date in local time
+fun isoLocalDate : (d : date) -> std/core/string;
+fun minutes : (date) -> std/core/int;
+fun seconds : (date) -> std/core/int;
+// return the ISO time in local time
+fun isoLocalTime : (d : date) -> std/core/string;
+// Return the time portion of an ISO date/time string.
+fun isoTime : (d : date) -> std/core/string;
+// Number of milliseconds since 1 January 1970 00:00:00 UTC.
+fun time : (date) -> std/core/int;
+// Number of milliseconds since 1 January 1970 00:00:00 UTC.
+// Return an ISO 8601 date-time string.
+// See <http://en.wikipedia.org/wiki/ISO_8601>
+// Get the year
+// Get the month, starting at 1
+// Get the day of the month, starting at 1

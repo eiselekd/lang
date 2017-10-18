@@ -1,0 +1,58 @@
+// Parse Madoko markdown text.
+module interface madoko
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+// The parsing of metadata
+import metadata = metadata = "";
+// The grammar and parsing of markdown _blocks_ (i.e. paragraphs, lists, tables, etc.)
+import block = block = "";
+// Format _block_ elements and and their inline elements.
+import formatBlock = formatBlock = "";
+// Defines the context for _inline_ elements.
+import inline = inline = "";
+// The parsing and formatting of _inline_ elements (i.e. emphasis, links, etc.)
+import formatInline = formatInline = "";
+// Process definitions: links, footnotes, labels, and counters
+import definitions = definitions = "";
+// Parsing and formatting of html entities (for TeX output)
+import entity = entity = "";
+// Formatting of  HTML elements 
+import htmlFormatter = htmlFormatter = "";
+// Formatting of TeX elements (i.e. emphasis, links, etc.)
+import texFormatter = texFormatter = "";
+// Formatting of TeX elements (i.e. emphasis, links, etc.)
+import latexFormatter = latexFormatter = "";
+// Attibute operations: parsing, transform text, expand keys, etc.
+import attributes = attributes = "";
+// Log messages
+import std/log = std/log = "";
+// An alias for pure effects: a pure function always returns the same result
+// when called with the same arguments but may not terminate or raise an exception.
+private alias std/core/pure :: E = <(std/core/exn :: X),(std/core/div :: X)> = 1;
+fun initialOptions : () -> options/options;
+// Export initial options for JavaScript usage
+val initialOptions0 : options/options;
+// Create an ":inlineContext"
+fun normalizeSource : (src : std/core/string) -> std/core/string;
+// Takes source markdown input and returns formatted html
+// Process only markdown between <xmp> tags 
+// Takes source markdown input and returns formatted html
+fun markdown : (src : std/core/string, options : ?options/options, fmt : ?common/formatter) -> <(std/core/pure :: E)> (std/core/string, options/options);
+fun traceRuleHist : () -> ();

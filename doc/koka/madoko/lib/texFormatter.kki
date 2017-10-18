@@ -1,0 +1,55 @@
+// Formatting of TeX elements (i.e. emphasis, links, etc.)
+module interface texFormatter
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+// Common types and operations
+import common = common = "";
+// Parsing and formatting of html entities (for TeX output)
+import entity = entity = "";
+// Defines the context for _inline_ elements.
+import inline = inline = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+import texCommon = texCommon = "";
+// Attibute operations: parsing, transform text, expand keys, etc.
+import attributes = attributes = "";
+// Align code blocks
+import codeAlign = codeAlign = "";
+;
+// Automatically generated. Tests for the "Single" constructor of the ":line" type.
+// Automatically generated. Tests for the "Double" constructor of the ":line" type.
+// Automatically generated. Tests for the "NoLine" constructor of the ":line" type.
+fun texText : (txt : std/core/string) -> std/core/string;
+fun fmtTexCmd : (context : inline/inlineContext, cmd : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string;
+fun preSpace : (txt : std/core/string, start : ?std/core/bool) -> std/core/string;
+fun fmtTexCodePlain : (context : inline/inlineContext, txt : std/core/string, startline : std/core/bool) -> std/core/string;
+fun fmtTexCodeTable : (context : inline/inlineContext, ct : codeAlign/codeTable, attrs : common/attrs) -> std/core/string;
+fun fmtTexCodeToken : (context : inline/inlineContext, classes : (std/core/list :: V -> V)<std/core/string>, txt : std/core/string, lang : std/core/string, attrs : common/attrs) -> std/core/string;
+fun fmtTexEnv : (context : inline/inlineContext, env : std/core/string, txt : std/core/string, attrs : common/attrs) -> std/core/string;
+fun fmtTexEscape : (context : inline/inlineContext, txt : std/core/string, allowEntity : std/core/bool) -> std/core/string;
+fun fmtTexFootnote : (context : inline/inlineContext, id : std/core/string, fn : inline/footnote) -> std/core/string;
+fun fmtTexLineInfo : (context : inline/inlineContext, lineInfo : std/core/string) -> std/core/string;
+fun fmtTexLink : (context : inline/inlineContext, isImage : std/core/bool, link : common/link, content : std/core/string) -> std/core/string;
+fun fmtTexTable : (context : inline/inlineContext, head : (std/core/list :: V -> V)<common/row>, body : (std/core/list :: V -> V)<common/row>, colattrs : (std/core/list :: V -> V)<common/attrs>, attrs : common/attrs) -> std/core/string;

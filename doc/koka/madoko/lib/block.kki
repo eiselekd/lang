@@ -1,0 +1,152 @@
+// The grammar and parsing of markdown _blocks_ (i.e. paragraphs, lists, tables, etc.)
+module interface block
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+// Common types and operations
+import common = common = "";
+// Attibute operations: parsing, transform text, expand keys, etc.
+import attributes = attributes = "";
+// A block element
+type rec block {
+  con HLine(attrs: common/attrs) : (attrs : common/attrs) -> block;
+  con Blank(text: std/core/string) : (text : std/core/string) -> block;
+  con Line(text: std/core/string, loose: std/core/bool, attrs: common/attrs) : (text : std/core/string, loose : std/core/bool, attrs : common/attrs) -> block;
+  con Para(text: std/core/string, attrs: common/attrs) : (text : std/core/string, attrs : common/attrs) -> block;
+  con Code(text: std/core/string, language: std/core/string, attrs: common/attrs) : (text : std/core/string, language : std/core/string, attrs : common/attrs) -> block;
+  con Quote(content: (std/core/list :: V -> V)<block>, attrs: common/attrs) : (content : (std/core/list :: V -> V)<block>, attrs : common/attrs) -> block;
+  con List(tag: std/core/string, content: (std/core/list :: V -> V)<block>, attrs: common/attrs) : (tag : std/core/string, content : (std/core/list :: V -> V)<block>, attrs : common/attrs) -> block;
+  con Item(content: (std/core/list :: V -> V)<block>, attrs: common/attrs) : (content : (std/core/list :: V -> V)<block>, attrs : common/attrs) -> block;
+  con Heading(depth: std/core/int, text: std/core/string, attrs: common/attrs) : (depth : std/core/int, text : std/core/string, attrs : common/attrs) -> block;
+  con Table(header: (std/core/list :: V -> V)<common/row>, columnAttrs: (std/core/list :: V -> V)<common/attrs>, cells: (std/core/list :: V -> V)<common/row>, attrs: common/attrs) : (header : (std/core/list :: V -> V)<common/row>, columnAttrs : (std/core/list :: V -> V)<common/attrs>, cells : (std/core/list :: V -> V)<common/row>, attrs : common/attrs) -> block;
+  con DefLink(id: std/core/string, link: common/link) : (id : std/core/string, link : common/link) -> block;
+  con DefFootnote(id: std/core/string, content: (std/core/list :: V -> V)<block>) : (id : std/core/string, content : (std/core/list :: V -> V)<block>) -> block;
+  con Empty : block;
+  con Div(content: (std/core/list :: V -> V)<block>, attrs: common/attrs) : (content : (std/core/list :: V -> V)<block>, attrs : common/attrs) -> block;
+  con Source(text: std/core/string, input: common/input, parentAttrs: common/attrs) : (text : std/core/string, input : common/input, parentAttrs : common/attrs) -> block;
+  con Special(name: std/core/string, value: std/core/string, attrs: common/attrs) : (name : std/core/string, value : std/core/string, attrs : common/attrs) -> block;
+};
+;
+// Automatically generated. Retrieves the `attrs` constructor field of the ":block" type.
+fun attrs : (block : block) -> <(std/core/exn :: E)> common/attrs;
+// Automatically generated. Retrieves the `text` constructor field of the ":block" type.
+fun text : (block : block) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Retrieves the `loose` constructor field of the ":block" type.
+fun loose : (block : block) -> <(std/core/exn :: E)> std/core/bool;
+// Automatically generated. Retrieves the `language` constructor field of the ":block" type.
+fun language : (block : block) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Retrieves the `content` constructor field of the ":block" type.
+fun content : (block : block) -> <(std/core/exn :: E)> (std/core/list :: V -> V)<block>;
+// Automatically generated. Retrieves the `tag` constructor field of the ":block" type.
+fun tag : (block : block) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Retrieves the `depth` constructor field of the ":block" type.
+fun depth : (block : block) -> <(std/core/exn :: E)> std/core/int;
+// Automatically generated. Retrieves the `header` constructor field of the ":block" type.
+fun header : (block : block) -> <(std/core/exn :: E)> (std/core/list :: V -> V)<common/row>;
+// Automatically generated. Retrieves the `columnAttrs` constructor field of the ":block" type.
+fun columnAttrs : (block : block) -> <(std/core/exn :: E)> (std/core/list :: V -> V)<common/attrs>;
+// Automatically generated. Retrieves the `cells` constructor field of the ":block" type.
+fun cells : (block : block) -> <(std/core/exn :: E)> (std/core/list :: V -> V)<common/row>;
+// Automatically generated. Retrieves the `id` constructor field of the ":block" type.
+fun id : (block : block) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Retrieves the `link` constructor field of the ":block" type.
+fun link : (block : block) -> <(std/core/exn :: E)> common/link;
+// Automatically generated. Retrieves the `input` constructor field of the ":block" type.
+fun input : (block : block) -> <(std/core/exn :: E)> common/input;
+// Automatically generated. Retrieves the `parentAttrs` constructor field of the ":block" type.
+fun parentAttrs : (block : block) -> <(std/core/exn :: E)> common/attrs;
+// Automatically generated. Retrieves the `name` constructor field of the ":block" type.
+fun name : (block : block) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Retrieves the `value` constructor field of the ":block" type.
+fun value : (block : block) -> <(std/core/exn :: E)> std/core/string;
+// Automatically generated. Tests for the "HLine" constructor of the ":block" type.
+fun isHLine : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Blank" constructor of the ":block" type.
+fun isBlank : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Line" constructor of the ":block" type.
+fun isLine : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Para" constructor of the ":block" type.
+fun isPara : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Code" constructor of the ":block" type.
+fun isCode : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Quote" constructor of the ":block" type.
+fun isQuote : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "List" constructor of the ":block" type.
+fun isList : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Item" constructor of the ":block" type.
+fun isItem : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Heading" constructor of the ":block" type.
+fun isHeading : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Table" constructor of the ":block" type.
+fun isTable : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "DefLink" constructor of the ":block" type.
+fun isDefLink : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "DefFootnote" constructor of the ":block" type.
+fun isDefFootnote : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Empty" constructor of the ":block" type.
+fun isEmpty : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Div" constructor of the ":block" type.
+fun isDiv : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Source" constructor of the ":block" type.
+fun isSource : (block : block) -> std/core/bool;
+// Automatically generated. Tests for the "Special" constructor of the ":block" type.
+fun isSpecial : (block : block) -> std/core/bool;
+// Automatically generated. Retrieves the `grammar` constructor field of the ":blockContext" type.
+// Automatically generated. Retrieves the `listGrammar` constructor field of the ":blockContext" type.
+// Automatically generated. Retrieves the `citestyle` constructor field of the ":blockContext" type.
+// Automatically generated. Retrieves the `metadata` constructor field of the ":blockContext" type.
+// Automatically generated. Retrieves the `bench` constructor field of the ":blockContext" type.
+// Automatically generated. Retrieves the `pedantic` constructor field of the ":blockContext" type.
+// Automatically generated. Retrieves the `loose` constructor field of the ":blockContext" type.
+// Automatically generated. Retrieves the `lineNo` constructor field of the ":blockContext" type.
+// Automatically generated. Retrieves the `lineMap` constructor field of the ":blockContext" type.
+// Attributes: allow escaped newline
+// allow optional colon for maraku compat
+fun (.createLine) : (text : std/core/string, loose : ?std/core/bool, attrs : ?common/attrs) -> block;
+fun (.createCode) : (text : std/core/string, language : ?std/core/string, attrs : ?common/attrs) -> block;
+fun (.createDiv) : (content : (std/core/list :: V -> V)<block>, attrs : ?common/attrs) -> block;
+fun (.createHeading) : (depth : std/core/int, text : std/core/string, attrs : ?common/attrs) -> block;
+fun (.createHLine) : (attrs : ?common/attrs) -> block;
+fun (.createItem) : (content : (std/core/list :: V -> V)<block>, attrs : ?common/attrs) -> block;
+fun (.createList) : (tag : std/core/string, content : (std/core/list :: V -> V)<block>, attrs : ?common/attrs) -> block;
+fun (.createPara) : (text : std/core/string, attrs : ?common/attrs) -> block;
+fun (.createQuote) : (content : (std/core/list :: V -> V)<block>, attrs : ?common/attrs) -> block;
+fun (.createSource) : (text : std/core/string, input : ?common/input, parentAttrs : ?common/attrs) -> block;
+fun (.createSpecial) : (name : std/core/string, value : ?std/core/string, attrs : ?common/attrs) -> block;
+fun (.createTable) : (header : (std/core/list :: V -> V)<common/row>, columnAttrs : (std/core/list :: V -> V)<common/attrs>, cells : (std/core/list :: V -> V)<common/row>, attrs : ?common/attrs) -> block;
+// regular expression for content inside a start HTML tag
+// after a paragraph
+// after a block element
+// not special block start sequence
+// deflist
+fun setLineNo : (attrs : common/attrs, lineMap : common/lineMap, lineNo : std/core/int, overwrite : ?std/core/bool) -> common/attrs;
+// Split a row into cells, keeping final separators ("|" or "+") at the end of each cell.
+/* --------------------------------------
+ Block element functions 
+---------------------------------------- */
+// split the separator row in cells, and include the separators for determining the column style
+// inline: headers and fences
+// Various
+val tagContent : std/core/string;
+// Tables
+// Parse text into blocks
+// The main block grammar
+// Parse text into blocks
+fun parseBlocks : (src : std/core/string, lineNo : std/core/int, lineMap : common/lineMap, citestyle : ?common/citestyle, mdata : (std/dict/dict :: V -> V)<std/core/string>, bench : ?std/core/bool, pedantic : ?std/core/bool) -> (std/core/list :: V -> V)<block>;

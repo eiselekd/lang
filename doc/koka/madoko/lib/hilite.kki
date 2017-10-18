@@ -1,0 +1,38 @@
+// Syntax highlighting
+module interface hilite
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// Common types and operations
+import common = common = "";
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+// hilite mode. abstract.
+type hilitemode ;
+;
+// Automatically generated. Retrieves the `highlighted` constructor field of the ":hilite" type.
+// Automatically generated. Retrieves the `finalMode` constructor field of the ":hilite" type.
+fun canHilite : (name : std/core/string) -> std/core/bool;
+// Highlight using highlight.js. Use 'auto' for automatic language detection
+// Syntax highlight code. 
+// If "lang" is the empty string, returns Nothing. 
+fun hilite : (src : std/core/string, lang : std/core/string) -> (std/core/maybe :: V -> V)<std/core/string>;
+// Syntax highlight code. 
+// If "lang" is the empty string, returns Nothing. 
+// Use `auto` for automatic language detection.
+fun hilitePartial : (src : std/core/string, lang : std/core/string, mbMode : ?(std/core/maybe :: V -> V)<hilitemode>) -> (std/core/maybe :: V -> V)<(std/core/string, hilitemode)>;
+fun registerLanguage : (name : std/core/string, definition : std/core/string) -> <(std/core/io :: E)> ();
+// Highlight using highlight.js. Use 'auto' for automatic language detection

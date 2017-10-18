@@ -1,0 +1,45 @@
+// Process math statically as LaTeX generated snippets
+module interface mathStatic
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+// Formatting of TeX elements (i.e. emphasis, links, etc.)
+import latexFormatter = latexFormatter = "";
+// Provide client/server storage
+// This module provides file access operations. On the web client, these
+// operations only provide accesss to a global object of files which is
+// *not* persistent. This code is mainly to ensure we can share as much
+// code as possible between client and server.
+import storage = storage = "";
+// Parse math dimension file
+import mathParse = mathParse = "";
+// The ":io" effect is used for functions that perform arbitrary I/O operations.
+private alias std/core/io :: E = <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)> = 2;
+alias pages = (std/core/list :: V -> V)<(std/core/int, std/core/int)> = 1;
+alias runMathStaticFun = (content : std/core/string, inName : std/core/string, outName : std/core/string, texNamePlain : std/core/string, texNameFull : std/core/string, plainPages : (pages == 1 (std/core/list :: V -> V)<(std/core/int, std/core/int)>), fullPages : (pages == 1 (std/core/list :: V -> V)<(std/core/int, std/core/int)>), oldMathPlain : std/core/string, oldMathFull : std/core/string, opts : options/options, continue : ((std/core/maybe :: V -> V)<((std/dict/dict :: V -> V)<common/mathinfo>, std/core/string)>) -> ((std/core/io :: E) == 2 <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)>) ()) -> ((std/core/io :: E) == 2 <(std/core/exn :: X),(std/core/div :: X),(std/core/ndet :: X),(std/core/console :: X),(std/core/net :: X),(std/core/file :: X),(std/core/ui :: X),((std/core/st :: H -> E)<(std/core/global :: H)> == 1 <(std/core/read :: H -> X)<(std/core/global :: H)>,(std/core/write :: H -> X)<(std/core/global :: H)>,(std/core/alloc :: H -> X)<(std/core/global :: H)>>)>) () = 3;
+fun count : (ps : pages) -> std/core/int;
+fun inside : (page : std/core/int, pages : pages) -> std/core/bool;
+fun mathStatic : (mathPlain : std/core/string, mathFull : std/core/string, inName : std/core/string, outName : std/core/string, xopts : options/options, content : std/core/string, runMathStatic : runMathStaticFun, continue : ((std/core/maybe :: V -> V)<((std/dict/dict :: V -> V)<common/mathinfo>, std/core/string)>) -> <(std/core/io :: E)> ()) -> <(std/core/io :: E)> ();

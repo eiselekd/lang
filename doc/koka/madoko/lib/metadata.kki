@@ -1,0 +1,51 @@
+// The parsing of metadata
+module interface metadata
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// Log messages
+import std/log = std/log = "";
+/* This module implements string dictionaries.
+*/
+import std/dict = std/dict = "";
+/* This module supports JavaScriptStyle regular expressions.
+
+   The regular expressions conform to the regular expressions of JavaScript
+   as described at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions>
+*/
+import std/regex = std/regex = "";
+/* This module implements extended string operations and a string builder.
+*/
+import std/string = std/string = "";
+/*
+Handle and transform file paths 
+*/
+import std/path = std/path = "";
+// Common types and operations
+import common = common = "";
+// The ":options" type and parsing of the command line
+import options = options = "";
+// Options from metadata
+import optionsMeta = optionsMeta = "";
+// The parsing and evaluation of expressions
+import expression = expression = "";
+// Metadata is just a string to string map.
+private alias options/metadata = (std/core/list :: V -> V)<(std/core/string, std/core/string)> = 1;
+;
+;
+// Automatically generated. Retrieves the `key` constructor field of the ":ckey" type.
+// Automatically generated. Retrieves the `value` constructor field of the ":ckey" type.
+// Automatically generated. Retrieves the `condition` constructor field of the ":ckey" type.
+// Automatically generated. Retrieves the `body` constructor field of the ":ckey" type.
+// Automatically generated. Retrieves the `lineInfo` constructor field of the ":ckey" type.
+// Automatically generated. Tests for the "Key" constructor of the ":ckey" type.
+// Automatically generated. Tests for the "Support" constructor of the ":ckey" type.
+// fill out all the authorN keys
+fun completeAuthorKeys : (mdata : options/metadata) -> options/metadata;
+fun cutoff : (s : std/core/string, n : std/core/int) -> std/core/string;
+// Parse the meta-data at the start of a document,
+// and return updated options and the rest of the document
+fun parseMeta : (options0 : options/options, fmt : common/formatter, txt : std/core/string) -> <(std/core/div :: X)> (options/options, std/core/string);

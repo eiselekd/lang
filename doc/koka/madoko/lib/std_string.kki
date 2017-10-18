@@ -1,0 +1,38 @@
+/* This module implements extended string operations and a string builder.
+*/
+module interface std/string
+/* This module defines standard operations that are always available.
+
+   Some types and operations are required to be defined for the compiler
+   to work correctly (i.e. types like ":int" or ":list")
+*/
+import std/core = std/core = "";
+// A ":builder" is used to append strings in linear time.
+type builder <(h :: H)> :: H -> V ;
+// O(1). Append to a string builder
+fun append : forall<(h :: H)> (b : (builder :: H -> V)<(h :: H)>, s : std/core/string) -> <(std/core/write :: H -> X)<(h :: H)>> (builder :: H -> V)<(h :: H)>;
+fun indent : (s : std/core/string, n : ?std/core/int, c : ?std/core/char) -> std/core/string;
+// O(1). Prepend a string in front of a string builder
+fun prepend : forall<(h :: H)> (b : (builder :: H -> V)<(h :: H)>, s : std/core/string) -> <(std/core/write :: H -> X)<(h :: H)>> (builder :: H -> V)<(h :: H)>;
+// Trim whitespace on the left and right side of a string
+fun trim : (s : std/core/string) -> std/core/string;
+// Trim the starting white space of a string 
+external trimLeft : (s : std/core/string) -> std/core/string {
+  cs inline "(#1).TrimStart()";
+  js inline "((#1).replace(/^\\s\\s*/,''))";
+}
+// Trim the ending white space of a string.
+external trimRight : (s : std/core/string) -> std/core/string {
+  cs inline "(#1).TrimEnd()";
+  js inline "((#1).replace(/\\s+$/,''))";
+}
+// Create a string builder
+external builder : forall<(h :: H)> () -> <(std/core/alloc :: H -> X)<(h :: H)>> (builder :: H -> V)<(h :: H)> {
+  cs inline "new System.Text.StringBuilder()";
+  js inline "{ value: '' }";
+}
+// O(n). Read the current string from a string builder.
+external build : forall<(h :: H)> (b : (builder :: H -> V)<(h :: H)>) -> <(std/core/read :: H -> X)<(h :: H)>> std/core/string {
+  cs inline "(#1).ToString()";
+  js inline "(#1).value";
+}
