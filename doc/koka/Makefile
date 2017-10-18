@@ -43,11 +43,15 @@ ubuntu-xelatex:
 test-all:
 	cd madoko-precompiled; npm install
 	node madoko-precompiled/lib/cli.js test.md
-	node madoko-precompiled/lib/cli.js --pdf test.md; cd out; pdflatex test.tex
-	node madoko-precompiled/lib/cli.js --texinfo test.md; cd out; pdflatex test.tex
+	node madoko-precompiled/lib/cli.js --pdf test.md; cd out;  xelatex test.tex
 
 test:
 	node madoko-precompiled/lib/cli.js test.md;
 	chromium-browser out/test.html
+
+
+test-pdf:
+	node madoko-precompiled/lib/cli.js --pdf test.md; cd out;  xelatex test.tex
+	chromium-browser out/test.pdf
 
 
