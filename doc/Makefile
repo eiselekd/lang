@@ -4,6 +4,7 @@ all:
 
 prep:
 	sudo pip install sphinx
+	sudo pip install sphinx_rtd_theme
 
 
 julia:
