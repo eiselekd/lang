@@ -1,0 +1,161 @@
+#+TITLE: org-export
+#+AUTHOR: Noah Hoffman
+#+OPTIONS: toc:nil ^:nil
+
+*org-export*: batch export of org-mode files from the command line
+
+* Overview
+
+Emacs [[http://orgmode.org/][org-mode]] is a markup language for "keeping notes, maintaining
+TODO lists, planning projects, and authoring documents" - but most
+importantly (to me) it's a platform for literate programming and
+reproducible research. [[http://orgmode.org/worg/org-contrib/babel/][Babel]] supports the creation of documents with
+interleaved code (eg, R, Python, shell, sqlite, elisp, etc) and
+text. The code may be evaluated and the results incorporated into the
+document. One limitation is that org-mode is primarily oriented toward
+interactive compilation of documents via emacs. This project provides
+tools for non-interactive compilation of org-mode files. Why is this
+useful?
+
+- Not everyone uses emacs (/gasp!/), but everyone should be able to
+  create documents using org-mode!
+- Document generation can be fully scripted (eg, as the final step in
+  an analysis pipeline).
+- Interactively-compiled documents depend on an individual user's
+  emacs configuration, which can produce different results for
+  different users; these scripts manage all dependencies from elpa
+  independently of the users' own emacs config. By default, a new
+  folder is created in =~/.org-export= the first time a script is
+  executed, and dependencies (such as the most recent version of
+  org-mode) are installed.
+- These scripts also provide some conveniences with respect to
+  providing css styles.
+
+* Installation and use
+
+Clone this repository. Then either copy all scripts to a directory on
+your =$PATH= (eg, =cp org-export *.el /usr/local/bin=) or invoke using
+the absolute path to =org-export=. =cli.el= must be present in
+the same directory as the other scripts.
+
+Execute the script with =-h= to see usage and available commands:
+
+#+NAME: cli-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export -h
+#+END_SRC
+
+#+RESULTS:
+: Usage: org-export command options...
+:
+: Available commands include:
+:   cli
+:   html
+:   pelican
+:   tangle
+
+If all of the scripts are on your $PATH, you should be able to execute using:
+
+: org-export html --infile ...
+
+You may need to explicitly identify the emacs binary using the =EMACS=
+environment variable; for example on OS X:
+
+: EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs org-export html --infile ...
+
+*** org-mode, el-get, and certificate errors
+
+*tl;dr*: install libressl using homebrew if you see errors on a Mac
+about TLS certificates.
+
+The full story:
+
+As of emacs 25, a few new issues emerged:
+
+=package.el= began to refuse to install =org-mode=
+non-interactively. This may be related to the known issue in which
+=package-installed-p= always returns =t= for built-in packages (see,
+for example [[https://github.com/jwiegley/use-package/issues/319][this issue]]).
+
+In attempting to use =el-get= as an alternative mechanism for
+installing packages, I found that a certificate error (using MacOS
+10.11) prevented downloads from github. Thanks to [[http://emacs.stackexchange.com/questions/18045][this]] answer on
+StackExchange, I was able to provide a workaround. The workaround
+requires installation of libressl using homebrew, and
+assumes the default installation in =/usr/local=:
+
+#+BEGIN_SRC sh :eval no
+brew update
+brew install libressl
+brew install emacs --with-gnutls
+brew linkapps emacs
+#+END_SRC
+
+Here are the lines in =cli-el-get-setup()= that implement the fix:
+
+#+BEGIN_SRC elisp :eval no
+(require 'gnutls)
+(setq gnutls-verify-error t)
+(add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem")
+#+END_SRC
+
+*** known issues
+
+- Installation of org-mode fails on Ubuntu 12.04 using emacs 25.
+- =ess= fails to compile without R installed.
+
+* Commands
+*** org-export html
+
+Exports org-mode to html
+
+Command line arguments:
+
+#+NAME: html-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export html -h
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Using /Applications/Emacs.app/Contents/MacOS/Emacs, GNU Emacs 25.1.91.1
+Command line options:
+
+ --infile       path to input .org file (required)
+ --outfile      path to output .html file (use base name of infile by default)
+ --evaluate     evaluate source code blocks
+ --css          path or URL of css stylesheet
+ --embed-css    Include contents of css in a <style> block
+ --bootstrap    make Bootstrap-specific modifications to html output;
+                        if selected, link to Bootstrap CDN by default
+ --package-dir  directory containing elpa packages
+ --verbose      enable debugging message on error
+
+
+Note that code block evaluation is disabled by default; use
+'--evaluate' to set a default value of ':eval yes' for all code
+blocks. If you would like to evaluate by default without requiring
+this option, include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using ':eval
+yes' in the block header.
+
+#+end_example
+
+The simplest invocation is as follows (you can test this out using this document):
+
+: org-export html --infile README.org
+
+If you want to provide css styles using [[http://getbootstrap.com/][Bootstrap]] (inserts a link to the Bootstrap CDN):
+
+: org-export html --infile README.org --bootstrap
+
+You can also embed the css content in a =<style>= block - this is
+useful if you want to distribute a file and don't want to assume that
+the user's environment will support linking to the css file.
+
+: org-export html --infile README.org --bootstrap --embed-css
+
+It's also easy to link to or embed alternative css stylesheets, for
+example, the ones used by the org-mode manual:
+
+: org-export html --infile README.org --css http://orgmode.org/org-manual.css --embed-css
