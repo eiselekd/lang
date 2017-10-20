@@ -1,5 +1,7 @@
 #+STARTUP: inlineimages
 
+
+
 * PlantUML
 note:/etc/java-9-openjdk/accessibility.properties
 #assistive_technologies=org.GNOME.Accessibility.AtkWrapper
@@ -12,7 +14,7 @@ robust "Web Browser" as WB
 concise "Web User" as WU
 
 @0
-WU is Idle
+WU is Idle2
 WB is Idle
 DNS is Idle
 
@@ -77,23 +79,38 @@ class Dummy {
 [[file:test3.png]]
 
 #+BEGIN_SRC plantuml :file test10.png
-class BaseClass
+class BaseClass {
+ -field1
+ #field2
+ ~method1()
+ +method2()
+}
+
 
 namespace net.dummy #DDDDDD {
     .BaseClass <|-- Person
+
+class Meeting {
+ -field1
+ #field2
+ #field3
+ ~method1()
+ +method2()
+ +method3()
+}
+
     Meeting o-- Person
-    
+
     .BaseClass <|- Meeting
 }
 
 namespace net.foo {
   net.dummy.Person  <|- Person
   .BaseClass <|-- Person
-
-  net.dummy.Meeting o-- Person
+   net.dummy.Meeting o-- Person
 }
 
-BaseClass <|-- net.unused.Person
+BaseClass <|-- net.unused2.Person
 
 #+END_SRC
 
@@ -155,9 +172,82 @@ Bob->L: Log transaction
 
 
 
+#+BEGIN_SRC plantuml :file test100.png
+@startuml
+
+start
+
+:Ready;
+:next(o)|
+:Receiving;
+
+split
+ :nak(i)<
+ :ack(o)>
+split again
+
+:ClickServlet.handleRequest();
+:new page;
+if (Page.onSecurityCheck) then (true)
+  :Page.onInit();
+  if (isForward?) then (no)
+    :Process controls;
+    if (continue processing?) then (no)
+      stop
+    endif
+
+    if (isPost?) then (yes)
+      :Page.onPost();
+    else (no)
+      :Page.onGet();
+    endif
+    :Page.onRender();
+  endif
+else (false)
+endif
+
+if (do redirect?) then (yes)
+  :redirect process;
+else
+  if (do forward?) then (yes)
+    :Forward request;
+  else (no)
+    :Render page template;
+  endif
+endif
+
+
+split again
+ :ack(i)<
+ :next(o)
+ on several line|
+ :i := i + 1]
+ :ack(o)>
+split again
+ :err(i)<
+ :nak(o)>
+split again
+ :foo/
+split again
+ :i > 5}
+stop
+end split
+:finish;
+
+stop
+
+@enduml
+#+END_SRC
+
+#+RESULTS:
+[[file:test100.png]]
+
+
 #+CAPTION: This is the caption for the next figure link (or table)
 #+NAME:   fig:SED-HR4049
 [[file:a.jpg]]
+
+
 
 
 
@@ -184,7 +274,7 @@ Hello
 
 ** Lang
 
-* Test 2 
+* Test 2
 
 |------------------+-----+-----------------------------------------------------------|
 | tableconstructor | ::= | `{´ [fieldlist] `}´                                       |
@@ -196,4 +286,3 @@ Hello
 
 
 test
-
