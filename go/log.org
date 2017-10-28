@@ -1,0 +1,9 @@
+* GOPATH
+
+set build directory
+
+* cross compile
+
+export GOOS=windows
+export GOARCH=amd64
+
