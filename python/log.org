@@ -1,0 +1,7 @@
+* templating
+
+mako [1]  templating: https://github.com/siemens/jailhouse : tools/root-cell-config.c.tmpl
+
+** links
+
+[1] http://www.makotemplates.org/
