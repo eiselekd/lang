@@ -20,7 +20,7 @@ class TemplateEngine(object):
     def __iter__(self):
         return iter(self.d);
 
-    def getSubstitution(self,str,a={}):
+    def getSubstitution(self,str,a={},style='default'):
         if str in self.d.keys():
             v = self.d[str];
             if isinstance(v,int):
@@ -43,16 +43,15 @@ class TemplateEngine(object):
                         pre = a['pre']
                     if 'post' in a.keys():
                         post = a['post']
-                return pre+j.join((self.getOneSubstitution(x,a)) for x in v)+post;
-            return self.getOneSubstitution(v,a);
+                return pre+j.join((self.getOneSubstitution(x,a,style)) for x in v)+post;
+            return self.getOneSubstitution(v,a,style);
         raise ValueError();
     
-    def getOneSubstitution(self,v,a={}):
+    def getOneSubstitution(self,v,a={},style='default'):
         if isinstance(v,TemplateEngine):
-            c = "default";
             if 'style' in a.keys():
-                c = a['style'];
-            return v.doTemplate(c)
+                style = a['style'];
+            return v.doTemplate(style)
         return v;
 
     # This replaces "{{name}}" section in <str> with str representation of <self>.d[name]
@@ -63,7 +62,7 @@ class TemplateEngine(object):
     # It also handles simple {{if ... }} statements
     # If <self>.d[name] itself is TemplateEngine derived , then <self>.d[name].doTemplate() is used to
     # recursively generate the template output.
-    def replaceTemplate(self,str):
+    def replaceTemplate(self,str,style='default'):
         r = ""; pos = 0; reb =re.compile("(?:\{\{if)(?:\[(.*?)\])(.*?)(?:fi\}\})",re.DOTALL)
         for m in reb.finditer(str):
             r += str[pos:m.start(0)];
@@ -86,7 +85,7 @@ class TemplateEngine(object):
                     a = dict(a.items() + b.items());
                 if (len(txt)):
                     try:
-                        rtxt = self.getSubstitution(txt,a);
+                        rtxt = self.getSubstitution(txt,a,style);
                         if 'up' in a.keys():
                             rtxt = rtxt.upper();
                         r += rtxt;
