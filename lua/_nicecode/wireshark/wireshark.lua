@@ -191,7 +191,7 @@ do
 
     local length = 0
     local packet_offset = 0
-    packet_info.cols.info = tostring(packet_info.src_port) .. " > " .. tostring(packet_info.dst_port)
+    packet_info.cols.info = tostring(packet_info.src_port) .. " ----> " .. tostring(packet_info.dst_port)
 
     -- decode in a loop since one tcp packet can contain several example protocol packets
     -- also reassemble splitted packets
