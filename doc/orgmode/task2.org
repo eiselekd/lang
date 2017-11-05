@@ -1,0 +1,21 @@
+#+PROPERTY: Effort_ALL 2d 5d 10d 20d 30d 35d 50d 
+#+PROPERTY: allocate_ALL dev doc test
+#+COLUMNS: %30ITEM(Task) %Effort %allocate %BLOCKER %ORDERED %CLOCKSUM  
+
+* Accounting Software                                        :taskjuggler_project:
+
+** Specification
+   :PROPERTIES:
+   :Effort:   20d
+   :BLOCKER:  start
+   :END:
+   :LOGBOOK:
+   CLOCK: [2017-11-05 Sun 15:39]--[2017-11-05 Sun 16:39] =>  1:00
+   :END:
+
+** Milestones
+*** Project start
+    :PROPERTIES:
+    :task_id:  start
+    :END:
+

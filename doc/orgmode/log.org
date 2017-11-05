@@ -1,0 +1,9 @@
+* taskjuggler
+
+gem install taskjuggler
+
+wget http://taskjuggler.org/tj3/examples/Tutorial/tutorial.tjp
+tj3 tutorial.tjp
+
+;; (require 'ox-taskjuggler)
+
