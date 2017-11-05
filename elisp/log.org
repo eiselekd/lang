@@ -1,0 +1,5 @@
+* variable
+
+ctrl-v h : show var value (describe-var)
+ctrl-h k  ... <key> : show keybinding
+ctrl-h m : show keybindings
