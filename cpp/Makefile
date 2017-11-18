@@ -98,3 +98,4 @@ c17-update:
 
 cling:
 	wget https://root.cern.ch/download/cling/cling_2017-11-02_ubuntu16.tar.bz2
+	wget https://root.cern.ch/download/cling/cling_2017-11-13_ubuntu16.tar.bz2

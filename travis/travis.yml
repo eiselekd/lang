@@ -1,0 +1,21 @@
+language: cpp
+
+env:
+  - USEENV=clang
+  - USEENV=gcc
+  - USEENV=cling
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-4.0
+    packages:
+      - gcc-7
+      - g++-7
+      - clang-4.0
+      - python-pip
+      - python-pexpect
+
+script:
+  - scripts/runtravis.sh
