@@ -99,3 +99,10 @@ c17-update:
 cling:
 	wget https://root.cern.ch/download/cling/cling_2017-11-02_ubuntu16.tar.bz2
 	wget https://root.cern.ch/download/cling/cling_2017-11-13_ubuntu16.tar.bz2
+
+
+cling-build:
+	git clone https://github.com/root-project/cling
+	cd cling; tools/packaging/cpt.py --tarball-tag=master --with-cling-url=https://github.com/root-project/cling --with-clang-url=http://root.cern.ch/git/clang.git --with-llvm-url=http://root.cern.ch/git/llvm.git '--with-cmake-flags=-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCXX_EXTENSIONS=OFF'
+
+
