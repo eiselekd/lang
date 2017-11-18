@@ -102,7 +102,13 @@ cling:
 
 
 cling-build:
+	mkdir -p $(CURDIR)/dep/cmake
+	curl -k https://cmake.org/files/v3.8/cmake-3.8.0-Linux-x86_64.tar.gz | tar --strip-components=1 -xz -C $(CURDIR)/dep/cmake
+	rm -rf cling
 	git clone https://github.com/root-project/cling
+	export CMAKE=$(CURDIR)/dep/cmake/CMake.app/Contents/bin/cmake; \
+	export CXX="g++-6"; \
+	export CC="gcc-6"; \
 	cd cling; tools/packaging/cpt.py --tarball-tag=master --with-cling-url=https://github.com/root-project/cling --with-clang-url=http://root.cern.ch/git/clang.git --with-llvm-url=http://root.cern.ch/git/llvm.git '--with-cmake-flags=-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCXX_EXTENSIONS=OFF'
 
 
