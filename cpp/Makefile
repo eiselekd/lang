@@ -90,3 +90,11 @@ c17-update:
 	apt-get update
 	apt-get install -y gcc-7
 	apt-get install -y g++-7
+
+
+#   sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y;
+#   sudo apt-get update -qq
+#   sudo apt-get install g++-4.9
+
+cling:
+	wget https://root.cern.ch/download/cling/cling_2017-11-02_ubuntu16.tar.bz2
