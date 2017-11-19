@@ -152,7 +152,6 @@ function connect(c,cont) {
 	    cont();
 	});
     });
-
     
     return app;
 }
@@ -160,6 +159,7 @@ function connect(c,cont) {
 function disconnect(c,cont) {
     server.close();
     db.close();
+    console.log('[h] server disconnect');
 }
 
 if (typeof module === 'object' && module.exports) {

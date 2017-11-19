@@ -5,9 +5,9 @@ var mocha = require('mocha');
 var chai = require('chai');
 var expect = chai.expect;
 var chaiHttp = require('chai-http');
-var gendiff = require('../g.js');
 
 debugger;
+
 
 // ##############################################################################
 chai.use(chaiHttp);
@@ -15,7 +15,7 @@ chai.use(chaiHttp);
 describe('mangodb', function() {
     var b, app, server;
     before(function(done) {
-	server = require("../b0.js");
+	server = require("../b.js");
 	app = server.connect({'DB' : 'unit-test', 'DORESET' : true, 'DEBUG':true}, function(a) {
 	    done();
 	});
@@ -56,5 +56,6 @@ describe('mangodb', function() {
 		    done();
 		});
 	});
+	
     });
 });
