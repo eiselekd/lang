@@ -1,4 +1,4 @@
-var config = require('./config'),
+var config = require('./c'),
     express = require('express'),
     http = require('http'),
     https = require('https'),
@@ -37,7 +37,7 @@ function connect(c,cont) {
     dump(" Config used 'c.json':" + JSON.stringify(_config));
 
     dump( "[+] backend" );
-    var PORT = _config.PORT || 7354;
+    var PORT = _config.PORT || 10300;
     var HOST = _config.HOST || '0.0.0.0';
 
     app.use(bodyParser.json());

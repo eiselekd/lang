@@ -31,7 +31,7 @@ describe('mangodb', function() {
 		    expect(res).to.have.status(200);
 		    expect(res).to.be.json;
 		    expect(res.body).to.be.a('object');
-		    expect(res.body).to.have.property('PORT').eql(7354);;
+		    expect(res.body).to.have.property('PORT').eql(10300);;
 		    expect(res.body).to.have.property('DB').eql('unit-test');
 		    expect(res.body).to.have.property('states-cnt').eql(0);
 		    expect(res.body).to.have.property('events-cnt').eql(0);

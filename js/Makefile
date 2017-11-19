@@ -6,10 +6,12 @@ prepare:
 
 
 start:
-        nodejs b0.js
+	nodejs b0.js
 
 test:
-        ./node_modules/mocha/bin/mocha
+	./node_modules/mocha/bin/mocha
 
 test-dbg:
-        ./node_modules/mocha/bin/mocha --inspect --debug-brk
+	./node_modules/mocha/bin/mocha --inspect --debug-brk
+
+.PHONY: test
