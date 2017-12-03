@@ -1,0 +1,23 @@
+# Installation
+
+First install the [Haskell Platform](http://www.haskell.org/platform).
+
+Then install the package by running
+
+    cabal install
+
+from within this directory. Alternatively, run
+
+    cabal install chalmers-lava2000
+
+to install the latest version on Hackage.
+
+# Verification
+
+In order to use verification, make sure that the binaries `smv` and/or `minisat` are visible in your path.
+
+  * SMV can be obtained from here: <http://www.cs.cmu.edu/~modelcheck/smv.html>
+  * MiniSAT can be obtained from here: <http://minisat.se/MiniSat.html>
+      - (We have tested with the pre-compiled Linux version 1.14.)
+
+If verification gives ".../smv.wrapper Permission denied" (or similarly for `minisat`), you need to mark the problematic files as executable. (That is, not the files in the `Scripts` directory, but the copy of those files that Cabal made during installation.
