@@ -2,8 +2,6 @@
 
 module Main where
 
-
-
 {- module NanoParsec where -}
 
 import Data.Char
