@@ -17,6 +17,9 @@ o:
 m:
 	g++ -g -std=c++14 60_move.cpp -o 60_move.exe -lpthread; ./60_move.exe
 
+m2:
+	g++ -g -std=c++14 62_temp.cpp -o 62_temp.exe -lpthread; ./62_temp.exe
+
 map17:
 	g++-7 -g -std=c++17 50_map.cpp -o 50_map.exe ; ./50_map.exe
 
