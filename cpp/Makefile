@@ -14,6 +14,9 @@ const:
 o:
 	g++ -g -std=c++14 14_o.cpp -o 14_o.exe -lpthread; ./14_o.exe
 
+m:
+	g++ -g -std=c++14 60_move.cpp -o 60_move.exe -lpthread; ./60_move.exe
+
 map17:
 	g++-7 -g -std=c++17 50_map.cpp -o 50_map.exe ; ./50_map.exe
 
@@ -102,7 +105,7 @@ cling:
 
 
 cling-build-prepare:
-	sudo apt install g++-6 gcc-6 
+	sudo apt install g++-6 gcc-6
 
 cling-build:
 	mkdir -p $(CURDIR)/dep/cmake
@@ -113,5 +116,3 @@ cling-build:
 	export CXX="g++-6"; \
 	export CC="gcc-6"; \
 	cd cling; tools/packaging/cpt.py --no-test --tarball-tag=master --with-cling-url=https://github.com/root-project/cling --with-clang-url=http://root.cern.ch/git/clang.git --with-llvm-url=http://root.cern.ch/git/llvm.git '--with-cmake-flags=-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCXX_EXTENSIONS=OFF'
-
-
