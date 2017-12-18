@@ -5,6 +5,7 @@ $LOAD_PATH.unshift("#{libdir}/metasm")
 
 require "metasm"
 include Metasm
+
 # produce x86 code
 sc = Metasm::Shellcode.assemble(Metasm::Ia32.new, <<EOS)
 add eax, 0x1234
@@ -28,7 +29,6 @@ bb.list.each{
     |di|
     puts "\n[+] #{di.instruction}"
     sem = di.backtrace_binding()
-    
     
     puts " data flow:"
     sem.each{|key, value| puts " #{key} => #{value}"}
