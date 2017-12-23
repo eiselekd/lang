@@ -72,6 +72,9 @@ var7:
 # 	g++ -std=c++14 8_enable.cpp -o 8_enable.exe; ./8_enable.exe
 
 
+io:
+	g++ 80_print.cpp -o 80_print.exe; ./80_print.exe
+
 var5-clang:
 	clang++ -std=c++14 -Xclang -fdump-record-layouts 5_var_data.cpp -o 5_var_data.exe; ./5_var_data.exe
 
