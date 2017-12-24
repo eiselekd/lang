@@ -15,7 +15,7 @@ strstream:
 	g++ -std=c++14 -o 91_strstream.exe 91_strstream.cpp -g ; ./91_strstream.exe
 
 p2:
-	g++ -std=c++14 -o 92_temp.exe 92_temp.cpp -g ; ./92_temp.exe
+	g++ -std=c++17 -o 92_temp.exe 92_temp.cpp -g ; ./92_temp.exe
 
 const:
 	g++ -std=c++14 30_const.cpp -o 30_const.exe; ./30_const.exe
