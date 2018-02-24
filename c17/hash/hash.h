@@ -4,14 +4,14 @@
 #include "tripple.h"
 
 template<typename _TypeKey=int, typename _TypeVal=int>
-struct HashNode {
-    struct HashNode *n;
-    _TypeKey key;
-    _TypeVal val;
-};
+    struct HashNode {
+	struct HashNode *n;
+	_TypeKey key;
+	_TypeVal val;
+    };
 
 template<typename _TypeKey=int,typename _TypeVal=int, typename _Alloc = std::allocator<struct HashNode<_TypeKey, _TypeVal>>>
-class CHash
+    class CHash
 {
     typedef struct HashNode<_TypeKey, _TypeVal> _HashNode;
 
@@ -24,26 +24,28 @@ class CHash
     public:
 	_hashvec(int order) noexcept :
 	order(order),
-	cnt(0),
-	elems((1<<order))
-	{ }
+	    cnt(0),
+	    elems((1<<order))
+	    { }
 
 	_hashvec( _hashvec && __x) noexcept :
-	order(__x.order), cnt(__x.cnt), elems(std::move(__x.elems))
+	order(__x.order),
+	    cnt(__x.cnt), elems(std::move(__x.elems))
 	{ }
 
 	_hashvec&
-	operator=(_hashvec&& __x) noexcept(_Alloc_traits::_S_nothrow_move())
-	{
-	    order = __x.order;
-	    cnt = __x.cnt;
-	    elems = std::move(__x.elems);
-	    return *this;
-	}
+	    operator=(_hashvec&& __x) noexcept(_Alloc_traits::_S_nothrow_move())
+	    {
+		order = __x.order;
+		cnt = __x.cnt;
+		elems = std::move(__x.elems);
+		return *this;
+	    }
 
     protected:
 	size_t order;
 	size_t cnt;
+
 	_Base elems;
     };
 

@@ -2,6 +2,9 @@
 
 #include <list>
 
+#include <string>
+#include <stdlib.h>
+
 template <typename T>
 class stl_allocator
 {
@@ -24,14 +27,14 @@ public:
     const_pointer address(const_reference x) const {return &x;}
     size_type max_size() const throw() {return size_t(-1) / sizeof(value_type);}
 
-    pointer allocate(size_type n, stl_allocator<void>::const_pointer hint = 0)
+    pointer allocate(size_type n)
     {
-        return static_cast<pointer>(xmalloc(n*sizeof(T)));
+        return static_cast<pointer>(malloc(n*sizeof(T)));
     }
 
     void deallocate(pointer p, size_type n)
     {
-        xfree(p);
+        free(p);
     }
 
     void construct(pointer p, const T& val)
@@ -58,3 +61,9 @@ class xlist : public std::list<_Ty, _Ax>
 {
 
 };
+
+int main(int argc, char **argv) {
+    xlist<std::string> myList;
+    myList.push_back("hello world");
+    return 0;
+}
