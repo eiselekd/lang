@@ -23,18 +23,14 @@ template<typename _TypeKey=int,typename _TypeVal=int, typename _Alloc = std::all
 
     public:
 	_hashvec(int order) noexcept :
-	order(order),
-	    cnt(0),
-	    elems((1<<order))
-	    { }
-
-	_hashvec( _hashvec && __x) noexcept :
-	order(__x.order),
-	    cnt(__x.cnt), elems(std::move(__x.elems))
+	order(order), cnt(0), elems((1<<order))
 	{ }
 
-	_hashvec&
-	    operator=(_hashvec&& __x) noexcept(_Alloc_traits::_S_nothrow_move())
+	_hashvec( _hashvec && __x) noexcept :
+	order(__x.order), cnt(__x.cnt), elems(std::move(__x.elems))
+	{ }
+
+	_hashvec& operator=(_hashvec&& __x) noexcept(_Alloc_traits::_S_nothrow_move())
 	    {
 		order = __x.order;
 		cnt = __x.cnt;
