@@ -1,10 +1,19 @@
 /* globals console */
 var supercrawler = require("../lib"),
     crawler;
+var fs = require("fs");
+
+var a = fs.readFileSync("url.txt",'utf8');
+var ar = a.split("\n");
+if (ar.length > 0) {
+    var u = ar[Math.floor(Math.random()*ar.length)];
+}
+var u = "https://www.jasminedirectory.com/"
+
 
 var crawler = new supercrawler.Crawler({
-  interval: 100,
-  concurrentRequestsLimit: 1000 /*,
+  interval: 10,
+  concurrentRequestsLimit: 1024 /*,
   urlList: new supercrawler.RedisUrlList({
     redis: {
       port: 6379,
@@ -14,10 +23,10 @@ var crawler = new supercrawler.Crawler({
 });
 
 crawler.on("crawlurl", function (url) {
-  console.log("Crawling " + url);
+    //console.log("Crawling " + url);
 });
 crawler.on("urllistempty", function () {
-  console.warn("The URL queue is empty.");
+    //console.warn("The URL queue is empty.");
 });
 crawler.on("handlersError", function (err) {
   console.error(err);
@@ -26,11 +35,12 @@ crawler.addHandler("text/html", supercrawler.handlers.htmlLinkParser(
 
 ));
 crawler.addHandler(function (context) {
-  console.log("Processed " + context.url);
+    console.log("Processed " + context.url);
 });
 
+
 crawler.getUrlList().insertIfNotExists(new supercrawler.Url({
-  url: "https://heise.de"
+    url: u
 })).then(function () {
-  crawler.start();
+    crawler.start();
 });
