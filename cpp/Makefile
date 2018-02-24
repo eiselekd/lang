@@ -8,6 +8,10 @@ all: bison
 	g++ -std=c++14 1_thread.cpp -o 1_thread.exe -lpthread; ./1_thread.exe
 	g++ -std=c++14 2_switch.cpp -o 2_switch.exe; ./2_switch.exe
 
+stl:
+	g++ -std=c++14 -o stl.exe stl.cpp -g ; ./stl.exe
+
+
 printf:
 	g++ -std=c++14 -o 90_printf.exe 90_printf.cpp -g ; ./90_printf.exe
 
