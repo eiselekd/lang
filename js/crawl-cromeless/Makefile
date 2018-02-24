@@ -1,0 +1,3 @@
+prepare:
+	npm install chromeless
+

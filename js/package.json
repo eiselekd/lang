@@ -1,24 +1,25 @@
 {
-    "name": "jslang",
-    "version": "1.0.0",
-    "description": "rest",
-    "homepage": "test.com",
-    "license": "BSD-3-Clause",
-    "preferGlobal": true,
-    "directories": {
-	"bin": "bin"
-    },
-    "dependencies": {
-	"later": "^1.2.0",
-	"mongodb": "^2.2.24",
-	"express": "*",
-	"body-parser": "*",
-	"https": "*",
-	"mocha": "*",
-	"chai": "*",
-	"chai-http" : "*"
-    },
-    "engines": {
-	"node": ">=6.9.2 <8.0"
-    }
+   "name": "jslang",
+   "version": "1.0.0",
+   "description": "rest",
+   "homepage": "test.com",
+   "license": "BSD-3-Clause",
+   "preferGlobal": true,
+   "directories": {
+      "bin": "bin"
+   },
+   "dependencies": {
+      "body-parser": "*",
+      "chai": "*",
+      "chai-http": "*",
+      "express": "*",
+      "headless-chrome-crawler": "^1.4.0",
+      "https": "*",
+      "later": "^1.2.0",
+      "mocha": "*",
+      "mongodb": "^2.2.24"
+   },
+   "engines": {
+      "node": ">=6.9.2 <8.0"
+   }
 }
