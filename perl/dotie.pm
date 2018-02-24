@@ -1,11 +1,11 @@
 
 package dotie;
+use Data::Dumper;
 
 sub TIEHASH
 {
-    my ($class) = @_;
-    
-    return bless { }, $class;
+    my ($class,$h) = @_;
+    return bless $h, $class;
 }
 
 sub STORE {
