@@ -4,13 +4,13 @@ var supercrawler = require("../lib"),
 
 var crawler = new supercrawler.Crawler({
   interval: 100,
-  concurrentRequestsLimit: 5,
+  concurrentRequestsLimit: 1000 /*,
   urlList: new supercrawler.RedisUrlList({
     redis: {
       port: 6379,
       host: '127.0.0.1'
     }
-  })
+  })*/
 });
 
 crawler.on("crawlurl", function (url) {
@@ -30,7 +30,7 @@ crawler.addHandler(function (context) {
 });
 
 crawler.getUrlList().insertIfNotExists(new supercrawler.Url({
-  url: "https://sweetpricing.com"
+  url: "https://heise.de"
 })).then(function () {
   crawler.start();
 });

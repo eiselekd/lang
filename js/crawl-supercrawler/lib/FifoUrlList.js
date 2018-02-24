@@ -30,7 +30,9 @@ FifoUrlList.prototype.insertIfNotExists = function (url) {
   uniqueId = url.getUniqueId();
   currentIndex = this._listIndexesByUniqueId[uniqueId];
 
-  if (typeof currentIndex === "undefined") {
+    if (typeof currentIndex === "undefined") {
+        console.log(url);
+        
     this._pushUrlToList(url);
   }
 
