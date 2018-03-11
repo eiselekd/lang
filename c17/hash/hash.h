@@ -39,6 +39,9 @@ class CHash
 	    return *this;
 	}
 
+
+
+
     protected:
 	size_t order;
 	size_t cnt;

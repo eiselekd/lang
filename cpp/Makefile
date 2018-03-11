@@ -75,6 +75,10 @@ var:
 	g++ -std=c++14 3_var.cpp -o 3_var.exe; ./3_var.exe
 	g++ -std=c++14 4_var.cpp -o 4_var.exe; ./4_var.exe
 
+conv:
+	g++ -std=c++14 20_conv.cpp -o 20_conv.exe; ./20_conv.exe
+
+
 var5:
 	g++ -std=c++14 5_var_data.cpp -o 5_var_data.exe; ./5_var_data.exe
 
