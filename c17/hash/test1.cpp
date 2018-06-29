@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "hash.h"
-
+#include "hash1.h"
+#include <sstream>
 
 int
 main(int argc, char **argv)
 {
-    CHash<int,int> h;
+    CHash h;
 
     for (int i = 0; i < 16; i++) {
-	//h[i] = i+1;
+	stringstream s; s << i;
+	h.push(s.str(),i);
     }
-
 
     return 0;
 }

@@ -1,3 +1,6 @@
+
+#http://www.miasm.re/blog/2016/01/27/re150.html
+
 import os
 from miasm2.analysis.sandbox import Sandbox_Linux_x86_32
 

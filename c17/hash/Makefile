@@ -12,7 +12,7 @@ endif
 ADDLIB=-Llib -lhash
 
 CFLAGS= -g
-TESTS=test
+TESTS=test test1
 
 POBJS=$(foreach f,$(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(PSRCS))),.obj/$(f))
 EOBJS=$(foreach f,$(TESTS),$(f).exe)
@@ -53,4 +53,4 @@ test:
 	make all
 	./test.exe
 
--include $(wildcard .obj/*dep) $(wildcard bin/*dep)
+-include $(wildcard .obj/*dep) $(wildcard bin/*dep) $(wildcard *dep)

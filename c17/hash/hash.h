@@ -18,7 +18,6 @@ class CHash
     class _hashvec
     {
 	typedef std::vector<_HashNode, _Alloc> _Base;
-
 	typedef typename __gnu_cxx::__alloc_traits<_Alloc>::template rebind<_HashNode>::other _Tp_alloc_type;
 	typedef __gnu_cxx::__alloc_traits<_Tp_alloc_type> _Alloc_traits;
 
@@ -38,9 +37,6 @@ class CHash
 	    elems = std::move(__x.elems);
 	    return *this;
 	}
-
-
-
 
     protected:
 	size_t order;
