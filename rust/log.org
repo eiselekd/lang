@@ -1,6 +1,10 @@
 * Token tree
  rust/src/libsyntax/parse/lexer/mod.rs : next_token_inner 
 
+* Trait
+
+[1] https://doc.rust-lang.org/book/second-edition/ch17-02-trait-objects.html
+
 * 'a lifetime
 
 [1] https://doc.rust-lang.org/1.9.0/book/lifetimes.html
