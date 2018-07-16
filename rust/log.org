@@ -4,6 +4,7 @@
 * 'a lifetime
 
 [1] https://doc.rust-lang.org/1.9.0/book/lifetimes.html
+[2] https://doc.rust-lang.org/book/second-edition/ch10-03-lifetime-syntax.html
 
 * macros
  
