@@ -1,0 +1,5 @@
+* macros
+ 
+[1] https://danielkeep.github.io/tlborm/book/
+[2] https://github.com/Geal/nom
+[3] https://stackoverflow.com/questions/51367781/implicit-argument-in-rust-macros/51367982#51367982
