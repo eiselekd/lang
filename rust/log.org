@@ -1,6 +1,10 @@
 * Token tree
  rust/src/libsyntax/parse/lexer/mod.rs : next_token_inner 
 
+* 'a lifetime
+
+[1] https://doc.rust-lang.org/1.9.0/book/lifetimes.html
+
 * macros
  
 [1] https://danielkeep.github.io/tlborm/book/
