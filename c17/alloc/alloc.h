@@ -1,9 +1,5 @@
-// https://www.codeproject.com/Articles/1089905/A-Custom-STL-std-allocator-Replacement-Improves-Pe
-
-#include <list>
-
-#include <string>
 #include <stdlib.h>
+#include <vector>
 
 template <typename T>
 class stl_allocator
@@ -17,8 +13,8 @@ public:
     typedef const T& const_reference;
     typedef T value_type;
 
-    stl_allocator(){}
-    ~stl_allocator(){}
+    stl_allocator() {}
+    ~stl_allocator() {}
 
     template <class U> struct rebind { typedef stl_allocator<U> other; };
     template <class U> stl_allocator(const stl_allocator<U>&){}
@@ -42,11 +38,6 @@ public:
         new(static_cast<void*>(p)) T(val);
     }
 
-    void construct(pointer p)
-    {
-        new(static_cast<void*>(p)) T();
-    }
-
 #if __cplusplus >= 201103L
 
     template<typename _Up, typename... _Args>
@@ -60,23 +51,13 @@ public:
 
 #endif
 
+    void construct(pointer p)
+    {
+        new(static_cast<void*>(p)) T();
+    }
+
     void destroy(pointer p)
     {
         p->~T();
     }
 };
-
-
-#include <list>
-
-template<class _Ty, class _Ax = stl_allocator<_Ty> >
-class xlist : public std::list<_Ty, _Ax>
-{
-
-};
-
-int main(int argc, char **argv) {
-    xlist<std::string> myList;
-    myList.push_back("hello world");
-    return 0;
-}

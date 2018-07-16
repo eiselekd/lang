@@ -26,7 +26,6 @@ public:
 	auto &b = buckets[h];
 	for (auto& i : proxy(b)) {
 	    if ((*i).k == k) {
-		printf("Multimap\n");
 		b.insert(i, std::move(v0));
 		return 0;
 	    }

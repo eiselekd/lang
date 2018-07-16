@@ -1,4 +1,4 @@
-PSRCS= hash.cpp \
+PSRCS=  \
 
 ifeq ($(USEENV),clang)
 # until c++17 is supported:
@@ -12,7 +12,7 @@ endif
 ADDLIB=-Llib -lhash
 
 CFLAGS= -g
-TESTS=test test1 test2
+TESTS=test
 
 POBJS=$(foreach f,$(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(PSRCS))),.obj/$(f))
 EOBJS=$(foreach f,$(TESTS),$(f).exe)
