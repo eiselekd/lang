@@ -88,6 +88,16 @@ var6:
 var7:
 	g++ -std=c++14 7_forward.cpp -o 7_forward.exe; ./7_forward.exe
 
+list80:
+	g++ -g -std=c++14 80_list.cpp -o 80_list.exe; ./80_list.exe
+
+list81:
+	g++ -g -std=c++14 81_list.cpp -o 81_list.exe; ./81_list.exe
+
+mem81:
+	g++ -g -std=c++14 81_mem.cpp -o 81_mem.exe; ./81_mem.exe
+
+
 # var8:
 # 	g++ -std=c++14 8_enable.cpp -o 8_enable.exe; ./8_enable.exe
 
