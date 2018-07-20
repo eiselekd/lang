@@ -1,16 +1,21 @@
 #include <stdio.h>
 #include <iostream>
+#include <cstddef>
+
+template <typename a, typename b>
+struct nod {
+    nod *next, *prev;
+    operator b*() {
+	printf("Next %p\n", this);
+	return (b*) (this->next);
+    }
+};
 
 
 template <typename a, typename b>
-union llist {
+struct llist {
 
-    struct node {
-	node *next, *prev;
-	operator b*() {
-	    return (b*) (this->next);
-	}
-    };
+    typedef nod<a,b> node;
 
     struct {
 	node head_node;
@@ -94,6 +99,7 @@ int main(int argc, char **argv) {
 
     add_head(v0.l, e1.n);
     add_head(v0.l, e2.n);
+
 
     WALK_LIST(i0,v0.l) {
 	std::cout << i0 << "\n";

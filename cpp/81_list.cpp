@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <iostream>
+#include <cstddef>
 
 template <typename b>
 struct node {
@@ -11,7 +12,7 @@ struct node {
     }
 };
 
-template <typename a, typename b>
+template <typename a, typename b, int off>
 union llist {
     struct {
         node<b> head_node;
@@ -31,9 +32,9 @@ union llist {
     }
 };
 
-template <typename a, typename b>
+template <typename a, typename b, int off>
 void
-add_head(llist<a,b> &l, node<b> &n)
+add_head(llist<a,b, off> &l, node<b> &n)
 {
     node<b> *z = l.head;
 
@@ -56,9 +57,9 @@ rem_node(node<b> &n)
     n.prev = NULL;
 }
 
-template <typename a, typename b>
+template <typename a, typename b, int off>
 void
-init_list(llist<a,b> &l)
+init_list(llist<a,b, off> &l)
 {
     l.head = &l.tail_node;
     l.null = NULL;
@@ -71,7 +72,7 @@ struct c1 {
 };
 
 struct c0 {
-    llist<c0, c1> l;
+    llist<c0, c1, offsetof(c1,n)> l;
 };
 
 int main(int argc, char **argv) {

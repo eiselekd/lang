@@ -89,10 +89,10 @@ var7:
 	g++ -std=c++14 7_forward.cpp -o 7_forward.exe; ./7_forward.exe
 
 list80:
-	g++ -g -std=c++14 80_list.cpp -o 80_list.exe; ./80_list.exe
+	g++ -g -std=c++17 80_list.cpp -o 80_list.exe; ./80_list.exe
 
 list81:
-	g++ -g -std=c++14 81_list.cpp -o 81_list.exe; ./81_list.exe
+	g++ -g -std=c++17 81_list.cpp -o 81_list.exe; ./81_list.exe
 
 mem81:
 	g++ -g -std=c++14 81_mem.cpp -o 81_mem.exe; ./81_mem.exe
@@ -112,6 +112,9 @@ l4.exe: l4.o l4main.c
 	cc  l4.o l4main.c -o l4.exe
 
 
+
+ptrm:
+	g++ -g -std=c++17 84_ptrm.cpp -o 84_ptrm.exe; ./84_ptrm.exe
 
 
 cmp:
