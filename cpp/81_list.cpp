@@ -1,18 +1,39 @@
+// https://stackoverflow.com/questions/51428593/howto-write-a-c-style-double-linked-list-implementation-similar-to-kernels-lis
+
+// g++ -g -std=c++11 81_list.cpp -o 81_list.exe
+// 8< ---------------- 81_list.cpp ------------------
 #include <stdio.h>
 #include <iostream>
 #include <stdio.h>
 #include <iostream>
 #include <cstddef>
 
+using namespace std;
+
+/***************************************/
+/* definition of double linked list
+ * https://github.com/BIRD/bird/blob/470efcb98cb33de2d5636679eb0f72c88280d6b8/lib/lists.h#L12
+ */
+
 template <typename b>
 struct node {
     node<b> *next, *prev;
-    operator b*() {
-        return (b*) (this->next);
+
+    void
+    rem_node()
+    {
+	node<b> *z = this->prev;
+	node<b> *x = this->next;
+
+	z->next = x;
+	x->prev = z;
+	this->next = NULL;
+	this->prev = NULL;
     }
+
 };
 
-template <typename a, typename b, int off>
+template <typename a, typename b, node<b> (b::* p)>
 union llist {
     struct {
         node<b> head_node;
@@ -27,77 +48,82 @@ union llist {
         node<b> *null;
         node<b> *tail;
     };
-    operator b*() {
-        return (b*) (this->head);
+
+    llist()
+    {
+	this->head = &this->tail_node;
+	this->null = NULL;
+	this->tail = &this->head_node;
     }
+
+    void
+    add_head(node<b> &n)
+    {
+	node<b> *z = this->head;
+
+	n.next = z;
+	n.prev = &(this->head_node);
+	z->prev = &n;
+	this->head = &n;
+    }
+
+    static b *container_of(node<b> &ptr) {
+	return (b*) (((char*)&ptr) - (long)&(((b*)0)->*p));
+    }
+
+    struct lit {
+	lit(node<b> *i) : i(i) {}
+
+	lit & operator++()
+	{
+	    i = i->next;
+	    return *this;
+	}
+	bool operator!=(const lit &that) const
+	{
+	    return i != that.i;
+	}
+	b &operator*()
+	{
+	    return *container_of(*i);
+	}
+	node<b> *i;
+    };
+
+    lit begin() const { return lit(this->head); }
+    lit end() const { return lit(this->tail->next); }
 };
 
-template <typename a, typename b, int off>
-void
-add_head(llist<a,b, off> &l, node<b> &n)
-{
-    node<b> *z = l.head;
+/*********************************************/
+/* example of usage: */
 
-    n.next = z;
-    n.prev = &l.head_node;
-    z->prev = &n;
-    l.head = &n;
-}
-
-template <typename b>
-void
-rem_node(node<b> &n)
-{
-    node<b> *z = n.prev;
-    node<b> *x = n.next;
-
-    z->next = x;
-    x->prev = z;
-    n.next = NULL;
-    n.prev = NULL;
-}
-
-template <typename a, typename b, int off>
-void
-init_list(llist<a,b, off> &l)
-{
-    l.head = &l.tail_node;
-    l.null = NULL;
-    l.tail = &l.head_node;
-}
-
-
-struct c1 {
-    node<c1> n;
+struct containnode {
+    int pad; /* padding allowed */
+    node<containnode> n;
 };
 
-struct c0 {
-    llist<c0, c1, offsetof(c1,n)> l;
+struct containlist {
+    int pad; /* padding allowed */
+    llist<containlist, containnode, &containnode::n> l;
 };
 
 int main(int argc, char **argv) {
 
-    c0 v0;
-    c1 e0, e1, e2;
-    c1 *i0;
+    containlist list0;
+    containnode e0, e1, e2;
+    containnode *v[3] = { &e0, &e1, &e2 };
 
-    printf("%p %p %p\n", &e0, &e1, &e2);
+    /* add to list */
+    for (auto *e : v)
+	list0.l.add_head(e->n);
 
-    init_list(v0.l);
-    add_head(v0.l, e0.n);
-    add_head(v0.l, e1.n);
-    add_head(v0.l, e2.n);
-
-#define WALK_LIST(i,list) for(i=list; i->n.next; i=i->n)
-    WALK_LIST(i0,v0.l) {
-        std::cout << i0 << "\n";
-    }
-
-    rem_node(e1.n);
-
-    std::cout << "\n";
-    WALK_LIST(i0,v0.l) {
-        std::cout << i0 << "\n";
+    /* remove from list and print */
+    for (auto *e : v) {
+	for (auto &i: list0.l) {
+	    cout << &i << "\n";
+	}
+	cout << "\n";
+	e->n.rem_node();
     }
 
     return 0;
