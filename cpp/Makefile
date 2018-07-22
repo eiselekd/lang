@@ -116,6 +116,9 @@ l4.exe: l4.o l4main.c
 ptrm:
 	g++ -g -std=c++17 84_ptrm.cpp -o 84_ptrm.exe; ./84_ptrm.exe
 
+ptrm86:
+	g++ -g -std=c++17 86_ptrm.cpp -o 86_ptrm.exe; ./86_ptrm.exe
+
 mixin:
 	g++ -g -std=c++17 85_mixin.cpp -o 85_mixin.exe; ./85_mixin.exe
 

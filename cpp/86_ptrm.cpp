@@ -12,7 +12,7 @@ using namespace std;
 
 /***************************************/
 /* definition of double linked list
- * https://github.com/BIRD/bird/blob/470efcb98cb33de2d5636679eb0f72c88280d6b8/lib/lists.h#L12
+ *
  */
 
 template <typename b>
@@ -22,57 +22,40 @@ struct node {
     void
     rem_node()
     {
-	node<b> *z = this->prev;
-	node<b> *x = this->next;
-
-	z->next = x;
-	x->prev = z;
-	this->next = NULL;
-	this->prev = NULL;
+	next->prev = prev;
+	prev->next = next;
     }
-
 };
 
 template <typename b, node<b> (b::* p)>
 union llist {
-    struct {
-        node<b> head_node;
-        void *head_padding;
-    };
-    struct {
-        void *tail_padding;
-        node<b> tail_node;
-    };
-    struct {
-        node<b> *head;
-        node<b> *null;
-        node<b> *tail;
-    };
+    node<b> head;
 
     llist()
     {
-	this->head = &this->tail_node;
-	this->null = NULL;
-	this->tail = &this->head_node;
+	head.prev = &head;
+	head.next = &head;
     }
 
     void
     add_head(node<b> &n)
     {
-	node<b> *z = this->head;
+	node<b> *prev, *next;
+ 	prev = &head;
+	next = head.next;
 
-	n.next = z;
-	n.prev = &(this->head_node);
-	z->prev = &n;
-	this->head = &n;
+	next->prev = &n;
+	n.next = next;
+	n.prev = prev;
+	prev->next = &n;
     }
 
-    static b *container_of(node<b> &ptr) {
+    static b *container_of(const node<b> &ptr) {
 	return (b*) (((char*)&ptr) - (long)&(((b*)0)->*p));
     }
 
     struct lit {
-	lit(node<b> *i) : i(i) {}
+	lit(const node<b> *i) : i(i) {}
 
 	lit & operator++()
 	{
@@ -87,11 +70,11 @@ union llist {
 	{
 	    return *container_of(*i);
 	}
-	node<b> *i;
+	const node<b> *i;
     };
 
-    lit begin() const { return lit(this->head); }
-    lit end() const { return lit(this->tail->next); }
+    lit begin() const { return lit(this->head.next); }
+    lit end() const { return lit(&this->head); }
 };
 
 /*********************************************/
@@ -129,12 +112,15 @@ int main(int argc, char **argv) {
 
     /* remove from list0 and print list0 and list1 */
     for (auto *e : v) {
+
+	e->n.rem_node();
+
+	cout << "\nlist0:\n";
 	for (auto &i: list0.l) {
 	    cout << &i << "\n";
 	}
-	cout << "\n";
-	e->n.rem_node();
 
+	cout << "\nlist1:\n";
 	for (auto &i: list1.l) {
 	    cout << &i << "\n";
 	}
