@@ -97,6 +97,12 @@ list81:
 mem81:
 	g++ -g -std=c++14 81_mem.cpp -o 81_mem.exe; ./81_mem.exe
 
+rtti:
+	g++ -g -std=c++14 87_rtti.cpp -frtti -o 87_rtti.exe; ./87_rtti.exe
+
+mach:
+	g++ -I ../../Mach7/code/mach7 -I ../../Mach7/code -g -std=c++14 94_mach.cpp -frtti -o 94_mach.exe; ./94_mach.exe
+
 
 # var8:
 # 	g++ -std=c++14 8_enable.cpp -o 8_enable.exe; ./8_enable.exe
