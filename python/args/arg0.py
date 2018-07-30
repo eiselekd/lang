@@ -2,10 +2,10 @@
 import argparse
 from pprint import pprint
 
-def a():
+def a(args):
     print("a");
 
-def b():
+def b(args):
     print("b");
 
 parser = argparse.ArgumentParser(prog='PROG')
@@ -25,7 +25,10 @@ parser_b.set_defaults(func=b)
 # parse some argument lists
 a = ['a', '12']
 opt = parser.parse_args(a)
+
+opt.func(opt)
 pprint(opt);
 
 opt = parser.parse_args(['--verbose', 'b', '--baz', 'Z'])
+opt.func(opt)
 pprint(opt);

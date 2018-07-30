@@ -103,6 +103,11 @@ rtti:
 mach:
 	g++ -I ../../Mach7/code/mach7 -I ../../Mach7/code -g -std=c++14 94_mach.cpp -frtti -o 94_mach.exe; ./94_mach.exe
 
+rtti2:
+	g++ -g -std=c++17 95_rtti.cpp -o 95_rtti.s -S
+	g++ -g -std=c++17 95_rtti.cpp -o 95_rtti.exe; ./95_rtti.exe
+
+
 
 # var8:
 # 	g++ -std=c++14 8_enable.cpp -o 8_enable.exe; ./8_enable.exe
