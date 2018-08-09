@@ -107,6 +107,8 @@ rtti2:
 	g++ -g -std=c++17 95_rtti.cpp -o 95_rtti.s -S
 	g++ -g -std=c++17 95_rtti.cpp -o 95_rtti.exe; ./95_rtti.exe
 
+r0:
+	g++ -g -std=c++17 97_r0.cpp -o 97_r0.exe; ./97_r0.exe
 
 
 # var8:
