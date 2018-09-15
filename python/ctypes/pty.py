@@ -17,7 +17,7 @@ class pty():
         self.fd3 = os.open("/dev/ptmx", os.O_RDWR | os.O_NONBLOCK);
         if self.fd3 < 0:
             print("Couldn't open output /dev/ptmx\n")
-        libc = cdll.LoadLibrary("libc.so.6")
+        libc = cdll.LoadLibrary(None)
         libc.grantpt(self.fd3);
  	libc.unlockpt(self.fd3);
         libc.ptsname.restype = c_char_p
@@ -88,10 +88,13 @@ def setset(b, a):
 def setget(b, a):
     return [ i for i in a if fdisset(b,i) ]
 
+class timeval(Structure):
+    _fields_ = [("tv_sec", c_long), ("tv_usec", c_long)]
+
 def cselect(r,w,x,timeout):
 
-    class timeval(Structure):
-        _fields_ = [("tv_sec", c_long), ("tv_usec", c_long)]
+    libc = cdll.LoadLibrary(None)
+
     ra = fdmask();
     wa = fdmask();
     xa = fdmask();
@@ -102,8 +105,6 @@ def cselect(r,w,x,timeout):
     tv = timeval()
     tv.tv_sec = int(timeout)
     tv.tv_usec = int(1000000.0 * (timeout%1.0))
-    libc = cdll.LoadLibrary("libc.so.6")
-    #print ("Select on " + str(ra))
     ret = libc.select(m+1, ra, wa, xa, pointer(tv));
     if (ret < 0):
         print ("Error %d" %(ret));
@@ -113,6 +114,8 @@ def cselect(r,w,x,timeout):
         return (setget(ra,r),setget(wa,w),setget(xa,x))
 
 def main():
+    if sizeof(c_ulong) != 8:
+        raise("64bit os expected with long int = 64bit")
     a = pty();
     while True:
         try:
