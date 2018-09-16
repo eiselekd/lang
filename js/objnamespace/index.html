@@ -1,0 +1,22 @@
+<html>
+    <head>
+	<script src="base.js"></script>
+    </head>
+    <body>
+	<script>
+	 window.onload = function(){
+
+	     tr.exportTo('tr.ui.one', function() {
+		 function doalert(msg) {
+		     tr.showPanic("tracing pandic", msg);
+		 };
+		 return {
+		     doalert,
+		 };
+	     });
+
+	     tr.ui.one.doalert("test tr namespace");
+	 };
+	</script>
+    </body>
+</html>
