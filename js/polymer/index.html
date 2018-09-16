@@ -1,0 +1,21 @@
+<html>
+    <head>
+	<link rel="import" href="polymer/polymer.html">
+    </head>
+    <body>
+	<div id="base"></div>
+	<script>
+	 window.onload = function(){
+	     //https://www.polymer-project.org/1.0/docs/devguide/local-dom
+	     //https://www.polymer-project.org/1.0/docs/devguide/local-dom#dom-api
+	     d = Polymer.dom(document.body).querySelector(
+		 '#base');
+	     if (d) {
+		 v = document.createElement('span');
+		 v.innerHTML = 'Hello';
+		 Polymer.dom(document.body).appendChild(v);
+	     }
+	 }
+	</script>
+    </body>
+</html>
