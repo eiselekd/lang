@@ -1,3 +1,6 @@
+#ifndef _ALLOC_STL_HEADER_
+#define _ALLOC_STL_HEADER_
+
 #include <stdlib.h>
 #include <vector>
 
@@ -60,4 +63,26 @@ public:
     {
         p->~T();
     }
+
+    pointer newExtra(size_type extra)
+    {
+        return static_cast<pointer>(malloc(extra+sizeof(T)));
+    }
+
+    template<typename... _Args>
+    pointer
+    newObj(size_type size, _Args&&... __args)
+    {
+	pointer p = newExtra(size);
+	::new((void*) p) T(std::forward<_Args>(__args)...); return p; }
+
+
+    void relObj(pointer p)
+    {
+	destroy(p);
+        free(p);
+    }
+
 };
+
+#endif
