@@ -179,3 +179,6 @@ cling-build:
 
 d100:
 	g++ -g 100_del.cpp -o 100_del.exe
+
+d101:
+	g++ -g 101_del.cpp -o 101_del.exe

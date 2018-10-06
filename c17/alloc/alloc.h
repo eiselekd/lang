@@ -74,8 +74,9 @@ public:
     newObj(size_type size, _Args&&... __args)
     {
 	pointer p = newExtra(size);
-	::new((void*) p) T(std::forward<_Args>(__args)...); return p; }
-
+	::new((void*) p) T(std::forward<_Args>(__args)...);
+	return p;
+    }
 
     void relObj(pointer p)
     {

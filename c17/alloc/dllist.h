@@ -3,11 +3,17 @@
 
 template <typename b>
 struct lnode {
+
+    lnode() : next(nullptr), prev(nullptr) {};
+
     lnode<b> *next, *prev;
 
     void
     rem_node()
     {
+	if (next == nullptr || prev == nullptr)
+	    return;
+
 	lnode<b> *z = this->prev;
 	lnode<b> *x = this->next;
 
@@ -20,6 +26,9 @@ struct lnode {
 
 template <typename b, lnode<b> (b::* p)>
 union llist {
+
+    typedef llist<b,p> llist_type;
+
     struct {
         lnode<b> head_node;
         void *head_padding;
@@ -77,6 +86,40 @@ union llist {
 
     lit begin() const { return lit(this->head); }
     lit end() const { return lit(this->tail->next); }
+
+    /* vvvvv delete save iterator vvvvv */
+    struct llist_save {
+        llist_save(llist_type *l) : l(l) {};
+	struct lit_save {
+            lit_save(const lnode<b> *i) : i(i), n(i->next) {}
+	    lit_save & operator++()
+	    {
+		i = n;
+		n = n->next;
+		return *this;
+	    }
+	    bool operator!=(const lit_save &that) const
+	    {
+		return i != that.i;
+	    }
+
+	    b &operator*()
+	    {
+		return *container_of(*i);
+	    }
+	    const lnode<b> *i;
+	    const lnode<b> *n;
+	};
+
+	lit_save begin() const { return lit_save(l->head); }
+	lit_save end() const { return lit_save(l->tail->next); }
+
+	llist_type *l;
+    };
+    llist_save saveit() { return llist_save(this); };
+    /* ^^^^^ delete save iterator ^^^^^ */
+
+
 };
 
 #endif
