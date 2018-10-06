@@ -1,4 +1,4 @@
-PSRCS=  \
+PSRCS= res.cpp \
 
 ifeq ($(USEENV),clang)
 # until c++17 is supported:

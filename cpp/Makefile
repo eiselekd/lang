@@ -174,3 +174,8 @@ cling-build:
 	export CXX="g++-6"; \
 	export CC="gcc-6"; \
 	cd cling; tools/packaging/cpt.py --no-test --tarball-tag=master --with-cling-url=https://github.com/root-project/cling --with-clang-url=http://root.cern.ch/git/clang.git --with-llvm-url=http://root.cern.ch/git/llvm.git '--with-cmake-flags=-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCXX_EXTENSIONS=OFF'
+
+
+
+d100:
+	g++ -g 100_del.cpp -o 100_del.exe
