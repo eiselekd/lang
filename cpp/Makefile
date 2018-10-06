@@ -181,4 +181,7 @@ d100:
 	g++ -g 100_del.cpp -o 100_del.exe
 
 d101:
-	g++ -g 101_del.cpp -o 101_del.exe
+	g++ -g 101_stack.cpp -o 101_stack.exe
+
+d102:
+	g++ -g 102_stack.cpp -o 102_stack.exe
