@@ -11,7 +11,9 @@ class stack_placement {
 private:
     T *m_ptr;
 public:
-    template<typename... _Args> stack_placement(void *area, _Args&&... __args) { m_ptr = new(area) T(std::forward<_Args>(__args)...); }
+    template<typename... _Args> stack_placement(void *area, _Args&&... __args) {
+	m_ptr = new(area) T(std::forward<_Args>(__args)...);
+    }
     stack_placement(const stack_placement &) = delete;
     ~stack_placement() {
 	m_ptr->~T();

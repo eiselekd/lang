@@ -33,6 +33,7 @@ public:
 
     void deallocate(pointer p, size_type n)
     {
+	(void) n;
         free(p);
     }
 
