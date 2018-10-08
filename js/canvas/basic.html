@@ -3,6 +3,25 @@
   <head i18n-values="dir:textdirection;">
   </head>
   <body>
-      
+      <div id="n0">Hello div</div>
+      <script>
+       window.onload = function(){
+	   c = document.createElement('canvas');
+	   var e0 = document.getElementById("n0");
+	   e0.appendChild(c);
+	   ctx = c.getContext('2d');
+	   
+	   ctx.clearRect(0, 0, 20, 30);
+
+	   ctx.textAlign = 'left';
+	   ctx.textBaseline = 'top';
+	   const pixelRatio = window.devicePixelRatio || 1;
+	   ctx.font = (9 /* * pixelRatio */) + 'px sans-serif';
+	   const displayTextColor = 'rgb(0,0,0)';
+	   
+           ctx.fillText("Hello", 5, 5);
+	   
+       };
+      </script>
   </body>
 </html>

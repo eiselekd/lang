@@ -5,17 +5,15 @@
   <body>
       <script>
 
-       o = {}
-       o.prototype = {
+       window.onload = function(){
+	   c = document.createElement('canvas');
+	   var e0 = document.getElementById("n0");
+	   e0.appendChild(c);
+	   ctx = c.getContext('2d');
+	   
 
-	   decorate(viewport) {
-	       this.canvas_ = document.createElement('canvas');
-	       this.canvas_.className = 'drawing-container-canvas';
-	       this.canvas_.style.left = tr.ui.b.constants.HEADING_WIDTH + 'px';
-	       
-	       this.ctx_ = this.canvas_.getContext('2d');
-	       this.offsetY_ = 0;
-	   }
+	   
+	   
        };
 
       </script>
