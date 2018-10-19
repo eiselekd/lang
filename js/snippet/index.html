@@ -1,0 +1,22 @@
+<html>
+    <head>
+	<script src="jq.js"> </script>
+    </head>
+    <body>
+	<div id="load1">Load1</div>
+	<div id="load2">Load2</div>
+	<div id="base" />
+	<script>
+	 window.onload = function() {
+	     $("#load1").click(function() {
+		 $("#base").load("a1.html",function(data){
+		     console.log(data);
+		 })});
+	     $("#load2").click(function() {
+		 $("#base").load("a2.html",function(data){
+		     console.log(data);
+		 })});
+	 };
+	</script>
+    </body>
+</html>
