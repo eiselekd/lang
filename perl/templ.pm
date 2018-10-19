@@ -18,11 +18,11 @@ sub readfile {
 }
 
 sub writefile {
-  my ($out,$re,$temp) = @_;
-  my $dir = dirname($out);
-  if ($dir) {
-    mkpath($dir);
-  }
+    my ($out,$re,$temp) = @_;
+    my $dir = dirname($out);
+    if ($dir) {
+	mkpath($dir);
+    }
     open OUT, ">$out" or die ($out.$!);
     print OUT ($re);
     close OUT;
@@ -34,7 +34,7 @@ sub writefile {
 package templ::template;
 use Data::Dumper;
 @ISA = ('node');
-  
+
 $RE_balanced_squarebrackets = qr'(?:[\[]((?:(?>[^\[\]]+)|(??{$RE_balanced_squarebrackets}))*)[\]])'s;
 $RE_balanced_smothbrackets  = qr'(?:[\(]((?:(?>[^\(\)]+)|(??{$RE_balanced_smothbrackets}))*)[\)])'s;
 $RE_balanced_brackets =       qr'(?:[\{]((?:(?>[^\{\}]+)|(??{$RE_balanced_brackets}))*)[\}])'s;
@@ -44,86 +44,86 @@ $RE_FILE =                    qr'\{\{file((?:(?>(?:(?!(?:elif\}\}|\{\{file)).)+)
 $RE_SLASH =                   qr'\{\{/((?:(?>(?:(?!(?:/\}\}|\{\{/)).)+)|(??{$RE_SLASH}))*)/\}\}'s;
 
 sub snippetParam {
-	my ($m) = (shift);
+    my ($m) = (shift);
     if ($m =~ /^$RE_balanced_squarebrackets/) {
-		$m = substr($m,length($&));
-		return ($m,templ::utils::trim($1));
-	} else {
-		return ($m,"");
-	}
+	$m = substr($m,length($&));
+	return ($m,templ::utils::trim($1));
+    } else {
+	return ($m,"");
+    }
 }
 
 sub splitpairs {
-	my ($m) = @_; my $i, $j; my @a = ();
-	for ($j = $i = 0; $i < length($m); $i++) {
-		my $p = substr($m,$i);
-		if ($p =~ /^\\\s/) {
-			$i++;
-		} elsif ($p =~ /^(\s+)/) {
-			length($&);
-			push(@a,[substr($m,$j,$i-$j),$&]);
-			$i += length($&);
-			$j = $i;
-			$i--;
-		}
+    my ($m) = @_; my $i, $j; my @a = ();
+    for ($j = $i = 0; $i < length($m); $i++) {
+	my $p = substr($m,$i);
+	if ($p =~ /^\\\s/) {
+	    $i++;
+	} elsif ($p =~ /^(\s+)/) {
+	    length($&);
+	    push(@a,[substr($m,$j,$i-$j),$&]);
+	    $i += length($&);
+	    $j = $i;
+	    $i--;
 	}
-	push(@a,[substr($m,$j,$i-$j),'']) if ($i != $j);
-	return [@a];
+    }
+    push(@a,[substr($m,$j,$i-$j),'']) if ($i != $j);
+    return [@a];
 }
 
 sub resolve_splitpairs {
-	my ($a) = (shift);
-	return [map { 
-		my ($fn,$sp) = ($$_[0],$$_[1]);
-		my $_fn = templ::utils::trim($fn);
-		$fn = $_fn;
-		[$fn,$sp];
-	}  @$a ];
+    my ($a) = (shift);
+    return [map { 
+	my ($fn,$sp) = ($$_[0],$$_[1]);
+	my $_fn = templ::utils::trim($fn);
+	$fn = $_fn;
+	[$fn,$sp];
+	    }  @$a ];
 }
 
 sub join_splitpairs {
-	my ($a) = @_;
-	return join("", map { $$_[0].$$_[1] } @$a);
+    my ($a) = @_;
+    return join("", map { $$_[0].$$_[1] } @$a);
 }
 
 sub slashsnippet {
     my ($self,$m) = (shift,shift);
-	$m = $self->doSub($m,@_);
-	my $a = splitpairs($m,@_); my $i = 0;
-	$a = resolve_splitpairs($a,@_);
-	$m = join_splitpairs($a,@_);
-	return $m;
+    $m = $self->doSub($m,@_);
+    my $a = splitpairs($m,@_); my $i = 0;
+    $a = resolve_splitpairs($a,@_);
+    $m = join_splitpairs($a,@_);
+    return $m;
 }
 
 sub filesnippet {
     my ($self,$m) = (shift,shift);
     $m = templ::utils::trim($m);
-	$m = templ::node::_relfname($m,@_);
-	return $m;
+    $m = templ::node::_relfname($m,@_);
+    return $m;
 }
 
 sub callsnippet {
     my ($self,$m) = (shift,shift);
-	my ($m,$n) = snippetParam($m);
-	confess("Cannot find call expression\n") if (!length($n));
+    my ($m,$n) = snippetParam($m);
+    confess("Cannot find call expression\n") if (!length($n));
     my $a = $self->doSub($m,@_);
-	$m = eval($n); warn $@ if $@;
+    $m = eval($n); warn $@ if $@;
     return $m;
 }
 
 sub ifsnippet {
     my ($s,$m) = (shift,shift);
     my ($m,$n) = snippetParam($m);
-	confess("Cannot find if expression\n") if (!length($n));
+    confess("Cannot find if expression\n") if (!length($n));
     my $v = $s->getVal($n,@_);
     if (defined($v)) {
-		return "" if (!$v);
+	return "" if (!$v);
     } else {
-		return "" if ($n=~/^[a-z][a-z0-9_]*$/);
-		my $r = eval($n); warn $@ if $@;
-		if (!$r) {
-			return "";
-		}
+	return "" if ($n=~/^[a-z][a-z0-9_]*$/);
+	my $r = eval($n); warn $@ if $@;
+	if (!$r) {
+	    return "";
+	}
     }
     $m =~ s/$RE_IF/$self->ifsnippet($1,@_)/gse;
     return $m;
@@ -135,15 +135,15 @@ sub exesnippet {
 }
 
 sub flatten {
-	my (@v) = @_; my @r = ();
-	foreach my $v (@v) {
-		if (UNIVERSAL::isa($v,'ARRAY')) {
-			push(@r, map { flatten($_) } @$v);
-		} else {
-			push(@r,$v);
-		}
+    my (@v) = @_; my @r = ();
+    foreach my $v (@v) {
+	if (UNIVERSAL::isa($v,'ARRAY')) {
+	    push(@r, map { flatten($_) } @$v);
+	} else {
+	    push(@r,$v);
 	}
-	return @r;
+    }
+    return @r;
 }
 
 sub asrelfname { return $_[0]; }
@@ -175,30 +175,30 @@ sub snippet {
 
 sub doSub {
     my ($self,$m) = (shift,shift); my $cnt = 0; my $it = 0;
-	my @a = @_;
+    my @a = @_;
     while(1) {
-		my $ol = length($m);
-		$cnt += ($m =~ s/$RE_IF/$self->ifsnippet($1,@a)/gsei);
-		$cnt += ($m =~ s/$RE_CALL/$self->callsnippet($1,@a)/gsei);
-		$cnt += ($m =~ s/$RE_FILE/$self->filesnippet($1,@a)/gsei);
-		$cnt += ($m =~ s/$RE_SLASH/$self->slashsnippet($1,@a)/gsei);
-		$cnt += ($m =~ s/\{$RE_balanced_brackets\}/$self->snippet($1,@a)/gse);
-		$cnt += ($m =~ s/`([^`]+)`/$self->exesnippet($1,@a)/gsei);
-		last if (($ol == length($m)) || $it > 4);
-		$it++;
+	my $ol = length($m);
+	$cnt += ($m =~ s/$RE_IF/$self->ifsnippet($1,@a)/gsei);
+	$cnt += ($m =~ s/$RE_CALL/$self->callsnippet($1,@a)/gsei);
+	$cnt += ($m =~ s/$RE_FILE/$self->filesnippet($1,@a)/gsei);
+	$cnt += ($m =~ s/$RE_SLASH/$self->slashsnippet($1,@a)/gsei);
+	$cnt += ($m =~ s/\{$RE_balanced_brackets\}/$self->snippet($1,@a)/gse);
+	$cnt += ($m =~ s/`([^`]+)`/$self->exesnippet($1,@a)/gsei);
+	last if (($ol == length($m)) || $it > 4);
+	$it++;
     }
     return $m;
 }
 
 sub saveTo {
-	my ($s) = (shift);
-	my $m = $s->doSub($$s{'txt'},@_);
-	if (exists($$s{'trim'})) {
-		$m = join("\n",map { templ::utils::trim($_) } split('[\n]',$m));
-	}
-	my $fn = $s->{'_fname'};
-	print("Writing file $fn\n") if ($::OPT{'verbose'} && !$::OPT{'quiet'});
-	::utils::writefile($fn,$m);
-	print($m) if ($::OPT{'verbose'} && !$::OPT{'quiet'});
-	return $m;
+    my ($s) = (shift);
+    my $m = $s->doSub($$s{'txt'},@_);
+    if (exists($$s{'trim'})) {
+	$m = join("\n",map { templ::utils::trim($_) } split('[\n]',$m));
+    }
+    my $fn = $s->{'_fname'};
+    print("Writing file $fn\n") if ($::OPT{'verbose'} && !$::OPT{'quiet'});
+    ::utils::writefile($fn,$m);
+    print($m) if ($::OPT{'verbose'} && !$::OPT{'quiet'});
+    return $m;
 }
