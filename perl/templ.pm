@@ -73,7 +73,7 @@ sub splitpairs {
 
 sub resolve_splitpairs {
     my ($a) = (shift);
-    return [map { 
+    return [map {
 	my ($fn,$sp) = ($$_[0],$$_[1]);
 	my $_fn = templ::utils::trim($fn);
 	$fn = $_fn;
@@ -155,11 +155,11 @@ sub snippet {
     $v = $$s{$m}  ;
     if (UNIVERSAL::isa($v,'ARRAY')) {
 	my $c = exists($$a{'c'}) ? $$a{'c'} : 'txt';
-	my @a = map { 
-	    (UNIVERSAL::can($_,'doSub') && exists($$_{$c})) ? $_->doSub($$_{$c},@_) : $_ 
+	my @a = map {
+	    (UNIVERSAL::can($_,'doSub') && exists($$_{$c})) ? $_->doSub($$_{$c},@_) : $_
 	} @{$v};
 	my $b = $$a{'join'} || "";
-      	@a = map { $pre.$_.$post } @a; 
+      	@a = map { $pre.$_.$post } @a;
 	$r = join($b,@a);
     } else {
 	my $c = exists($$a{'c'}) ? $$a{'c'} : 'txt'; my $cres = undef;
