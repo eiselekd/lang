@@ -197,3 +197,6 @@ d105_:
 
 d106:
 	g++ -std=c++17 -g 106_serialize.cpp -o 106_serialize.exe
+
+d107:
+	g++ -std=c++17 -g 107_const_hash.cpp -o 107_const_hash.exe
