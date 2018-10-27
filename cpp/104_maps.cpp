@@ -3,6 +3,7 @@
 #include <string>
 #include <unistd.h>
 #include <assert.h>
+#include <new>
 
 /*
   semimap:
@@ -14,7 +15,34 @@
 #define ID(x) \
     []() constexpr { return x; }
 
-int main(int argc, char **argv) {
+/*
+   std::launder: volatile like instruction used to prevent compile time aliasing
+   http://code.i-harness.com/ja/docs/cpp/utility/launder
+
+
+ */
+
+int main(int argc, char **argv)
+{
+
+    struct X {
+	const int n; // note: X has a const member
+	int m;
+    };
+    {
+	X *p = new X{3};
+	const int a = p->n;
+	new (p) X{5};       // p does not point to new object because X::n is const
+	const int b = p->n; // undefined behavior
+	const int x = p->m; // undefined behavior (even though m is non-const, p can't be used)
+	const int c = std::launder(p)->n; // OK, std::launder(p) points to new object
+    }
+
+    struct {
+    X *p = new X{3, 4};
+    const int a = p->n;
+    X* np = new (p) X{5, 6};
+
     {
 	semi::map<std::string, std::string> map;
 

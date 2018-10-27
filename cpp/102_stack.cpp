@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string>
 #include <unistd.h>
+#include <type_traits>
 
 /*
  * https://stackoverflow.com/questions/52681624/destructor-on-placement-new?noredirect=1#comment92291870_52681624
@@ -22,6 +23,9 @@ public:
     T *operator->() {
 	return m_ptr;
     }
+    T &operator*() {
+	return *m_ptr;
+    }
 };
 
 class aclass {
@@ -30,6 +34,7 @@ public:
     ~aclass() {}
     int size_;
     char data[0];
+    void print() { printf("."); };
 };
 
 void f(int size)
@@ -43,6 +48,20 @@ void f(int size)
 
 }
 
+template <int size, typename l>
+void f2(l l0)
+{
+    /* https://en.cppreference.com/w/cpp/types/aligned_storage */
+    std::aligned_storage<sizeof(aclass) + size, alignof(intptr_t)> v0;
+    std::aligned_storage<sizeof(aclass) + size, alignof(intptr_t)> v1;
+    //intptr_t v0[(sizeof(aclass) + size + sizeof(intptr_t) - 1)/sizeof(intptr_t)];
+    //intptr_t v1[(sizeof(aclass) + size + sizeof(intptr_t) - 1)/sizeof(intptr_t)];
+    aclass *p = new(static_cast<void*>(&v0)) aclass(size);
+    p->~aclass();
+    stack_placement<aclass> v(&v1, size);
+    l0(*v);
+}
+
 int main(int argc, char **argv)
 {
     /*
@@ -52,5 +71,6 @@ int main(int argc, char **argv)
     */
     f(10);
     f(100);
+    f2<10>([](aclass &v) { v.print();});
     return 0;
 }

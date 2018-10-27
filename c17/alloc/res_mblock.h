@@ -12,11 +12,9 @@ struct mblock : resource {
     mblock(pool *p, size_t size) : resource(p), size_(size) {};
     mblock(size_t size) : resource(nullptr), size_(size) {};
     virtual ~mblock() { }
-
     static mblock *container_of(void *p) {
 	return (mblock *) (((unsigned char*)p) - (long)&(((mblock*)0)->data_));
     }
-
     size_t size_;
     uintptr_t data_align[0];
     unsigned char data_[0];
