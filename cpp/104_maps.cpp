@@ -4,6 +4,10 @@
 #include <unistd.h>
 #include <assert.h>
 #include <new>
+#include <map>
+#include <type_traits>
+
+using namespace std;
 
 /*
   semimap:
@@ -12,36 +16,44 @@
 */
 #include "semimap.h"
 
-#define ID(x) \
-    []() constexpr { return x; }
+#define ID(x) []() constexpr { return x; }
 
-/*
-   std::launder: volatile like instruction used to prevent compile time aliasing
-   http://code.i-harness.com/ja/docs/cpp/utility/launder
+template <auto...> struct d {};
+template <typename l>
+constexpr auto key2type(l l0) {
+    return d<l0()>{};
+}
 
+template <typename Key>
+class m {
+public:
+    m() = delete;
+    template <typename id,typename ... Args>
+    static int get(id i, Args&&... args)
+    {
+	using u = decltype(key2type(i));
+        auto& f = init_flag<u>;
+	if (f) {
+	}
+	return 0;
+    }
+    template <typename>
+    static bool init_flag;
+};
 
- */
+template <typename Key>
+template <typename>
+bool m<Key>::init_flag = false;
 
 int main(int argc, char **argv)
 {
 
-    struct X {
-	const int n; // note: X has a const member
-	int m;
-    };
-    {
-	X *p = new X{3};
-	const int a = p->n;
-	new (p) X{5};       // p does not point to new object because X::n is const
-	const int b = p->n; // undefined behavior
-	const int x = p->m; // undefined behavior (even though m is non-const, p can't be used)
-	const int c = std::launder(p)->n; // OK, std::launder(p) points to new object
-    }
+    m<int>::get(ID(1));
+    m<int>::get(ID(2));
 
-    struct {
-    X *p = new X{3, 4};
-    const int a = p->n;
-    X* np = new (p) X{5, 6};
+    //vector<decltype(key2type(ID(1)))> a;
+
+
 
     {
 	semi::map<std::string, std::string> map;
@@ -50,7 +62,7 @@ int main(int argc, char **argv)
 	assert(food.empty());
 	food = "pizza";
 	assert(map.get(ID("food")) == "pizza");
-    }
+    };
     {
 
 	struct Tag {
@@ -59,7 +71,7 @@ int main(int argc, char **argv)
         // compile-time first, then run-time
         map::get(ID("food")) = "pizza";
         assert(map::get("food") == "pizza");
-    }
+    };
 
     return 0;
 }

@@ -185,3 +185,12 @@ d101:
 
 d102:
 	g++ -g 102_stack.cpp -o 102_stack.exe
+
+d104:
+	g++ -std=c++17 -g 104_maps.cpp -o 104_maps.exe
+
+d105:
+	g++ -std=c++17 -g 105_launder.cpp -o 105_launder.exe
+
+d105_:
+	g++ -std=c++17 -g 105_static_templ.cpp -o 105_static_templ.exe
