@@ -19,11 +19,13 @@ using SerFuncs = vector<SerFunc>;
 
 struct f {
     int a, b;
+    vector<int> v_;
 };
 
 struct g {
     f n;
     int b;
+    vector<int> v_;
 };
 
 template <typename n> SerFuncs& EnumSerFuncs();

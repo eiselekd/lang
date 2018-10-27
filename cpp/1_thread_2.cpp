@@ -7,7 +7,7 @@
 
 int main(int argc, char **argv) {
 
-  auto gen = ([](int a, int b) -> decltype(0) {
+  auto gen = ([](int a, int b)->decltype(0) {
       std::cout << "HW:" << a << " " << b <<"\n";
       return 0;
     });

@@ -54,8 +54,8 @@ void EnumSer(const e &v, std::vector<char> &out)
     }
 }
 
-template <typename mt, typename offtyp, offtyp (mt::* p)>
-void EnumSerOff(const void *v,vector<char> &out) {
+template <typename mt, typename d, d (mt::* p)>
+auto EnumSerOff(const void *v,vector<char> &out) -> void {
     auto m = reinterpret_cast<const mt*>(v);
     printf(",");
     EnumSer(m->*p,out);
@@ -68,7 +68,7 @@ template<typename n> SerFuncs& EnumSerFuncs();
     template<>					\
     SerFuncs& EnumSerFuncs<f>() {		\
     static SerFuncs f_ = {
-#define RSC_DATA(f,v) EnumSerOff<f,decltype(f::v),&f::v>,
+#define RSC_DATA(f,v) EnumSerOff<f,decltype(f::v), &f::v>,
 #define RSC_DATA_END(n) }; return f_; }
 
 RSC_DATA_BEG(f)
