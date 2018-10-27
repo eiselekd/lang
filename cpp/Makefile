@@ -194,3 +194,6 @@ d105:
 
 d105_:
 	g++ -std=c++17 -g 105_static_templ.cpp -o 105_static_templ.exe
+
+d106:
+	g++ -std=c++17 -g 106_serialize.cpp -o 106_serialize.exe
