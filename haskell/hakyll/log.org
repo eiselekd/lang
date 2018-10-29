@@ -1,0 +1,11 @@
+
+* Install
+
+curl -sSL https://get.haskellstack.org/ | sh
+.bashrc: export PATH=${HOME}/.local/bin:$PATH
+
+stack install hakyll
+
+
+[1] https://docs.haskellstack.org/en/stable/README/
+[2] https://jaspervdj.be/hakyll/tutorials/01-installation.html
