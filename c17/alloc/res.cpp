@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "dllist.h"
-#include "res.h"
+#include "res_pool.h"
 
 resource::resource(pool *p) {
     if (p)

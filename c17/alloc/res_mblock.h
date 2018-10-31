@@ -7,6 +7,7 @@
 #include "alloc.h"
 #include "stackplace.h"
 #include "res.h"
+#include "res_pool.h"
 
 struct mblock : resource {
     mblock(pool *p, size_t size) : resource(p), size_(size) {};
