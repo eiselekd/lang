@@ -2,7 +2,7 @@
 #include "dllist.h"
 #include "res.h"
 
-resource::resource(pool *p ) {
+resource::resource(pool *p) {
     if (p)
 	p->addResource(*this);
 }

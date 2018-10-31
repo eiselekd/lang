@@ -34,18 +34,6 @@ struct resource
     struct resclass *rclass;
 };
 
-struct pool : resource
-{
-    std::string name;
-    union llist<resource, &resource::n> inside;
-    void addResource(resource &m) { inside.add_head(m.n); }
-
-    void release(void);
-};
-
-struct pool_resclass : resclass {
-
-};
 
 
 #endif

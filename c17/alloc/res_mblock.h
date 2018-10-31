@@ -38,10 +38,10 @@ struct mb_resclass : resclass {
 
     }
     virtual resource *lookup(const resource *, unsigned long) {
-
+	return 0;
     }
     virtual size_t memsize(const resource &) {
-
+	return 0;
     }
 
 };

@@ -203,3 +203,6 @@ d106_2:
 
 d107:
 	g++ -std=c++17 -g 107_const_hash.cpp -o 107_const_hash.exe
+
+d108:
+	g++ -std=c++17 -g 108_variant.cpp -o 108_variant.exe
