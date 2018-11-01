@@ -27,11 +27,15 @@ struct resclass
 struct pool;
 struct resource
 {
-    resource(pool *p = nullptr);
+    resource(resclass *r, pool *p = nullptr, bool isstack=false);
     virtual ~resource() { n.rem_node(); }
 
     lnode<resource> n;
-    struct resclass *rclass;
+    bool isstack() { return isstack_; };
+
+    resclass *rclass;
+    bool isstack_;
+
 };
 
 

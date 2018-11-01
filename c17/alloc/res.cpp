@@ -2,13 +2,14 @@
 #include "dllist.h"
 #include "res_pool.h"
 
-resource::resource(pool *p) {
+resource::resource(resclass *r, pool *p, bool isstack) : rclass(r), isstack_(isstack) {
     if (p)
 	p->addResource(*this);
 }
 
 void pool::release() {
     for (auto &v: inside.saveit()) {
-	delete(&v);
+	if (!v.isstack()) // if stack call destructor on exit
+	    delete(&v);
     }
 }

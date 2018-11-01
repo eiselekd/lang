@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <vector>
+#include <cassert>
 
 template <typename T>
 class stl_allocator
@@ -70,6 +71,12 @@ public:
         return static_cast<pointer>(malloc(extra+sizeof(T)));
     }
 
+    pointer newExtraInter(size_type combined)
+    {
+	assert(combined >= sizeof(T));
+        return static_cast<pointer>(malloc(combined));
+    }
+
     template<typename... _Args>
     pointer
     newObj(size_type size, _Args&&... __args)
@@ -78,6 +85,16 @@ public:
 	::new((void*) p) T(std::forward<_Args>(__args)...);
 	return p;
     }
+
+    template<typename... _Args>
+    pointer
+    newObjInter(size_type size, _Args&&... __args)
+    {
+	pointer p = newExtraInter(size);
+	::new((void*) p) T(std::forward<_Args>(__args)...);
+	return p;
+    }
+
 
     void relObj(pointer p)
     {

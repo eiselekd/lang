@@ -38,27 +38,55 @@ union llist {
         lnode<b> tail_node;
     };
     struct {
-        lnode<b> *head;
+        lnode<b> *head_;
         lnode<b> *null;
         lnode<b> *tail;
     };
 
     llist()
     {
-	this->head = &this->tail_node;
+	this->head_ = &this->tail_node;
 	this->null = nullptr;
 	this->tail = &this->head_node;
     }
 
+    bool empty() {
+	return head_ == tail->next;
+    }
+
+    b *
+    head()
+    {
+	return container_of(*head_);
+    }
+
+    b *
+    rem_head(void) {
+	lnode<b> *e = this->head_;
+	e->rem_node();
+	return container_of(*e);
+    }
+
+
     void
     add_head(lnode<b> &n)
     {
-	lnode<b> *z = this->head;
+	lnode<b> *z = this->head_;
 
 	n.next = z;
 	n.prev = &(this->head_node);
 	z->prev = &n;
-	this->head = &n;
+	this->head_ = &n;
+    }
+    void
+    add_tail(lnode<b> &n)
+    {
+	lnode<b> *z = this->tail;
+
+	n.next = &this->tail_node;
+	n.prev = z;
+	z->prev = &n;
+	this->tail = &n;
     }
 
     static b *container_of(const lnode<b> &ptr) {
@@ -84,7 +112,7 @@ union llist {
 	const lnode<b> *i;
     };
 
-    lit begin() const { return lit(this->head); }
+    lit begin() const { return lit(this->head_); }
     lit end() const { return lit(this->tail->next); }
 
     /* vvvvv delete save iterator vvvvv */
@@ -111,7 +139,7 @@ union llist {
 	    const lnode<b> *n;
 	};
 
-	lit_save begin() const { return lit_save(l->head); }
+	lit_save begin() const { return lit_save(l->head_); }
 	lit_save end() const { return lit_save(l->tail->next); }
 
 	llist_type *l;
