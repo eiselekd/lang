@@ -45,17 +45,26 @@ struct sl_alignment
 
 template <int SLAB_SIZE, int MAX_EMPTY_HEADS=16>
 struct slab : resource {
-    slab(resclass *r, pool *p, size_t size) : resource(r,p), objSize_(size) {
+    slab(resclass *r, pool *p, size_t size) : resource(r,p), objSize_(size)
+    {
 	initSizes(size);
     };
-    slab(size_t size) : resource(nullptr), objSize_(size) {
+    slab(size_t size) : resource(nullptr), objSize_(size)
+    {
     	initSizes(size);
     };
-    virtual ~slab() {
-
-    }
 
     stl_allocator<slbhead> alloc_;
+
+    virtual ~slab()
+    {
+	for (auto &i:emptyHeads_.saveit())
+	    alloc_.relObj(&i);
+	for (auto &i:partialHeads_.saveit())
+	    alloc_.relObj(&i);
+	for (auto &i:fullHeads_.saveit())
+	    alloc_.relObj(&i);
+    }
 
     void initSizes(size_t size)
     {
@@ -155,7 +164,7 @@ struct slab_resclass : resclass {
     }
     void slabFree(slabtyp *r)
     {
-	delete(r);
+	alloc_.relObj(r);
     }
 
     virtual void dump(const resource &)
