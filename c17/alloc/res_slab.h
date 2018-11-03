@@ -172,9 +172,9 @@ struct slab : resource {
 	    {
 		assert(p == partialHeads_.head());
 		partialHeads_.rem_head();
-		std::cout << "p:" << fullHeads_.size() << "\n";
+		//std::cout << "p:" << fullHeads_.size() << "\n";
 		fullHeads_.add_tail(p->n);
-		std::cout << "e:" << fullHeads_.size() << "\n";
+		//std::cout << "e:" << fullHeads_.size() << "\n";
 		p = nullptr;
 	    }
 	}

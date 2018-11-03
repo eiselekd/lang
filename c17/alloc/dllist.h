@@ -87,7 +87,7 @@ union llist {
 
 	n.next = &(this->tail_node);
 	n.prev = z;
-	z->prev = &n;
+	z->next = &n;
 	this->tail = &n;
     }
 
@@ -149,14 +149,64 @@ union llist {
 	};
 
 	lit_save begin() const { return lit_save(l->head_); }
-	lit_save end() const { return lit_save(l->tail->next); }
+	lit_save end() const { return lit_save(&l->tail_node); }
 
 	llist_type *l;
     };
     llist_save saveit() { return llist_save(this); };
     /* ^^^^^ delete save iterator ^^^^^ */
-
-
 };
+
+#ifdef MAIN_TEST_DLLIST
+#include <cassert>
+
+struct mobj
+{
+    int id;
+    lnode<mobj> n;
+};
+
+struct mhead
+{
+    int dummy2;
+    int dummy3;
+    llist<mobj,&mobj::n> h;
+};
+
+
+int main(int argc, char **argv)
+{
+    {
+	mobj o0{0}, o1{1}, o2{2};
+	{
+	    mhead h1;
+
+	    h1.h.add_tail(o0.n);
+	    h1.h.add_tail(o1.n);
+	    h1.h.add_tail(o2.n);
+	    int id = 0;
+	    for (auto &i: h1.h) {
+		assert(i.id == id);
+		id++;
+	    }
+	    assert(3 == id);
+	}
+	{
+	    mhead h0;
+	    h0.h.add_head(o2.n);
+	    h0.h.add_head(o1.n);
+	    h0.h.add_head(o0.n);
+	    int id = 0;
+	    for (auto &i: h0.h) {
+		assert(i.id == id);
+		id++;
+	    }
+	    assert(3 == id);
+	}
+
+    }
+    return 0;
+}
+#endif
 
 #endif

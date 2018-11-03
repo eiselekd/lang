@@ -54,4 +54,7 @@ test:
 	make all
 	./test.exe
 
+test_dllist:
+	$(CC) -g dllist.cpp -o dllist.exe
+
 -include $(wildcard .obj/*dep) $(wildcard bin/*dep) $(wildcard *dep)

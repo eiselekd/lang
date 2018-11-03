@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 	    for (auto j: range(std::get<1>(pa[i]).size())) {
 		std::get<1>(pa[i])[j] = e0->allocSlab();
 		k++;
-		std::cout << k << ":" << e0->str() << "\n";
+		//std::cout << k << ":" << e0->str() << "\n";
 	    }
 	}
 	for (auto i: range(pa.size())) {
