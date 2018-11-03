@@ -44,15 +44,15 @@ struct slbhead
     }
 };
 
-
 struct sl_alignment
 {
     int8_t data;
     int x[0];
 };
 
-template <int SLAB_SIZE, int MAX_EMPTY_HEADS=16>
-struct slab : resource {
+template <typename objtyp, int SLAB_SIZE=4096, int MAX_EMPTY_HEADS=16>
+struct slab : resource
+{
     slab(resclass *r, pool *p, size_t size) : resource(r,p), objSize_(size)
     {
 	initSizes(size);
@@ -130,6 +130,10 @@ struct slab : resource {
     {
 	slbobj *o = slbobj::container_of(p);
 	slbhead *h = o->up_;
+	objtyp *p_ = reinterpret_cast<objtyp*>(p);
+
+	p_->~objtyp();
+
 	h->free.add_head(o->n);
 	h->n.rem_node();
 	if (!--h->numfull_) {
@@ -146,7 +150,8 @@ struct slab : resource {
 	}
     }
 
-    void *allocSlab()
+    template<typename... _Args>
+    objtyp *allocSlab(_Args&&... __args)
     {
 	slbhead *p = nullptr;
 	slbobj *o;
@@ -182,17 +187,21 @@ struct slab : resource {
 
 	o = p->free.rem_head();
 	p->numfull_++;
-	return o->d_;
+
+	void *o_ = o->d_;
+        ::new((void *)o_) objtyp(std::forward<_Args>(__args)...);
+	return reinterpret_cast<objtyp*>(o_);
     }
 
     uint objSize_, headSize_, objsPerSlab_, numEmptyHeads_, dataSize_;
     llist<slbhead,&slbhead::n> emptyHeads_, partialHeads_, fullHeads_;
 };
 
-template <int SLAB_SIZE, int MAX_EMPTY_HEADS=16>
-struct slab_resclass : resclass {
+template <typename objtyp, int SLAB_SIZE=4096, int MAX_EMPTY_HEADS=16>
+struct slab_resclass : resclass
+{
 
-    typedef slab<SLAB_SIZE,  MAX_EMPTY_HEADS> slabtyp;
+    typedef slab<objtyp, SLAB_SIZE,  MAX_EMPTY_HEADS> slabtyp;
     stl_allocator<slabtyp> alloc_;
 
     /* ********************************

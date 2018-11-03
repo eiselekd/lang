@@ -16,5 +16,6 @@ struct pool : resource
     void release(void);
 };
 
+extern pool *globalPool();
 
 #endif
