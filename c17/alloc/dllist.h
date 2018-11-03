@@ -1,6 +1,8 @@
 #ifndef L8_H_DLLIST
 #define L8_H_DLLIST
 
+#include <stddef.h>
+
 template <typename b>
 struct lnode {
 
@@ -83,10 +85,17 @@ union llist {
     {
 	lnode<b> *z = this->tail;
 
-	n.next = &this->tail_node;
+	n.next = &(this->tail_node);
 	n.prev = z;
 	z->prev = &n;
 	this->tail = &n;
+    }
+
+    size_t
+    size() {
+	size_t j = 0;
+	for (auto &i:*this) j++;
+	return j;
     }
 
     static b *container_of(const lnode<b> &ptr) {

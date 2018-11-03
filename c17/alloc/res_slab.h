@@ -11,6 +11,10 @@
 #include "res_pool.h"
 #include <cstddef>
 #include <cassert>
+#include <sstream>
+#include <string>
+#include <iostream>
+#include "strprintf.h"
 
 struct slbhead;
 struct slbobj
@@ -34,6 +38,10 @@ struct slbhead
     lnode<slbhead> n;
     ulist<slbobj,&slbobj::n> free;
     size_t numfull_;
+    size_t numobjs_;
+    std::string str() {
+	return vformat("%d/%d", numfull_, numobjs_);
+    }
 };
 
 
@@ -58,12 +66,32 @@ struct slab : resource {
 
     virtual ~slab()
     {
-	for (auto &i:emptyHeads_.saveit())
+	for (auto &i:emptyHeads_.saveit()) {
 	    alloc_.relObj(&i);
-	for (auto &i:partialHeads_.saveit())
+	}
+	for (auto &i:partialHeads_.saveit()) {
 	    alloc_.relObj(&i);
-	for (auto &i:fullHeads_.saveit())
+	}
+	for (auto &i:fullHeads_.saveit()) {
 	    alloc_.relObj(&i);
+	}
+    }
+
+    std::string str() {
+	size_t oc = 0, fc = 0;
+	for (auto &i:emptyHeads_.saveit()) {
+	    oc += i.numfull_;
+	    fc += i.numobjs_;
+	}
+	for (auto &i:partialHeads_.saveit()) {
+	    oc += i.numfull_;
+	    fc += i.numobjs_;
+	}
+	for (auto &i:fullHeads_.saveit()) {
+	    oc += i.numfull_;
+	    fc += i.numobjs_;
+	}
+	return vformat("e:%d/p:%d/f:%d|%d/%d", emptyHeads_.size(),partialHeads_.size(),fullHeads_.size(),oc,fc);
     }
 
     void initSizes(size_t size)
@@ -88,6 +116,8 @@ struct slab : resource {
 	slbhead *h = alloc_.newObjInter(SLAB_SIZE);
 	slbobj *o = reinterpret_cast<slbobj *>((uint8_t*)h+headSize_);
 	uint n = objsPerSlab_;
+	h->numobjs_ = objsPerSlab_;
+
 	while (n--) {
 	    new(o) slbobj(h);
 	    h->free.add_head(o->n);
@@ -101,15 +131,18 @@ struct slab : resource {
 	slbobj *o = slbobj::container_of(p);
 	slbhead *h = o->up_;
 	h->free.add_head(o->n);
+	h->n.rem_node();
 	if (!--h->numfull_) {
-	    h->n.rem_node();
-	    if (numEmptyHeads_ >= MAX_EMPTY_HEADS)
+	    if (numEmptyHeads_ >= MAX_EMPTY_HEADS) {
 		alloc_.relObj(h);
+	    }
 	    else
 	    {
 		emptyHeads_.add_head(h->n);
 		numEmptyHeads_++;
 	    }
+	} else {
+	    partialHeads_.add_head(h->n);
 	}
     }
 
@@ -126,8 +159,10 @@ struct slab : resource {
 		{
 		    /* new head */
 		    p = sl_new_head();
-		} else
+		} else {
 		    p = emptyHeads_.rem_head();
+		    numEmptyHeads_--;
+		}
 		partialHeads_.add_head(p->n);
 	    } else
 		p = partialHeads_.head();
@@ -137,13 +172,16 @@ struct slab : resource {
 	    {
 		assert(p == partialHeads_.head());
 		partialHeads_.rem_head();
+		std::cout << "p:" << fullHeads_.size() << "\n";
 		fullHeads_.add_tail(p->n);
+		std::cout << "e:" << fullHeads_.size() << "\n";
 		p = nullptr;
 	    }
 	}
 	while( !p);
 
 	o = p->free.rem_head();
+	p->numfull_++;
 	return o->d_;
     }
 
@@ -156,6 +194,12 @@ struct slab_resclass : resclass {
 
     typedef slab<SLAB_SIZE,  MAX_EMPTY_HEADS> slabtyp;
     stl_allocator<slabtyp> alloc_;
+
+    /* ********************************
+       todo:
+       slab_resclass with type template and
+       slabAlloc( _Args&&... __args) contructor call
+    */
 
     slabtyp *slabAlloc(size_t size, pool *p = nullptr)
     {

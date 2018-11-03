@@ -1,4 +1,5 @@
 PSRCS= res.cpp \
+  strprintf.cpp
 
 ifeq ($(USEENV),clang)
 # until c++17 is supported:
