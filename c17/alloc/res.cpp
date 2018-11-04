@@ -1,23 +1,25 @@
-#include <stdio.h>
+#include <new>
+#include <cstdio>
+#include <cstdlib>
 #include "dllist.h"
 #include "res_pool.h"
 
-resource::resource(resclass *r, pool *p, bool isstack) : rclass(r), isstack_(isstack) {
+rootPool grootPool;
+
+resource::resource(pool *p, bool isstack) : isstack_(isstack) {
     if (!p)
-	p = globalPool();
-    if (p)
+	p = &grootPool;
+    if (p && p != this) /* skip rootpool */
 	p->addResource(*this);
 }
 
 void pool::release() {
-    for (auto &v: inside.saveit()) {
-	if (!v.isstack()) // if stack call destructor on exit
-	    delete(&v);
-    }
-}
 
-pool *
-globalPool()
-{
-    return 0;
+    for (auto &v: inside.saveit()) {
+	if (!v.isstack()) {// if stack call destructor on exit
+	    /* assume that constructor called with placement new or class operator new */
+	    (&v)->~resource();
+	    free(&v);
+	}
+    }
 }

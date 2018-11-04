@@ -14,29 +14,32 @@
 * #
 */
 
-struct resource;
-struct resclass
-{
-    std::string name;
-    unsigned size;
-    virtual void dump(const resource &) = 0;
-    virtual resource *lookup(const resource *, unsigned long) = 0;
-    virtual size_t memsize(const resource &) = 0;
-};
-
+struct VROOTPOOL;
 struct pool;
 struct resource
 {
-    resource(resclass *r, pool *p = nullptr, bool isstack=false);
+    resource(pool *p = nullptr, bool isstack=false);
     virtual ~resource() { n.rem_node(); }
 
     lnode<resource> n;
     bool isstack() { return isstack_; };
 
-    resclass *rclass;
     bool isstack_;
 
+    virtual void dump(const resource &) { };
+    virtual resource *lookup(const resource *, unsigned long) { return 0; };
+    virtual size_t memsize(const resource &) { return 0; };
+
+    //static void operator delete(void* ptr, std::size_t sz);
+
 };
+
+
+
+struct VROOTPOOL {
+    union llist<resource, &resource::n> inside;
+};
+
 
 
 

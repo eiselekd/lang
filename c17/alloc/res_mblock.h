@@ -10,7 +10,7 @@
 #include "res_pool.h"
 
 struct mblock : resource {
-mblock(resclass *r, pool *p, size_t size) : resource(r,p), size_(size) {};
+    mblock(pool *p, size_t size) : resource(p), size_(size) {};
     mblock(size_t size) : resource(nullptr), size_(size) {};
     virtual ~mblock() { }
     static mblock *container_of(void *p) {
@@ -21,28 +21,17 @@ mblock(resclass *r, pool *p, size_t size) : resource(r,p), size_(size) {};
     unsigned char data_[0];
 };
 
-struct mb_resclass : resclass {
+struct mb_resclass  {
     stl_allocator<mblock> alloc_;
     void *mballoc(pool &p, size_t size) {
 	mblock *m;
-	m = alloc_.newObj(size, this, &p, size);
-	p.addResource(*m);
+	m = alloc_.newObj(size, &p, size);
 	return m->data_;
     }
     void mbfree(void *p) {
 	mblock *m;
 	m = mblock::container_of(p);
 	alloc_.relObj(m);
-    }
-
-    virtual void dump(const resource &) {
-
-    }
-    virtual resource *lookup(const resource *, unsigned long) {
-	return 0;
-    }
-    virtual size_t memsize(const resource &) {
-	return 0;
     }
 
 };

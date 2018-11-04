@@ -13,18 +13,13 @@
 int main(int argc, char **argv)
 {
     (void) argc; (void) argv;
-    mb_resclass m0;
-    pool pool0(&m0);
     {
-	/*
 	mb_resclass m0;
+	pool pool0(0);
+
 	auto p0 = m0.mballoc(pool0, 100);
 	auto p1 = m0.mballoc(pool0, 1000);
 	auto p2 = m0.mballoc(pool0, 10000);
-	m0.mbfree(p0);
-	m0.mbfree(p1);
-	m0.mbfree(p2);
-	*/
     }
     {
 	struct mobj {
@@ -55,5 +50,6 @@ int main(int argc, char **argv)
 	    o0.slabFree(e0);
 	}
     }
+    std::cout << grootPool.str();
     return 0;
 }

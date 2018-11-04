@@ -206,3 +206,6 @@ d107:
 
 d108:
 	g++ -std=c++17 -g 108_variant.cpp -o 108_variant.exe
+
+d108_d:
+	g++ -std=c++17 -g 108_del.cpp -o 108_del.exe

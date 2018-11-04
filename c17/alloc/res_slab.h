@@ -53,7 +53,7 @@ struct sl_alignment
 template <typename objtyp, int SLAB_SIZE=4096, int MAX_EMPTY_HEADS=16>
 struct slab : resource
 {
-    slab(resclass *r, pool *p, size_t size) : resource(r,p), objSize_(size)
+    slab(pool *p, size_t size) : resource(p), objSize_(size)
     {
 	initSizes(size);
     };
@@ -198,7 +198,7 @@ struct slab : resource
 };
 
 template <typename objtyp, int SLAB_SIZE=4096, int MAX_EMPTY_HEADS=16>
-struct slab_resclass : resclass
+struct slab_resclass
 {
 
     typedef slab<objtyp, SLAB_SIZE,  MAX_EMPTY_HEADS> slabtyp;
@@ -212,7 +212,7 @@ struct slab_resclass : resclass
 
     slabtyp *slabAlloc(size_t size, pool *p = nullptr)
     {
-	slabtyp *r = alloc_.newObj(size, this, p, size);
+	slabtyp *r = alloc_.newObj(size, p, size);
 	return r;
     }
     void slabFree(slabtyp *r)

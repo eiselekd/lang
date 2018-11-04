@@ -11,7 +11,7 @@ public:
 
 void f(int size)
 {
-    char v[sizeof(aclass) + size];
+    std::aligned_storage<sizeof(aclass), alignof(aclass)>::type v;
     new(static_cast<void*>(&v)) aclass(size);
 }
 
