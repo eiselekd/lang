@@ -5,7 +5,8 @@
 resource::resource(resclass *r, pool *p, bool isstack) : rclass(r), isstack_(isstack) {
     if (!p)
 	p = globalPool();
-    p->addResource(*this);
+    if (p)
+	p->addResource(*this);
 }
 
 void pool::release() {
