@@ -1,4 +1,5 @@
 From: https://github.com/eliben/code-for-blog/tree/master/2018
+https://eli.thegreenplace.net/2018/type-inference/
 
 
 For a sample run:
