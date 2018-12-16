@@ -7,7 +7,7 @@ struct a {
 
 void p(a *_a, int id) {
     decltype(_a->tbl)::iterator i;
-    while (_a && (i = _a->tbl.find(id)) != _a->tbl.end()) {
+    while (_a && ((i = _a->tbl.find(id)) != _a->tbl.end())) {
 	i->second += 1;
 	_a = _a->up;
     }
