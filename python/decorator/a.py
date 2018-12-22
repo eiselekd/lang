@@ -2,6 +2,7 @@
 # decorated function
 def noaction(func):
     def gen(*args,**kwargs):
+        func.expected=None
         return func("x",*args)
     return gen
 
