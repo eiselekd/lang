@@ -6,7 +6,7 @@
 #include <cassert>
 
 template <typename T>
-class stl_allocator
+class stl_allocator 
 {
 public:
     typedef size_t size_type;
@@ -83,6 +83,7 @@ public:
     {
 	pointer p = newExtra(size);
 	::new((void*) p) T(std::forward<_Args>(__args)...);
+
 	return p;
     }
 

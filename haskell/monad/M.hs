@@ -2,11 +2,11 @@
 
 module M where
 
-import Sim
-import Simsym
-import Simval
+import Sim()
+import Simsym()
+import Simval()
 
-import Ha
+import Ha()
 
 main = putStrLn "Hello m" 
   
