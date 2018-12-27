@@ -216,3 +216,6 @@ d108_d:
 
 202:
 	g++ -std=c++17 -g 202_if.cpp -o 202_if.exe
+
+301:
+	g++ -std=c++17 -g 301_static.cpp -o 301_static.exe

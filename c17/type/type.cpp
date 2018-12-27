@@ -21,3 +21,8 @@ lookup(classdef *c, int id)
     }
     return i->second;
 };
+
+struct classdef_method : classdef {
+
+
+};
