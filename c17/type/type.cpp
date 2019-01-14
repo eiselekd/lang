@@ -1,28 +1,40 @@
 #include <iostream>
 #include <map>
+#include <functional>
 
 struct method {
-
+    std::function<void ()> m;
 };
 
 struct classdef {
     std::map<int, method*> tbl;
     struct classdef *super;
-};
 
-method *
-lookup(classdef *c, int id)
-{
-    decltype(c->tbl)::iterator i;
-    while ((i = c->tbl.find(id)) == c->tbl.end()) {
-	c = c->super;
-	if (!c)
-	    return 0;
+    void add_method(int id, method *m) {
+	decltype(tbl)::iterator i;
+	if ((i = tbl.find(id)) != tbl.end()) {
+
+	}
+	tbl.insert({id,m});
     }
-    return i->second;
+
+    method *
+    lookup(int id)
+    {
+	decltype(this) c = this;
+	decltype(tbl)::iterator i;
+	while ((i = tbl.find(id)) == tbl.end()) {
+	    c = c->super;
+	    if (!c)
+		return 0;
+	}
+	return i->second;
+    };
+
 };
 
-struct classdef_method : classdef {
-
-
+struct classdef_object : classdef {
+    classdef_object() {
+	add_method([]() { });
+    }
 };

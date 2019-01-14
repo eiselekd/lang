@@ -219,3 +219,10 @@ d108_d:
 
 301:
 	g++ -std=c++17 -g 301_static.cpp -o 301_static.exe
+
+
+302:
+	g++ -std=c++17 -g 302_decompose.cpp -o 302_decompose.exe
+
+303:
+	g++ -std=c++17 -g 303_decompose.cpp -o 303_decompose.exe
