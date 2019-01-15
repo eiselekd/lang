@@ -45,7 +45,8 @@ std::function<void(int*)> _addfunc(TFunctionType f, tag<void (*)(TOtherParams...
 template<typename TFunctionType>
 std::function<void(int*)> addfunc(TFunctionType fn)
 {
-    return _addfunc(std::move(fn), tag<TFunctionType>{} );
+    typedef typename std::decay<TFunctionType>::type RealDataType;
+    return _addfunc(std::move(fn), tag<RealDataType>{} );
 }
 
 void f1(int a0) { std::cout << a0 << std::endl; }
@@ -53,9 +54,11 @@ void f2(int a0, int a1) { std::cout << a0 << a1 << std::endl;  }
 
 int main() {
     int stack[5] = { 0,1,2,3,4 };
-    auto a0 = addfunc(&f1);
-    auto a1 = addfunc(&f2);
+    auto a1 = addfunc(&f1);
+    auto a2 = addfunc(&f2);
+    auto a3 = addfunc<void(int a0, int a1, int a2)>([](int a0, int a1, int a2){ std::cout << a0 << a1 << a2 << std::endl; });
 
-    a0(stack);
     a1(stack);
+    a2(stack);
+    //a3(stack);
 }

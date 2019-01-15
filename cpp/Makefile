@@ -226,3 +226,6 @@ d108_d:
 
 303:
 	g++ -std=c++17 -g 303_decompose.cpp -o 303_decompose.exe
+
+304:
+	g++ -std=c++17 -g 304_if.cpp -o 304_if.exe
