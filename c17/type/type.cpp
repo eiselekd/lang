@@ -3,10 +3,11 @@
 #include <array>
 #include <map>
 #include <functional>
+#include <memory>
 #include "method_c.h"
 
 struct classdef {
-    std::map<int, method*> tbl;
+    std::map<int, std::unique_ptr<method>> tbl;
     struct classdef *super;
 
     void add_method(int id, method *m) {
@@ -14,7 +15,10 @@ struct classdef {
 	if ((i = tbl.find(id)) != tbl.end()) {
 
 	}
-	tbl.insert({id,m});
+	tbl.insert({id,std::unique_ptr<method>(m)});
+
+	//std::unique_ptr<method> v;
+	//v = m;
     }
 
     method *
@@ -27,13 +31,13 @@ struct classdef {
 	    if (!c)
 		return 0;
 	}
-	return i->second;
+	return i->second.get();
     };
 
     template<class Ld, typename = void>
     void add_c_method(int id, Ld &&f)
     {
-	tbl[id] = new method_c(std::forward<Ld>(f));
+	tbl[id] = std::unique_ptr<method>(new method_c(std::forward<Ld>(f)));
     };
 
 };

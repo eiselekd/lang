@@ -12,6 +12,7 @@
 
 struct method
 {
+    virtual void operator()() = 0;
 };
 
 #endif

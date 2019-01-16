@@ -229,3 +229,6 @@ d108_d:
 
 304:
 	g++ -std=c++17 -g 304_if.cpp -o 304_if.exe
+
+306:
+	g++ -std=c++17 -g 306_hash.cpp -o 306_hash.exe
