@@ -72,7 +72,6 @@ inc BEGIN(incl);
 	f = fopen( yytext, "r" );
 	if ( ! f ) {
 	    printf( "cannot find %s" , yytext );
-	    //BEGIN(INITIAL);
 	    break;
 	}
 	yyin = f;
