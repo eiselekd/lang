@@ -74,3 +74,5 @@ hoogle generate
 [11] http://dev.stephendiehl.com/fun/
 [12] https://www.haskell.org/tutorial/monads.html
 [13] https://www.youtube.com/watch?v=fCoQb-zqYDI
+[14] http://www.cse.chalmers.se/edu/year/2018/course/TDA555/
+
