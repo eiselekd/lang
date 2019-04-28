@@ -73,4 +73,4 @@ hoogle generate
 [10] http://learnyouahaskell.com/functors-applicative-functors-and-monoids
 [11] http://dev.stephendiehl.com/fun/
 [12] https://www.haskell.org/tutorial/monads.html
-
+[13] https://www.youtube.com/watch?v=fCoQb-zqYDI
