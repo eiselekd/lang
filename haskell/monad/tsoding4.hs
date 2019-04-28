@@ -49,5 +49,4 @@ whatIsYourPureNameM = do
   name <- readStrM
   printStrM ("hello" ++ name)
 
-
 -- ghci> asT whatIsYourPureNameM World
