@@ -131,7 +131,7 @@ proveFile :: FilePath -> IO () -> IO ProofResult
 proveFile file before =
   do putStr "Satzoo: "
      before
-     putStr "... "
+     putStr ( "... " ++ file )
      lavadir <- getLavaDir
      x <- system ( lavadir
                 ++ "/Scripts/satzoo.wrapper "

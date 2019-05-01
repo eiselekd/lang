@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #----------------------------------------------------------------
 #- Wrapper for minisat
 #- to be used by the Lava system

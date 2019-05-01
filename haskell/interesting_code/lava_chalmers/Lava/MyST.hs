@@ -1,3 +1,5 @@
+{-# LANGUAGE Rank2Types #-}
+
 module Lava.MyST
   ( ST
   , STRef
@@ -19,6 +21,8 @@ import System.IO
 import System.IO.Unsafe
 import Data.IORef
 
+-- https://en.wikibooks.org/wiki/Haskell/Polymorphism#runST
+-- http://lucacardelli.name/Papers/OnUnderstanding.A4.pdf
 newtype ST s a
   = ST (IO a)
 
@@ -51,6 +55,7 @@ readSTRef (STRef r) = ST (readIORef r)
 writeSTRef :: STRef s a -> a -> ST s ()
 writeSTRef (STRef r) a = ST (writeIORef r a)
 
+-- forall https://en.wikibooks.org/wiki/Haskell/Existentially_quantified_types
 runST :: (forall s . ST s a) -> a
 runST st = unsafePerformST st
 

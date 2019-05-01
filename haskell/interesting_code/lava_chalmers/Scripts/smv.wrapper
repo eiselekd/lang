@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #----------------------------------------------------------------
 #- Wrapper for smv
 #- to be used by the Lava system

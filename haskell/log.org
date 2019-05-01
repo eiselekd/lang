@@ -76,3 +76,17 @@ hoogle generate
 [13] https://www.youtube.com/watch?v=fCoQb-zqYDI
 [14] http://www.cse.chalmers.se/edu/year/2018/course/TDA555/
 
+
+* debug
+
+
+
+:set -fbreak-on-exception
+:set args "source.hs"
+show source :
+:list 
+** links 
+[1] https://donsbot.wordpress.com/2007/11/14/no-more-exceptions-debugging-haskell-code-with-ghci/
+[2] https://www.reddit.com/r/haskell/comments/5s5khf/how_to_get_a_proper_stack_trace/
+[3] https://wiki.haskell.org/Debugging
+[4] http://dev.stephendiehl.com/hask/
