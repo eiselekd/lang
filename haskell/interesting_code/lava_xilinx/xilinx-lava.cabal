@@ -51,6 +51,7 @@ Library
                    Lava.RPM, 
                    Lava.Utils,
                    Lava.Version
+  extensions:      Rank2Types, ExistentialQuantification, RecursiveDo
 Executable report_par
   Main-is:	 tools/ReportPar.hs
   Build-Depends:	 base >= 4.2 && <= 5, directory

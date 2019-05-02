@@ -14,7 +14,7 @@ module Lava (module Lava.Combinators,
              module Lava.CircuitGraphToVHDL,
              module Lava.OverlayTile,
              module Lava.Middle,
-	     module Lava.PrimitiveGates,
+             module Lava.PrimitiveGates,
              module Lava.Instantiate,
              module Lava.NetlistToEDIF,
              module Lava.LUTGates,
@@ -36,12 +36,16 @@ import Lava.Instantiate
 import Lava.NetlistToEDIF
 import Lava.LUTGates
 import Lava.Version
+import Lava.Virtex6
 
 one :: Bit
 one = 1
 
 zero :: Bit
 zero = 0
+
+
+
 
 -------------------------------------------------------------------------------
 

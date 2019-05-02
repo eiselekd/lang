@@ -349,11 +349,8 @@ findConnection i connections prange
 --   and returns the 2D port indices which are connected to this Lava net.
 
 findConnection2D :: Int -> [[Int]] -> [Int] -> [Int] -> [(Int, Int)]
-findConnection2D i connections prange1 prange2 
-  = error (show i++ " " ++ show connections ++ " " ++ show prange1 ++ " " ++ show prange2)
-findConnection2D i connections prange1 prange2
-  =  concat [[(a, c) | c <- findConnection i bs prange2]
-             | (a, bs) <- zip prange1 connections]
+--findConnection2D i connections prange1 prange2 = error (show i++ " " ++ show connections ++ " " ++ show prange1 ++ " " ++ show prange2)
+findConnection2D i connections prange1 prange2 = concat [[(a, c) | c <- findConnection i bs prange2] | (a, bs) <- zip prange1 connections]
 
 -------------------------------------------------------------------------------
 

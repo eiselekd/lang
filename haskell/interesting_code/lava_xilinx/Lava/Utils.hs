@@ -1,4 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
+-- {-# OPTIONS -fglasgow-exts #-}
 
 -------------------------------------------------------------------------------
 --  $Id: Utils.hs#2 2010/10/07 16:17:27 REDMOND\\satnams $
