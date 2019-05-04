@@ -35,6 +35,7 @@ import Lava.PrimitiveGates
 import Lava.Instantiate
 import Lava.NetlistToEDIF
 import Lava.LUTGates
+import Lava.Gates
 import Lava.Version
 import Lava.Virtex6
 

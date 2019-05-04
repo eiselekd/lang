@@ -55,8 +55,11 @@ executable test
 5. :add  add module
 6. :bro  browse
 7. :show imports
+8. :set -XRankNTypes   (https://wiki.haskell.org/Language_extensions) 
+   :set -XMagicHash
+   :set -XRankNTypes
 
-cabal install happy
+cabal install happy 
 cabal install hoogle
 hoogle generate
 
@@ -77,6 +80,49 @@ hoogle generate
 [14] http://www.cse.chalmers.se/edu/year/2018/course/TDA555/
 
 
+
+* monad
+
+https://wiki.haskell.org/Evaluation_order_and_state_tokens
+~/src/ghc-8.0.2/libraries/base/GHC/Base.hs
+
+newtype IO a = IO (State# RealWorld -> (# State# RealWorld, a #))
+instance  Monad IO  where
+    (>>=)     = bindIO
+bindIO :: IO a -> (a -> IO b) -> IO b
+bindIO (IO m) k = IO $ \ s -> case m s of (# new_s, a #) -> unIO (k a) new_s
+
+
+newtype IO a = IO (S# -> (# S#, a #))
+
+bindIO (IO m) k = IO $ \ s -> 
+   case m s of 
+     (# new_s, a #) -> unIO (k a) new_s
+
+print 1 :: S# -> (# S#, () #)
+newtype IO a = IO 
+          (S# -> (# S#, a #))
+
+print 1 >> print 2
+\s0 ->
+    case print 1 s0 of
+        (# s1, _ignored #) -> print 2 s1
+
+:t unsafePerformIO 
+unsafePerformIO :: IO a -> a
+:t unsafeInterleaveIO 
+unsafeInterleaveIO :: IO a -> IO a
+
+Create state token IO and thread through right side
+unsafePerformIO (IO f) =
+    case f fakeStateToken of
+        (# _ignoredStateToken, result #) -> result
+
+unsafeInterleaveIO (IO f) = IO $ \s0 ->
+    case f s0 of
+        (# _ignored, result #) ->
+            (# s0, result #)
+
 * debug
 
 
@@ -90,3 +136,24 @@ show source :
 [2] https://www.reddit.com/r/haskell/comments/5s5khf/how_to_get_a_proper_stack_trace/
 [3] https://wiki.haskell.org/Debugging
 [4] http://dev.stephendiehl.com/hask/
+
+* tutorial 
+[1] https://en.wikibooks.org/wiki/Write_Yourself_a_Scheme_in_48_Hourshttps://en.wikibooks.org/wiki/Write_Yourself_a_Scheme_in_48_Hours
+
+* types
+[1] https://www.stephanboyer.com/post/115/higher-rank-and-higher-kinded-types
+[2] https://wiki.haskell.org/Rank-N_types
+[3] https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#arbitrary-rank-polymorphism
+[4] https://en.wikibooks.org/wiki/Yet_Another_Haskell_Tutorial/Type_advanced
+
+[5] https://www.schoolofhaskell.com/user/snoyberg/general-haskell/advanced/evaluation-order-and-state-tokens
+[5.1] https://wiki.haskell.org/Evaluation_order_and_state_tokens
+
+* boxed
+
+[1] https://downloads.haskell.org/~ghc/7.4.1/docs/html/users_guide/primitives.html
+:set -XMagicHash
+:set -XUnboxedTuples
+
+[2] https://wiki.haskell.org/Unboxed_type
+

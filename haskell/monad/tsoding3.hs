@@ -19,3 +19,11 @@ whatIsYourPureNameT =
   printStrT "What is your name" >>>= \_ ->
   readStrT                      >>>= \n ->
   printStrT ("Hello " ++ n)
+
+-- https://wiki.haskell.org/Evaluation_order_and_state_tokens
+-- ~/src/ghc-8.0.2/libraries/base/GHC/
+-- newtype IO a = IO (State# RealWorld -> (# State# RealWorld, a #))
+-- instance  Monad IO  where
+--     (>>=)     = bindIO
+-- bindIO :: IO a -> (a -> IO b) -> IO b
+-- bindIO (IO m) k = IO $ \ s -> case m s of (# new_s, a #) -> unIO (k a) new_s
