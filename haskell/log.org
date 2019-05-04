@@ -123,6 +123,9 @@ unsafeInterleaveIO (IO f) = IO $ \s0 ->
         (# _ignored, result #) ->
             (# s0, result #)
 
+* runst
+[1] https://en.wikibooks.org/wiki/Haskell/Mutable_objects
+
 * debug
 
 
@@ -148,6 +151,7 @@ show source :
 
 [5] https://www.schoolofhaskell.com/user/snoyberg/general-haskell/advanced/evaluation-order-and-state-tokens
 [5.1] https://wiki.haskell.org/Evaluation_order_and_state_tokens
+[6] https://en.wikibooks.org/wiki/Haskell/Mutable_objects
 
 * boxed
 
