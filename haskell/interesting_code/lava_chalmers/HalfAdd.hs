@@ -50,8 +50,16 @@ fullAdd (arryIn, (a, b)) = (sum, arryOut)
     (sum, arry2) = halfAdd (arryIn, sum1)
     arryOut = xor2 (arry2, arry1)
 
+
+
+
+
+
+
 prop_HalfAddOutputNeverBothTrue (a, b) = ok
   where
     (sum, arry) = halfAdd (a, b)
     --ok = sum <=> sum
     ok = nand2 (sum, arry)
+
+-- genvar=var "v"

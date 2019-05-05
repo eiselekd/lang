@@ -70,6 +70,7 @@ hoogle generate
 [4] http://dev.stephendiehl.com/hask/#cabal
 [5] https://www.youtube.com/watch?v=gEoruozy3mk
 [6] https://www.youtube.com/watch?v=re96UgMk6GQ
+[6.1] jekor https://www.youtube.com/watch?v=63MpfyZUcrU
 [7] https://de.wikipedia.org/wiki/Monade_(Informatik)
 [8] http://learnyouahaskell.com/making-our-own-types-and-typeclasses#the-functor-typeclass
 [9] http://learnyouahaskell.com/input-and-output
@@ -152,6 +153,20 @@ show source :
 [5] https://www.schoolofhaskell.com/user/snoyberg/general-haskell/advanced/evaluation-order-and-state-tokens
 [5.1] https://wiki.haskell.org/Evaluation_order_and_state_tokens
 [6] https://en.wikibooks.org/wiki/Haskell/Mutable_objects
+[7] http://comonad.com/reader/
+generics 
+[8] https://www.stackbuilders.com/tutorials/haskell/generics/
+Typeclassopedia
+[9] https://wiki.haskell.org/Typeclassopedia
+
+* lava
+https://gist.github.com/dmjio/36a394ff36e382b8f9da53ec1687acb2
+https://gist.github.com/dmjio/4f991bf50d254aa7f22a519b0d6eef32
+
+https://gist.github.com/dmjio
+
+* reading 
+https://www.kosmikus.org/
 
 * boxed
 
@@ -161,3 +176,256 @@ show source :
 
 [2] https://wiki.haskell.org/Unboxed_type
 
+
+
+
+* irc
+
+menu
+Status #haskellX
+#haskell: https://www.haskell.org | https://wiki.haskell.org/IRC_channel | Paste code/errors: https://gist.github.com/ | Logs: http://tunes.org/~nef/logs/haskell/?C=M;O=D | https://www.reddit.com/r/haskell | Admin: #haskell-ops | Offtopic: #haskell-offtopic | https://downloads.haskell.org
+[18:56] == hopsing [1fd121f1@gateway/web/freenode/ip.31.209.33.241] has joined #haskell
+[18:56] == lambda-11235 [~lambda-11@207.183.239.54] has joined #haskell
+[18:57] == cheriot [~cheriot@2601:646:203:1000:65f4:ffe8:da7d:9830] has quit [Ping timeout: 252 seconds]
+[18:58] == pilmi_ [1fd121f1@gateway/web/freenode/ip.31.209.33.241] has quit [Ping timeout: 256 seconds]
+[18:58] == matheus [hydraz@unaffiliated/demhydraz] has quit [Quit: No Ping reply in 180 seconds.]
+[18:58] == matheus [hydraz@unaffiliated/demhydraz] has joined #haskell
+[18:59] <hopsing> I'm trying to understand a haskell function and got stuck: http://hackage.haskell.org/package/chalmers-lava2000-1.6.1/docs/src/Lava-Vhdl.html#writeVhdl : Can someone tell me what (var "inp") resolves to in function wirteVhdl ?
+[18:59] == oisdk [~textual@2001:bb6:332d:b858:bc66:c8d4:e293:c9cc] has quit [Quit: My MacBook has gone to sleep. ZZZzzz…]
+[19:00] <hopsing> Lava module http://hackage.haskell.org/package/chalmers-lava2000-1.6.1
+[19:00] == cabpa [~cabpa@49.151.1.154] has quit [Ping timeout: 248 seconds]
+[19:00] == freeman42y [~freeman42@2a02:8084:e81:9580:f0a4:d301:7493:b92b] has joined #haskell
+[19:01] <hopsing> Where can I ask for help with this kind of questions?
+[19:01] <hopsing> Any tip?
+[19:01] <dmj`> hopsing: I'd darcs get that repo
+[19:02] <dmj`> nix-shell -p haskellPackages.darcs --run 'darcs get http://projects.haskell.org/chalmers-lava2000/' && ag 'var ::' chalmers*
+[19:02] <dmj`> and grep it
+[19:02] == Jesin [~Jesin@pool-72-83-62-150.washdc.fios.verizon.net] has joined #haskell
+[19:03] == mouse07410 [uid340112@gateway/web/irccloud.com/x-evetfjtvoyahkmlz] has joined #haskell
+[19:03] == matheus [hydraz@unaffiliated/demhydraz] has quit [Client Quit]
+[19:03] <dmj`> project builds for me on 8.6.4
+[19:04] <hopsing> djm: It not a simple function. There is some metaprogramming involved. ag will point you to class Constructive : http://hackage.haskell.org/package/chalmers-lava2000-1.6.1/docs/src/Lava-Generic.html#line-253
+[19:04] == jgt [~jgt@89-64-60-85.dynamic.chello.pl] has joined #haskell
+[19:04] <dmj`> yea, seems like var :: String -> a is a typeclass method
+[19:04] == matheus [hydraz@unaffiliated/demhydraz] has joined #haskell
+[19:04] == freeman42x [~freeman42@2a02:8084:e81:9580:f0a4:d301:7493:b92b] has quit [Ping timeout: 264 seconds]
+[19:04] <hopsing> It seems like `var` is becoming a constructor of some sort. But I cannot ficure out how this is done....
+[19:06] == conal [~conal@2603:3006:138b:8000:447e:ae55:b24b:37b2] has joined #haskell
+[19:07] == efeuska [~user@2a02:a210:20c0:6c80:54a6:431d:b708:4d24] has quit [Quit: efeuska]
+[19:08] == jgt [~jgt@89-64-60-85.dynamic.chello.pl] has quit [Ping timeout: 248 seconds]
+[19:09] == twtt [~textual@cpe-72-227-162-139.nyc.res.rr.com] has joined #haskell
+[19:09] <dmj`> hopsing: it's either an Int, Bool, (), or a Signal of these things, or up to a 7 tuple of combinations of these things
+[19:10] <dmj`> Oh whoops, it's not an Int or Bool, that's only for ConstructiveSig
+[19:10] <dmj`> nor Signal
+[19:11] == cr3 [~cr3@107.159.37.11] has quit [Quit: leaving]
+[19:12] == Ariakenom [~Ariakenom@h-158-174-187-253.NA.cust.bahnhof.se] has joined #haskell
+[19:13] <dmj`> hopsing: it can only become one of these, http://hackage.haskell.org/package/chalmers-lava2000-1.6.1/docs/Lava-Generic.html#t:Constructive
+[19:13] == acarrico [~acarrico@dhcp-68-142-35-239.greenmountainaccess.net] has quit [Ping timeout: 258 seconds]
+[19:13] <dmj`> tuples of unit, or Signal
+[19:14] == royal_screwup21 [89de72f0@gateway/web/cgi-irc/kiwiirc.com/ip.137.222.114.240] has joined #haskell
+[19:14] <hopsing> djm`: if the input arg circ to writeVhdl is a untyped function "halfAdd (a, b) = (sum, arry)", then I can see that at some point instance (a,b)'s  'var s      = (var (s ++ "_1"), var (s ++ "_2"))' is called.
+[19:15] <hopsing> I dont understand how this function is selected.
+[19:15] <hopsing> I dont call 'var' in (a,b) ...
+[19:15] <hopsing> There seem to be some type system magic going on.
+[19:17] == jamm [~jam@unaffiliated/jamm] has quit [Ping timeout: 248 seconds]
+[19:17] == conal [~conal@2603:3006:138b:8000:447e:ae55:b24b:37b2] has quit [Quit: Computer has gone to sleep.]
+[19:18] <dmj`> ghc seems to infer that type as "halfAdd :: (Signal Bool, Signal Bool) -> (Signal Bool, Signal Bool)" for me
+[19:18] <dmj`> which will be the most generic
+[19:19] <hopsing> How is this inference done?
+[19:19] == Arcaelyx [~Arcaelyx@cpe-184-152-1-126.nyc.res.rr.com] has joined #haskell
+[19:19] == conal [~conal@2603:3006:138b:8000:24e1:e176:7663:c596] has joined #haskell
+[19:20] == Jesin [~Jesin@pool-72-83-62-150.washdc.fios.verizon.net] has quit [Quit: Leaving]
+[19:20] == tryte_ [~tryte@gateway/tor-sasl/tryte] has joined #haskell
+[19:20] == agander [agander@gateway/vpn/protonvpn/agander] has quit [Remote host closed the connection]
+[19:20] == tryte [~tryte@gateway/tor-sasl/tryte] has quit [Ping timeout: 256 seconds]
+[19:21] == tromp [~tromp@2a02:a210:1585:3200:284d:8592:d701:520e] has joined #haskell
+[19:21] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has quit [Remote host closed the connection]
+[19:21] == knupfer [~Thunderbi@200116b82c1d7100f69634fffef0b45f.dip.versatel-1u1.de] has joined #haskell
+[19:21] == raichoo [~raichoo@dslb-084-060-077-109.084.060.pools.vodafone-ip.de] has quit [Quit: Lost terminal]
+[19:21] <dmj`> in this case, if I follow the function down, halfAdd -> sum -> xor2 -> xorl ->  liftl -> Signal
+[19:21] == knupfer [~Thunderbi@200116b82c1d7100f69634fffef0b45f.dip.versatel-1u1.de] has quit [Client Quit]
+[19:21] == knupfer [~Thunderbi@200116b82c1d7100f69634fffef0b45f.dip.versatel-1u1.de] has joined #haskell
+[19:21] <dmj`> It seems halfAdd is always specialized to Signal
+[19:22] == nshepperd [~nshepperd@193.148.18.211] has quit [Quit: bye]
+[19:23] == zeta [~zeta@h44.11.19.98.dynamic.ip.windstream.net] has joined #haskell
+[19:23] <dmj`> hopsing: inside of typeclass instances, its common to call to call other typeclass methods or the same method (of the same typeclass) that will use other instances to populate an object. `var` is called in this way in the tuple Constructive instances
+[19:24] == andreas303 [~andreas@gateway/tor-sasl/andreas303] has quit [Quit: andreas303]
+[19:24] == andreas303 [~andreas@gateway/tor-sasl/andreas303] has joined #haskell
+[19:26] == matheus [hydraz@unaffiliated/demhydraz] has quit [Quit: No Ping reply in 180 seconds.]
+[19:26] == oisdk [~textual@2001:bb6:332d:b858:44c2:400b:8e32:a7e] has joined #haskell
+[19:26] <dmj`> something like this: instance Example a => Example b => Example (a,b) where ex (a,b) = (ex a, ex b)
+[19:26] <hopsing> dmj`: it is different that anything I have read so far adount typeclasses. I still cannot connect the dots...
+[19:27] <dmj`> hopsing: the recursion is implicit in the typeclass instance hierarchy
+[19:27] == matheus [hydraz@unaffiliated/demhydraz] has joined #haskell
+[19:28] == sarfraz [~sarfraz@bny93-1-81-57-144-245.fbx.proxad.net] has quit [Ping timeout: 252 seconds]
+[19:29] == RockyDD [~rockydd@c-67-169-164-181.hsd1.ca.comcast.net] has quit [Remote host closed the connection]
+[19:30] == sarfraz [~sarfraz@bny93-1-81-57-144-245.fbx.proxad.net] has joined #haskell
+[19:31] == cybai [~cybai@2400:4050:3122:900:7565:7455:1d8a:94e4] has joined #haskell
+[19:31] == RockyDD [~rockydd@c-67-169-164-181.hsd1.ca.comcast.net] has joined #haskell
+[19:32] == coeus [~coeus@ipservice-092-209-095-070.092.209.pools.vodafone-ip.de] has joined #haskell
+[19:32] == abhixec [~abhixec@c-73-93-41-24.hsd1.ca.comcast.net] has joined #haskell
+[19:32] <hopsing> dmj`: The 'var' function of (a,b) is selected because of the circ signature. Then the signature of a and b select the next 'var'. Because halfAdd specializes to Signal 'Constructive (Signal a)' 's var is taken.  
+[19:33] == tromp [~tromp@2a02:a210:1585:3200:284d:8592:d701:520e] has quit [Remote host closed the connection]
+[19:33] <dmj`> hopsing: here's a contrived example showing how typeclass instances can resolved recursively to construct an object, https://gist.github.com/36a394ff36e382b8f9da53ec1687acb2
+[19:33] == matheus [hydraz@unaffiliated/demhydraz] has quit [Quit: No Ping reply in 180 seconds.]
+[19:33] == knupfer [~Thunderbi@200116b82c1d7100f69634fffef0b45f.dip.versatel-1u1.de] has quit [Remote host closed the connection]
+[19:33] <dmj`> var is doing something with that extra string though
+[19:34] * dmj` looks at circ signature
+[19:35] == cybai [~cybai@2400:4050:3122:900:7565:7455:1d8a:94e4] has quit [Ping timeout: 252 seconds]
+[19:36] == matheus [hydraz@unaffiliated/demhydraz] has joined #haskell
+[19:36] <hopsing> dmj`: Impressive. I have to digest it.
+[19:38] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has joined #haskell
+[19:38] == chaosmasttter [~chaosmast@p200300C4A72215010000000000000001.dip0.t-ipconnect.de] has joined #haskell
+[19:38] <dmj`> hopsing: this is also the core technique that is used in GHC.Generics as well, to traverse the meta data of a Haskell record that has derived Generic
+[19:39] <zincy> Is there any way of seeing the derivation of typeclasses?
+[19:39] <hopsing> dmj`: You use some TypeApplications @(Int,Int). How is this implicitly done in vhdlWrite?
+[19:39] <zincy> By that I mean the resulting instance code
+[19:39] == RockyDD [~rockydd@c-67-169-164-181.hsd1.ca.comcast.net] has quit [Ping timeout: 245 seconds]
+[19:39] <dmj`> zincy: traceShow always worked for me :)
+[19:40] <dmj`> hopsing: trying that out right now, stay tuned
+[19:40] == jgt [~jgt@89-64-60-85.dynamic.chello.pl] has joined #haskell
+[19:40] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has quit [Remote host closed the connection]
+[19:41] <dmj`> Lava has their own Generic class which conflicts with GHC.Generics
+[19:41] <zincy> dmj`; thanks
+[19:41] <zincy> How do you traceShow on source code?
+[19:41] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has joined #haskell
+[19:42] <zincy> As in what do you traceShow to see the instance code?
+[19:42] <dmj`> zincy: this is also core to how servant works as well. servant and GHC.Generics are actually the same thing in spirit
+[19:42] <dmj`> zincy: so an extremely powerful technique is to use a closed type family which lets you explicitly recurse over a type like this
+[19:43] <geekosaur> zincy, do you want -ddump-deriv?
+[19:43] <dmj`> I've done this before to accumulate up all the field names in a record into a [Symbol], from here you can make a typeclass that converts [Symbol] -> [String]
+[19:43] == pingiun [~jelle@ip-213-124-166-73.ip.prioritytelecom.net] has quit [Quit: bye]
+[19:44] <dmj`> class ReifySymbols (xs :: [Symbol]) where reifySymbols :: Proxy xs -> [String]
+[19:44] <dmj`> instance (ReifySymbols xs, KnownSymbol x) => ReifySymbols (x ': xs) where
+[19:44] <dmj`>   reifySymbols = symbolVal (Proxy @ x) : reifySymbols (Proxy @ xs)
+[19:45] <dmj`> requires some type level pattern matching
+[19:45] <dmj`> zincy: but the order in which the strings are presented should be the order in which the instances were chosen by GHC
+[19:45] <dmj`> and don't forget the base case
+[19:45] <dmj`> instance ReifySymbols '[] where reifySymbols Proxy = []
+[19:46] == osa1 [~omer@haskell/developer/osa1] has quit [Remote host closed the connection]
+[19:46] == fenedor [~fendor@178.115.128.68.wireless.dyn.drei.com] has quit [Quit: Leaving]
+[19:46] <dmj`> otherwise GHC will be lost in the abyss of instance resolution
+[19:46] == cjenn [~cjenn@207.189.16.110] has quit [Ping timeout: 248 seconds]
+[19:46] <hopsing> too complicated...
+[19:46] == turion [~turion@2a02:8109:b6c0:32a4:35fc:6cfe:77d5:e51b] has quit [Ping timeout: 258 seconds]
+[19:46] == forgottenone [~forgotten@176.88.97.159] has quit [Quit: Konversation terminated!]
+[19:47] <dmj`> it's mild dependently typed programming
+[19:48] == conal [~conal@2603:3006:138b:8000:24e1:e176:7663:c596] has quit [Quit: Computer has gone to sleep.]
+[19:48] <hopsing> dmj`: i thought I had a glimpse but about to loose it again: Is it possible that you describe how the @(Int,Int) of your example is implicit in vhdWrite's calling of var ?
+[19:49] <hopsing> I still missing that dot. Maybe it is obviouse...
+[19:50] == cjenn [~cjenn@207.189.16.110] has joined #haskell
+[19:50] == conal [~conal@209.209.238.168] has joined #haskell
+[19:51] == zeta [~zeta@h44.11.19.98.dynamic.ip.windstream.net] has quit [Quit: WeeChat 2.4]
+[19:51] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has quit [Remote host closed the connection]
+[19:52] == HenryCH [~henry@2a02:aa10:b57e:4100:593a:7ca0:3b87:bb38] has joined #haskell
+[19:52] == chaosmasttter [~chaosmast@p200300C4A72215010000000000000001.dip0.t-ipconnect.de] has quit [Ping timeout: 259 seconds]
+[19:52] == conal [~conal@209.209.238.168] has quit [Client Quit]
+[19:53] <dmj`> hopsing: here are some different specializations of writeVhdl https://gist.github.com/dmjio/4f991bf50d254aa7f22a519b0d6eef32
+[19:54] == lprd_ [~jon@2a01cb0404945e01c4aee55eb87ba718.ipv6.abo.wanadoo.fr] has quit [Ping timeout: 248 seconds]
+[19:54] <dmj`> hopsing: type applications will apply the types in the order they are declared matching them with the type variables introduced by the forall (the forall being implicit in this case in writeVhdl)
+[19:54] == efeuska [~user@ip-213-127-2-86.ip.prioritytelecom.net] has joined #haskell
+[19:56] <dmj`> there's an implicit forall a b . before the typeclass constraints are defined in writeVhdl that type applications uses
+[19:57] == RockyDD [~rockydd@c-67-169-164-181.hsd1.ca.comcast.net] has joined #haskell
+[19:58] == zeta [~zeta@h44.11.19.98.dynamic.ip.windstream.net] has joined #haskell
+[20:00] <hopsing> dmj`: The typedefinition itself is like a program that is first executed? (I'm a haskell beginner...)
+[20:00] <zincy> Thanks, just saw the responses now
+[20:01] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has joined #haskell
+[20:02] <zincy> Is the use of type families ok in production code?
+[20:02] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has quit [Remote host closed the connection]
+[20:02] == jb55 [~jb55@S010660e327dca171.vc.shawcable.net] has quit [Ping timeout: 245 seconds]
+[20:02] <phadej> it depends
+[20:03] <phadej> but in general, yes
+[20:03] == cjenn [~cjenn@207.189.16.110] has quit [Quit: Leaving]
+[20:03] == revprez [~revprez@static-173-76-190-156.bstnma.ftas.verizon.net] has quit [Ping timeout: 246 seconds]
+[20:03] <merijn> zincy: Define ok
+[20:03] == chaosmasttter [~chaosmast@p200300C4A72215010000000000000001.dip0.t-ipconnect.de] has joined #haskell
+[20:03] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has joined #haskell
+[20:04] == revprez [~revprez@static-173-76-190-156.bstnma.ftas.verizon.net] has joined #haskell
+[20:04] <hopsing> djm`: Is there s some reading you can recomment that I can get more insights in that direction?
+[20:04] <dmj`> zincy: yea, I use them heavily in prod. code w/ Generics for working with databases
+[20:04] <dmj`> correct by construction m'boi
+[20:05] <zincy> dmj`: So it doesn't lead to code which is harder to maintain?
+[20:05] <dmj`> hopsing: anything by kosmikus is the best literature out there on generics, hands donw
+[20:05] <dmj`> down
+[20:05] <zincy> Am i right in saying typefamilies need to be used with data kinds to be useful?
+[20:05] == twtt [~textual@cpe-72-227-162-139.nyc.res.rr.com] has quit [Quit: My MacBook has gone to sleep. ZZZzzz…]
+[20:05] <merijn> zincy: Whether it's harder to maintain or not depends on how you use them
+[20:06] <dmj`> hopsing: https://www.andres-loeh.de/ExploringGH.pdf
+[20:06] <zincy> merijn: That kinda answers it, there are an infinite number of ways of defining ok
+[20:06] <dmj`> zincy: not necessarily, but there's a 99% change you'll be turning on data kinds
+[20:06] <dmj`> chance*
+[20:06] == butterthebuddha [~butterthe@35.1.246.48] has joined #haskell
+[20:07] <zincy> So data kinds promotes the data constructors to type constructors
+[20:07] <dmj`> zincy: and also enables type level nats / symbols
+[20:07] <dmj`> which Generics depends on
+[20:07] <zincy> what are symbols in this context?
+[20:07] <dmj`> type level strings
+[20:08] <dmj`> http://hackage.haskell.org/package/base-4.12.0.0/docs/GHC-TypeLits.html
+[20:08] <zincy> Does data kinds turn types into kinds?
+[20:09] <dmj`> zincy: yes
+[20:09] <zincy> Then you have more expressive kinds to group types?
+[20:09] == conal [~conal@209.209.238.168] has joined #haskell
+[20:09] <zincy> So types of types are kinds
+[20:09] == tromp [~tromp@2a02:a210:1585:3200:284d:8592:d701:520e] has joined #haskell
+[20:09] <dmj`> and types of kinds are sorts
+[20:10] <zincy> So we need kinds to group our types
+[20:10] == yqt [~yqt@81.88.230.28] has quit [Ping timeout: 248 seconds]
+[20:10] <Solonarv> dmj`: no, they're also types
+[20:10] * dmj` falls out of chair
+[20:10] <Solonarv> kinds, types, and sorts are all collapsed into the same layer in GHC
+[20:10] <dmj`> that's with TypeInType
+[20:10] <dmj`> which isn't enabled by default afaik
+[20:10] <Solonarv> that's always on in reality
+[20:10] <Solonarv> all the extension controls is whether you're allowed to write code using that
+[20:11] <dmj`> maybe I live in a different reality then
+[20:11] <Solonarv> % :set -XNoTypeInType
+[20:11] <yahb> Solonarv:
+[20:11] <Solonarv> % :k Type
+[20:11] <yahb> Solonarv: Type :: *
+[20:11] <Solonarv> % :k *
+[20:11] <yahb> Solonarv: * :: *
+[20:11] <merijn> Bringing up type in type isn't really helpful for anyone just getting started
+[20:11] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has quit [Remote host closed the connection]
+[20:11] <merijn> Honestly, I don't think bringing up type in type is helpful for anyone in general :p
+[20:11] <merijn> Confusing nonsense...
+[20:11] == RockyDD [~rockydd@c-67-169-164-181.hsd1.ca.comcast.net] has quit [Remote host closed the connection]
+[20:11] <Solonarv> perhaps, but then again neither is bringing up (incorrect!) information about sorts, IMO
+[20:11] == tromp [~tromp@2a02:a210:1585:3200:284d:8592:d701:520e] has quit [Remote host closed the connection]
+[20:12] <[exa]> guys be kind to sorts
+[20:12] <geekosaur> dmj1, TypeInType became default in one of the later 8.x's
+[20:12] == tromp [~tromp@2a02:a210:1585:3200:284d:8592:d701:520e] has joined #haskell
+[20:12] <dmj`> geekosaur: interesting, I just assumed that if I called :k Int and didn't see "Type" it wasn't enabled
+[20:12] == RockyDD [~rockydd@c-67-169-164-181.hsd1.ca.comcast.net] has joined #haskell
+[20:12] <geekosaur> StarIsType is a distinct setting, and is also default as of 8.6 iirc?
+[20:13] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has joined #haskell
+[20:13] <zincy> merijn: Are you referring to hopsing?
+[20:13] == twtt [~textual@cpe-72-227-162-139.nyc.res.rr.com] has joined #haskell
+[20:13] == o1lo01ol1o [~o1lo01ol1@cpe-74-72-45-166.nyc.res.rr.com] has quit [Remote host closed the connection]
+[20:13] <dmj`> not on 8.6.3 :/
+[20:13] <zincy> Yeah I think we forgot to answer his question
+[20:13] <zincy> or hers
+[20:13] <geekosaur> er, inverted. StarIsType is the old behavior, default is now NoStarIsType
+[20:13] <Solonarv> the GHC manual says this about TypeInType: "In the past this extension used to enable advanced type-level programming techniques."
+[20:13] <talqu> can i map/loop over all record fields somehow?
+[20:14] <dmj`> talqu: using a closed type family over the meta data GHC Generics provides you, yes you can
+[20:14] <[exa]> talqu: if they are of the same type, there might be lenses that do that
+[20:14] <Solonarv> geekosaur: StarIsType is still the default for now
+[20:14] <zincy> hopsing: haskell from first principles or learn you a haskell are good resources
+[20:14] <geekosaur> oh, guess they put it off
+[20:14] == Guest14210 has changed nick to fgaz
+[20:14] <Solonarv> the switch was only added in 8.6.1
+[20:14] <dmj`> Solonarv: thanks for correcting me, I know I should really stop leading people astray out here
+[20:14] <Solonarv> things don't move that fast
+[20:15] <hopsing> zincy: Thanks, Im reading the learn your haskell book right now.
+[20:15] <dmj`> hopsing: the typeclassopedia is the best resource(s)
+[20:15] <dmj`> @google typeclassopedia
+[20:15] <lambdabot> https://wiki.haskell.org/Typeclassopedia
+[20:16] <dmj`> what all the OGs learned on
+[20:16] <zincy> hopsing: Try and write little programs as soon as possible
+[20:17] <dmj`> hopsing: don't get bogged down by the type level stuff either, it's not sound anyways, despite the rhetoric around here
+[20:17] <hopsing> zincy: I'm trying it right now. Have setup the emacs enviroment and interpreter inside emacs.
+[20:17] == Jesin [~Jesin@pool-72-83-62-150.washdc.fios.verizon.net] has joined #haskell
+[20:18] <zincy> hopsing: Cool! I got started by asking lots of questions here.
+[20:18] <hopsing> dmj`: It sound really interesting. I can imagine it is very powerful.But must say I dont understand much still..
+[20:19] == bzm3r [4b9c1ace@gateway/web/cgi-irc/kiwiirc.com/ip.75.156.26.206] has quit [Remote host closed the connection]
+[20:19] <zincy> What are free monads for?
