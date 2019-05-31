@@ -1,1 +1,4 @@
 * test
+
+* node --inspect
+google-chrome chrome://inspect/
