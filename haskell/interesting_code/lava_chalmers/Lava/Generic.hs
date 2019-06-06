@@ -4,6 +4,8 @@ import Lava.Signal
 import Lava.Sequent
 import Lava.Error
 
+import Debug.Trace (traceShow)
+
 import Lava.LavaRandom
   ( Rnd
   , split

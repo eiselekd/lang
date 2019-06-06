@@ -48,6 +48,7 @@ fullAdd (arryIn, (a, b)) = (sum, arryOut)
   where
     (sum1, arry1) = halfAdd (a, b)
     (sum, arry2) = halfAdd (arryIn, sum1)
+
     arryOut = xor2 (arry2, arry1)
 
 
