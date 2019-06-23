@@ -75,7 +75,7 @@ var:
 	g++ -std=c++14 3_var.cpp -o 3_var.exe; ./3_var.exe
 	g++ -std=c++14 4_var.cpp -o 4_var.exe; ./4_var.exe
 
-conv:
+conv2:
 	g++ -std=c++14 20_conv.cpp -o 20_conv.exe; ./20_conv.exe
 
 
@@ -230,5 +230,6 @@ d108_d:
 304:
 	g++ -std=c++17 -g 304_if.cpp -o 304_if.exe
 
-306:
-	g++ -std=c++17 -g 306_hash.cpp -o 306_hash.exe
+
+401:
+	g++ -std=c++17 -g 401_tagged_union.cpp -o 401_tagged_union.exe; ./401_tagged_union.exe
