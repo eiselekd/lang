@@ -1,0 +1,8 @@
+.stack-work
+*.pdf
+Verify
+chalmers-lava2000.cabal
+dist
+doc
+f.vhd
+helm-debug-20190501
