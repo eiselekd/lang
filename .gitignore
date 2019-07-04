@@ -1,1 +1,8 @@
 *~
+GTAGS
+GRTAGS
+GPATH
+*/.stack-work/*
+.xmonad/xmobar-git/
+.xmonad/xmonad-contrib-git/
+.xmonad/xmonad-git/
