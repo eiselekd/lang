@@ -3,3 +3,10 @@
 ctrl-v h : show var value (describe-var)
 ctrl-h k  ... <key> : show keybinding
 ctrl-h m : show keybindings
+
+* debug
+
+git clone -b master git://git.sv.gnu.org/emacs.git
+CFLAGS="-ggdb3 -O0" CXXFLAGS="-ggdb3 -O0" LDFLAGS="-ggdb3" ./configure --enable-checking --with-gif=no --prefix=/home/eiselekd/bin
+
+
