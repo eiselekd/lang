@@ -9,4 +9,13 @@ ctrl-h m : show keybindings
 git clone -b master git://git.sv.gnu.org/emacs.git
 CFLAGS="-ggdb3 -O0" CXXFLAGS="-ggdb3 -O0" LDFLAGS="-ggdb3" ./configure --enable-checking --with-gif=no --prefix=/home/eiselekd/bin
 
+** show syntax table of current mode
+(describe-syntax)
+** show fonts 
+(list-faces-display)
+(list-colors-display)
+[1] http://ergoemacs.org/emacs_manual/elisp/Basic-Faces.html
+[2] http://ergoemacs.org/emacs/elisp_define_face.html
+
+
 
