@@ -1,0 +1,555 @@
+Notes on the type system.
+=========================
+
+2007-Sep-09
+-----------
+
+NO DAMN TUPLES
+
+Decided against transparent tuple and union types. There is already
+enough machinery to do heterogeneous sums and unions with recs. Tuples
+tend to only grow to 2 or 3 before they're a programmer hazard
+anyways, and tup[int,float] is not much different than pair[int,float]
+where pair is a library module alias for tup2[a,b]. We can probably
+define tupN up to 9 and be done with it.
+
+Likewise for unions, it's rare to usefully union anything other than a
+pair of things or "anything". We need a separate dyn for "anything"
+and a pair-union we can do with either[a,b]. In a pinch,
+either3[a,b,c].
+
+There is too much supporting syntax and structural/nominal baggage,
+and it's too tempting to get into destructuring assignment in order to
+"pick apart and name" the parts of a tuple. Neither of these are
+desirable. You get field names with records.
+
+There was an earlier thought about keeping tuples around for handling
+polymorphic apply, but I decided this is not really a problem. You can
+do apply in terms of a nested type associated with the function type:
+the arg-record type. It's the "call message" from hermes. Same thing.
+
+DATA AND TYPE
+
+*Did* decide to split rec and alt into "data" declarations (not
+"type") such that nominal types ( / ML style data constructors) are
+introduced with "data" and transparent types with "type". Type
+expressions as we might see in a type parameter list can only use
+transparent type stuff, or name data types by name; rec and alt
+declarations are not legal in type expressions. This helps clarify
+several use contexts of type expressions.
+
+LITERALS AND NEW
+
+A primary example is that these are all valid "new" expressions:
+
+ new foo { a=b, c=d }        // where foo is a rec data type
+ new func(int a) -> b { ... } 
+ new vec[int] { 1, 2, 3 }
+
+But this, in particular, is not!
+
+ // Butt-ugly, wrong, and incomparable with rec foo!
+ new rec {int a; int c;} { a = b, c = d }  // NO!
+
+ // Do this instead
+ data foo = rec { int a, int c }
+ new foo { a = b, c = d }
+
+
+NO WAIT, WE NEED TUPLES
+
+Crap. I've gone back and forth on tuples so many times my head is
+getting dizzy. Here is a possible reason we need tuples. The possible
+reason is that a function that looks like it's of type (int,int)->int
+is supposed to be compatible with any other function of that type,
+not just those that *name the args the same way*
+
+If we associate an arg record with a function, and say the function is
+"really" from x->y where x is the arg record and y is the return
+record, we're really saying "records are structurally comparable". But
+we don't want them to be! We want record types x and y to be
+incompatible since x is a different name than y.
+
+I think this might be a clincher. 
+
+*Sigh* ok.
+
+Earlier I was thinking of a "stripped down" set of rules given the
+notion of tuples: give up on parameter passing modes entirely and
+imply it all from limitation. I think we may still be ok with
+that. There was a corner case -- a single limited function arg with a
+single non-limited slot you *don't* want to move in -- but I can
+imagine a few possible solutions to that:
+
+  1. limited implies move-in-and-out, not just move-in. Possible, but
+     also a little sticky; you have to move an option in if you 
+     want the function to consume the arg and not give it back. Bleah.
+
+  2. maybe the problem is imaginary. limited implies move-in only if
+     the arg is still an lval during tuple-expression evaluation. If
+     it's any other sort of lval, we evaluate fully to an rval,
+     meaning we've already copied from the lval into a temp slot and 
+     we've simply going to move the *temp slot* into the function and
+     back. 
+     
+     but no, that's a little muddled. Evaluating an expression on the
+     RHS of a move should produce an lval -- in fact it's
+     syntactically restricted to an lval -- but on the sides of a binary
+     "," operator or inside a 1-ary function param list, maybe it 
+     should produce an lval as well? tricky. lvals as anything other 
+     than syntactic categories are js "REFs", which are a little bogus.
+
+     the central problem is that we have no 1-ary tuple type, and it's 
+     odd or possibly silly to even propose one (what, parens?)
+
+Another possibility is to give up on the "no param modes, just use 
+limitation and build expressions" argument, and say the following:
+
+   There's an argument tuple. Tuples are denoted tup[p,q,r]. The arg
+   tuple is not built by the commas in the arg list. It's built by the
+   call binding code analyzing the param passing modes and copying or
+   moving stuff into the tuple, then moving the tuple, then copying or
+   moving stuff out into the result scope, then repeating on the way
+   back.
+
+Yeah. That's probably what we're going to have to do. If we're going
+to do that, maybe we should support an sum[p,q,r] transparent union as
+well?
+
+Or alternatively, we could spell tup[p,q,r] as "rec[p,q,r]" since rec
+is a prohibited keyword in type expressions the rest of the time, and
+we could spell mix[p,q,r] as "alt[p,q,r]". Then we could call the
+former "anonymous records" and the latter "anonymous alternatives".
+
+Ooh, shivers! I like this. It has a nice ... orthogonality!
+
+Though actually, using "tup" and "sum" might be better. Gives the
+concepts words. They're really different concepts (and nested anys
+may in fact normalize out...)
+
+ok, WE HAVE TUPLES BUT THEY ARE CALLED TUP[A,B,C] AND THEY DO NOT INVOLVE
+THE BINARY COMMA "OPERATOR" OR SUCH NONSENSE, AND WE STILL NEED CODE TO
+ANALYZE PARAMETER MODES
+
+
+2007-Sep-10
+-----------
+
+Curious. Is alt really that different than sum? consider:
+
+  rec nodefoo { ... }
+  rec nodebar { ... }
+
+  
+  type node = alt[nodefoo, nodebar];
+  node x <- rec nodefoo { ... };
+
+Well, consider instead the notion of encoding some semantic meaning
+in the constructors. Say you were trying to differentiate centigrade from
+fahrenheit. 
+
+alt temp { dec fahr;
+           dec cent; }
+
+you can construct new temp instances, say, like so:
+
+ temp x = temp.fahr(10.0);
+
+now let's look at how you replicate this without 
+
+rec fahr { dec degrees }
+rec cent { dec degrees }
+type temp = alt[fahr, cent];
+
+temp x = rec fahr { dec = 10.0 }
+
+I think I'd prefer the ability to do the first. but I'll have to sleep
+on it. damn.
+
+2007-Sep-11
+-----------
+
+Sleep says: no anonymous sums. They're not useful enough to
+justify. So then:
+
+Declarations:
+
+data foo = alt { int a; int b; }
+data bar = rec { int x; int y; }
+
+expressions:
+
+foo p = foo.a(10);
+bar q = bar { x = 10; y = 12; }
+
+how do we syntactically select the second case? we've seen an lval; if
+the lval is a name *and* the peek is '{', we accept it as a
+record-constructor call. Otherwise it's a parse error. No 'new'.
+
+foo.a(10) is a normal function call (to a function the system
+generates for the type record foo). the alt-ness of foo is only
+special in an alt stmt.
+
+you get enums this way too:
+
+data state = alt { running; stopped; }
+state k = state.running;
+
+'state.running' is a constant artifact, also allocated by the runtime. Again,
+we differentiate a constant alt arm from a constructor alt arm
+
+2007-Sep-14
+-----------
+
+although, sigh, if we permit bar { ... } as a form of expression,
+we're not quite LL(1) anymore. Hm. yeah, we still are: we just define
+the *grammar* as permitting lvals on the LHS and restrict the
+*semantics* to say "only name lvals, not any old lvals". It still
+parses as lvals, since names are a subset of lvals, and you don't need
+to backtrack if you assume only lval.
+
+also note: using state.running is no good; we want 'state' to refer to a 
+data/type artifact, not a record full of functions. Let's adopt what MLs
+do here and just say the constructors are unqualified functions / constants.
+
+alt color { red, green, blue } 
+
+means you can use unqualified 'red', 'green' and 'blue'
+constants. Period. Then 'color' is a data/type, and color.foo are
+various attributes of that type.
+
+some exploration of protocols, constraints, 'plugs', and the relationship
+between procs and progs.
+
+One way is to say this:
+
+  lim native proc;
+  native prog;
+
+  lim rec obj[PLUGS] { 
+    proc self;
+    prog code;
+    PLUGS plugs;
+  }
+
+  plug canvas { 
+       chan draw_rect(int x, int y, nat w, nat h) -> nil;
+       chan clear() -> nil;
+  }
+
+  auto prog my_canvas(canvas) { 
+    plug mycanv(canvas) {
+      port draw_rect(int x, int y, nat w, nat h) -> nil {
+        // blah blah.
+      }
+      port clear() -> nil {
+        //
+      }
+    }
+  }
+
+  let my_canvas.ty cobj = my_canvas.new(x, y, z);
+  let canvas c = cobj.plugs.mycanv;
+  c.draw_rect(10, 10, 20, 20);
+
+Various points: 
+  - the prog p defines p.plug_ty and p.ty = obj[p.plug_ty]. you probably
+    only ever have to refer to p.ty and p.new to instantiate one.
+  - each plug name inside a prog must be unique, because they make up
+    fields in the implicit 'plugs' record type associated with the prog.
+  - if you don't use plug foo(bar) but just say plug foo, the plug is 
+    called foo.
+  - plug renaming is legal inside the prog using plug foo(bar) { ... }.
+    so there is never any name collision during multiple-plug support.
+  - plugs can be multiply-supported in a prog using plug foo2(bar) { ... }.
+    this gives you a second bar plug, perhaps one that does debugging,
+    or uses a different strategy, or is simply a newer version.
+  - plugs can be delegated using "plug foo(bar) = other;" where other is
+    a name of a plug found somewhere in the prog. 
+  - plugs can be partially delegated using 
+     "plug foo(bar) = other { .. exeception ports ... }"
+    which is as close as we're going to come to supporting "inheritence"!
+
+2008-May-24
+-----------
+
+some simplifications:
+
+Plugs, dead. ADTs (modules) live. Types can be abstract in
+them. Visible inside, invisible outside. Existential style,
+SML+functor style or possibly a bit like mixml but with any
+simplifications required to make it behave with out DAG storage model
+(i.e. perhaps iso-recursive cyclical types permitted in module,
+cyclical function calls, but no cyclical value ownership. Module
+refcounted as a whole? possibly but assume existential-style at worst.)
+
+Channels with signatures and call protocols dead. Auto ports
+dead. Channels with *data types* live, buffered and async (overflow =>
+drop, erlang style, or at least call a condition handler) using
+movable (non-copyable) ports and alt statements that literally just
+pull out a value from the queue. predicate: armed(port).
+
+Move in / out / inout on fn signatures dead. Copyables are copied unless
+annotated with @, which means alias (as before). Non-copyable are moved in
+and dropped. Non-copyable return values are moved-out. Encode what you 
+mean in copyable/non-copyable nature. If you have a move-out on yield it
+is actually threaded in and out of the callee with each yield; you can
+modify it in the caller and pass it "back down", between yields. This
+provides a system for 'send', the facility in some generator-systems, 
+without as much complexity.
+
+copyability of a composite structure is inferred by the contents of
+the structure, is provided by the compiler, cannot be sensibly
+dropped, cannot be asserted.
+
+init is implied as true for all statically named members of a
+composite structure (rec or alt), implied as true for every incoming
+arg of a fn and outgoing ret val of a fn, and every local val in a
+proc. init is *not* implied on local slots, it's computed by dataflow.
+
+I guess you can put prove init(x); someplace to ensure it's doing what
+you mean.
+
+
+2008-May-30
+-----------
+
+Can you alias a non-copyable? Hmm. There is very little point! You
+would not be able to copy an alias-of-a-non-copyable and, as it's an
+alias, you would not be able to move (modify) it either. The only use
+would be taking an alias to a non-copyable record that has copyable
+components you wish to extract. Useful? Perhaps. Does this violate the
+ownership model? I do not think so. Hard to prove though. Let's assume
+no aliasing of non-copyables. An alias is a cheap, non-transplanting
+copy. There are not many things to do with non-copyables anyways.
+
+
+2008-June-03
+------------
+
+More on module systems. Let's assume we have support for modules with
+types and values. And suppose we have first-class modules, so I can
+say
+
+  // a module type
+  type mt = mod { type e; fn mk()->e; fn eat(e)->nil; }   
+
+  // a 1st class module value, of module type
+  let mt mv = mod { type e = int; fn mk()->e { ret 1; } fn eat(int i) { } }  
+
+  // a module use, turning a first class module into 
+  // a member of the static environment.
+  use mt mm = mv;
+  let mm.e me = mm.mk();
+  mm.eat(me);
+
+What happens when we let 'me' escape from this scope? It has a type
+that cannot be denoted statically outside the scope, to begin with! So
+there would be no way of writing a function that gives it as a return
+value. Hooray for not supporting type inference :)
+
+Maybe this will work? Why don't most module systems work this way? Hmm.
+
+
+2008-June-05
+------------
+
+Concrete example. Two files implementing sets. One uses lists, one uses
+trees. Common module type interface for both.
+
+type set[e] = mod { type t; 
+                    let t empty; 
+                    fn union(@t a, @t b) -> t;
+                    fn singleton(@e v) -> t;
+                    fn contains(@e v) -> bool; }   
+
+mod listSet[e] = set[e] { type t = list[e].t;
+                          let t empty = new list[e].t({});
+                          fn union(@t a, @t b) -> t { ret list[e].union(a,b); }
+                          fn singleton(@e v) -> t { ret new list[e].t({v}); }
+                          fn contains(@e v) -> bool { ret list[e].contains(v); } }
+
+mod treeSet[e] = set[e] { type t = tree[e].t;
+                          let t empty = new tree[e].t({});
+                          fn union(@t a, @t b) -> t { ret tree[e].union(a,b); }
+                          fn singleton(@e v) -> t { ret new tree[e].t({v}); }
+                          fn contains(@e v) -> bool { ret tree[e].contains(v); } }
+
+
+fn doSomeSetStuff[e](@set[e] s, @e elt) -> nil
+{
+   use set[e] sm = s[e];
+   sm.t v = sm.union(sm.empty, sm.singleton(elt));   
+}
+
+let set[int] s1 = listSet[int];
+let set[int] s2 = treeSet[int];
+let set[int] s3 = mod set[int] { type t = []; ... }
+
+doSomeSetStuff[int](s1, 10);
+doSomeSetStuff[int](s2, 10);
+doSomeSetStuff[int](s3, 10);
+
+This has 4 new syntactic forms (the first-class module literal
+expression above doesn't work):
+
+  - a possibly-generative module declaration: mod modName[params] = modType[args] { mod-elts }
+
+  - a module type expression: mod { mod-ty-elts }
+
+  - a module expression: mod modType[args] { mod-elts }
+
+  - a module-use that "opens" a module, assigning new opaque types to
+    each of its existential members.
+
+
+2008-June-08
+------------
+
+prog is a special form for a reason.
+
+first, prog has a dtor, which is simply useful. but we have finally so we can argue that
+a dtor is not enough to argue for a prog.
+
+more importantly, prog has local vars that are visible to all fns declared in prog, but 
+can only be written-to by init, main and fini (none of which call one another).
+
+prog can also have dyns declared in it, which are visible to all the fns within it. 
+
+these two make them *somewhat* like classes.
+
+(also they have an implicit module of chans connected to all their
+ports, manufactured when they're allocated)
+
+
+2008-June-13
+------------
+
+ALL TYPES COPYABLE, NOT ALL TRANSMITTABLE
+
+You can always form another reference to a process or port, to stick
+elsewhere in a data structure. You just can't always <- send it
+through a channel. So the proper predicate on a type is
+"transmittable", not "copyable". You won't form cycles because you
+can't store "into" a proc or port. The "move" operator is dead.
+
+One simply cannot declare a port or chan that carries a non-transmit
+type. Therefore each type is marked with whether or not it's a transmit
+type, and every type-parametric binding is marked with whether or not
+it can be instantiated for non-transmit types.
+
+Since this inference might be confusing, we require that parametric
+bindings carry a leading 'lim' on parameters that can handle limited
+types, and we make a 'lim type' type declaration form for marking
+limited types (which is checked against the definition). All other
+binding-sugar forms also carry a prefix-'lim' form: lim fn f(...) or
+lim mod m(...). Module and function expressions can close over limited
+values.
+
+Prog declarations can *not* close over limited values, because a 'lim prog'
+could never be spawned. It's by-definition a nonsense type. 
+
+
+TUPLES
+
+With this change, the tuple constructor "," is back, functions taking
+"multiple values" just take a tuple, destructuring bind on tuples is
+available, and we're looking more and more like aleph. Woo.
+
+
+CHAN, send and receive syntaxes
+
+We do something a little like alef here, but not entirely:
+
+  unary receive:    <-port or <-vec[port], permitting say foo(<-port)
+  binary receive:   var <- port  or   var <- vec[port]
+  binary send:      chan <| data
+
+
+
+
+TAGS, DATA and TYPE
+
+the "tag" data constructor is for unions and enums, not alt. alt is 
+a prefix keyword for 'alt type', 'alt tag', and 'alt port' constructs.
+
+tag types are like ocaml tag types: sugar for a
+sum-injection/iso-recursive-fold operation and a corresponding
+sum-projection/iso-recursive-unfold operation when used in
+destructuring context ('alt tag').
+
+The iso-recursive thing supports multiple mutually-iso-recursive types
+by bundling up all the mutually-recursive types in a scope, sorting them,
+mu-binding them and then defining each binding as an indexed projection
+out of the mu-binding. Thus, as follows:
+
+so:
+
+ {
+   type exp = tag varexp(var) | letexp(dec,exp);
+   type dec = tag valdec(var,exp) | seqdec(dec,dec);
+ }
+
+turns into bindings:
+
+  exp -> #1 @ u[A,B].(var+(B,A), (var,A)+(B,B))
+  dec -> #2 @ u[A,B].(var+(B,A), (var,A)+(B,B))
+
+this is absolutely delicious. hooray for re-covering ground someone
+else has done. Note that there are awful details about tag-naming the
+members of the type and considering them equal if they have equal
+structure (and equal tag-names? ooh). I'm somewhat partial to this
+design since it's simple and makes (some) more programs typecheck,
+while (some) others -- mostly those doing fancy things with modules
+and opaque types -- not.  I'm ok with that tradeoff, I think. Though I
+will read through dreyer tldi 03 to be sure.
+
+
+2008-June-28
+------------
+
+An unfortunate fact: suppose we want to implement to make a module
+implementation of a data structure -- say a hashtable -- and you want
+it to be abstract and mutable, then you want to do *at least* things
+like:
+
+  tab = tab.insert(tab, key, val)
+
+but doing that with CoW means that by the time you're in tab.insert
+you have 2 live refs to the exterior vec and you're going to have to
+duplicate it. Ouch!
+
+Besides, you really want to do something more like:
+
+ tab.insert(tab, key, val) 
+
+as a single statement, without having to update tab. this means you
+really want writable aliases as a param slot mode.
+
+What are the semantics?
+
+  - writable aliases can only be formed in calls
+
+  - writable aliases can only be formed on things you *already have*
+    write permission on, have already CoW'ed
+
+  - you can't form 2 aliases to the same thing, or to anything that
+    *might be* the same thing. so if you form a write-alias a vec member
+    in a callexpr, all other members of that vec are prohibited from
+    being write-aliased simultaneously (since we can't statically know
+    whether you are hitting the same slot in multiple
+    index-expressions).
+
+  - all typestates of write-aliased slots drop to nil in the caller
+    *during* the call -- in case the call happens to be an iterator --
+    and the callee is obliged to re-establish the write-aliased slots to 
+    the signature typestate before returning. Any preds that cover the
+    write-aliased slot in the caller and are missing from the write-aliased
+    slot signature typestate are dropped in the caller. If it wants them
+    back it must assert them when it regains control.
+
+So we re-form ~ and ^ to mean read-alias and write-alias, respectively,
+and steal # from tuple-indexing (since we have destructuring assignment now 
+anyways) and use it for static metaprogram escape (think #include!)
+
+

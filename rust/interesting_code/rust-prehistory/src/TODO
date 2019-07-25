@@ -1,0 +1,76 @@
+
+progress:
+ - tag/iso/idx types
+ - mutually-recursive tag/iso/idx types
+ - GC glue / frame-info pointers
+ - build signal system
+ - build failure / unwind system
+ - add flush / child-wait states
+ - copy glue
+ - hash glue
+ - compare glue
+ - more string work
+ - more guts of type checker
+ - more guts of mode checker
+ - machine types (or at least byte-sized bool, u32 and u8)
+ - alt statements
+ - homogeneous for loops
+ - vec slicing
+ - yielding calling protocols
+ - iterator for-loops
+ - tail calling protocols
+ - arbitrary-precision int type
+ - mach-o format emitter
+ - extend typestate system to handle operation pre/post conditions
+   extracted from implicit-in-type constrs
+ - put timeout-flag in proc
+ - implement memory budget / accounting scheme
+ - explicit FFI / struct descriptors; hard-coding offsets is getting stale
+   (use IL.referent_ty and friends)
+ - combine layout and Il.referent_ty (give members of StructTy offsets and alignments)
+ - translate loop-jumps & calls to do a test/yield (regs already flushed)
+ - mod types
+ - parametric types
+
+possibly only in self-hosted:
+ - floating point values / registers / instructions
+ - redo lexer by hand, as unicode
+ - x64, arm?
+ - make callee-save in prologue/epilogue depend on reg use
+
+code cleanup:
+ - move frame code to ABI
+ - put logging and error-handling context in elf, pe, x86
+ - use a datatype for fields inside each kernel C structure
+ - move explicit code gen flags (pcrel_ok / abs_ok) to ABI "pre digester" function
+ - pass a crate pointer into the runtime rather than root prog
+ - consolidate formatting functions
+ - type-annotate everything
+ - change typestate algorithm to reschedule / revisit only downstream nodes
+ - change relaxation code to ... possibly *batch* adjustments? hard to say; maybe
+   have relaxation return a tri-state: "I fit" / "I do not" / "I might", and only
+   batch the "I do not"s?
+
+done:
+ - drop glue
+ - free glue
+ - real type checker, or extend resolve/unify? consult textbooks
+ - make proc stacks into chunk lists, check overflow / extend on frame entry
+ - rename 'Asm.item' to something less confusable with module-item
+ - reorganize glue code
+ - remove limited type
+ - change COMP_idx {} syntax, to _n
+ - vectors
+ - vector bounds checking
+ - basic strings
+ - implement refcounts on procs, chans, ports
+ - channels and ports
+ - basic version of type-state algorithm
+ - movement of superword values
+ - records
+ - tuples
+ - non-interior slot modes
+ - use a datatype for kernel function codes, not int numbers
+ - make proc pool growable
+ - change ra to do destructive / in-place update of bitsets
+ - make all logging (or most) lazy

@@ -1,0 +1,187 @@
+
+- budget exceeded
+  - time
+  - space
+  - other (dyn)
+- resource too busy
+  - entry queue depth exceeded
+- program logic error
+- input error
+- hardware error
+
+
+transient / permanent
+local / propagated
+
+
+signalling:
+
+  - sync local sw signals: logic error, overflow, etc.
+  - async local sw signals: alarms, "please kill this lwp"
+  - async sw env signals a la unix (timer, sigchild, sighup, etc.)
+  - async hw env signals: fpu, ipi, io interrupt
+
+mesa suggests we can restart with a value if signals have restart types.
+
+in rust process model, unwinding affects dynamic call chain, might
+leave callee process intact (in accept loop) while unwinding caller. 
+
+should signal handler be able to change status of callee (eg. to
+"broken, please reset me")? or propagate signal to callee's owner?
+
+crucial points: 
+
+  - well-defined signal prioritization, masking, saturation, dropping.
+    no implementation-defined races. text must do what it says, even
+    if the most precise form is a bit verbose.
+
+  - implementability: what are the atomic hw ops we have these days?
+  - comprehensiveness: what are the hw/sw env requirements?
+  - usability: can users get it right most of the time?
+
+
+what can we borrow from the existing lexicon?
+
+  - exceptions that unwind the dynamic stack
+  - signals that result in "spontaneous calls"
+  - erlang: exception that hits a process' mainloop kills process,
+    signals owner/group.
+
+possible picture (from hermes?):
+
+  - calls have declared exns, plus "failed(dyn)" exn
+  - in rendezvous, callee may return callmsg in exn state yet resume
+    mainloop w/o exn
+  - if exn propagates to the point of discarding callmsg w/o concrete
+    return, return is in "failed" exn state.
+  - if exn hits process mainloop, process is terminated, async signal
+    is optionally sent to owner/group.
+  - signals == message delivery
+    - interface involves binding (proc,signal)->port
+    - if no handler bound, throws "failed(signal)"
+    - if port overflows, is disconnected or times out, throws "failed(signal-delivery)"
+    - if unwinding exceeds budget, stops pc and signals owner/group
+    - open question: what if env races with our delivery? can it be made to not do so?
+
+simpler picture:
+
+  - crate has dynamic-scoped handler list called an "fault", per proc-in-that-crate (null initially):
+
+     fault foo(IN) -> OUT;
+
+  - push a handler on this list, dynamically scoped, via "trap":
+    (this can be a "virtual" list provided by DWARF CFI, or via a real list, doesn't matter)
+
+      trap (foo = (handler, thingy)) { ... }
+
+  - when you hit an exceptional circumstance, you raise it:
+
+      if (... ) {
+        x = foo();
+      } else {
+        // "uh oh, call a handler"
+        x = raise foo(gurgle);
+      }
+
+   what happens?
+
+   - If handler list is empty, fail
+   - Else call head of handler list and return result
+   - Handler may return something
+   - Handler may fail, unwinding
+   - Once you're failing, proc can't stop; no "catch"
+   - Termination model of processes, plus linkage
+   - If you *really* want to catch "everything", put it in a
+     separate process and wait on its termination
+
+simpler still:
+
+   - declare fault types as above:
+
+     fault foo(int x) -> int;
+
+   - static fault-trapping blocks, like catch blocks:
+
+     try {
+       ...
+     } trap foo(x) {
+       fix x + 10;
+     } trap bar(y) {
+       log "got a bar";
+       fail;
+     }
+
+  - when you hit an exceptional circumstance, you raise it:
+
+      if (... ) {
+        x = foo();
+      } else {
+        // "uh oh, call innermost foo trap for help"
+        x = raise foo(gurgle);
+      }
+
+   - fault-trapping block is invoked *like a fn*,
+     located dynamically using a CFI/.eh_frame-like thing.
+     zero cost in the not-taken case.
+
+   - trapping block has outer slots in scope, can fix or fail,
+     no closure weirdness required, no exceptions-as-values
+     nonsense, no lazy stacktrace complexity.
+
+   - "fix" passes a value back down to the fault and continues
+
+   - if fault-trapping block "fail"s, termination model starts
+
+   - this is similar to a subset of the mesa signal system or
+     the CL / dylan condition system
+
+
+or much, much simpler:
+
+   - mesa guys say "resumable never happens in practice"
+
+   - that isn't completely true for a few async trappables
+     (sigchild, sighup, sigpipe), presumably they forgot those!
+
+   - maybe be conservative and copy unix process model with
+     erlang 'linked failure' support. do the whole thing in
+     library functions.
+
+1. assume we support closures, only via currying, with a built-in expression type
+   'bind' that does something a little magic:
+
+   fn f(int x, int y) -> () { ... }
+
+   type thunk1 = fn f(int x) -> ();
+   type thunk0 = fn f() -> ();
+
+   let thunk1 t1 = bind f(10,_);
+   let thunk1 t2 = bind f(_,10);
+   let thunk0 t0 = bind f(10,12);
+
+   in other words, a 'bind' expression forms a fn closure *at the moment it's evaluated*, and no
+   other ways of forming closures exist. we can't "capture the environment" in which the function is
+   declared. that interacts poorly with the ownership system.
+
+   this abuses the _ notation which we'll need for pattern-matching anyway, to permit binding an odd
+   subset of the argument tuple, but that's probably useful enough to support.
+
+   how does it work? produces an exterior tuple of (gluefn,boundargs...) where gluefn does a
+   tailcall to f with boundargs components copied into specified arg slots. utility of this: doesn't
+   require you to declare Yet Another Funciton for every possible variant of binding. Also more
+   flexible than left-to-right-only currying. Steal low bit from function pointers, and 2-align all
+   function pointers to differentiate bound-function-pointers from non-bound-function-pointers.
+
+
+2. then:
+
+type failcode = tag(sigfail, sigquit, sigfpe, sigbus, sigsegv, sigill, sigabort, siglinked ...);
+type trapcode = tag( sigchild(pid), sigterm, sigalrm, sighup, sigchan(chanid), siguser(any) )
+type signal = tag( failure(failcode), trappable(trapcode) );
+type trap = fn(trapcode) -> ();
+
+lib.link(proc, proc);            // erlang-like "link failure-in-A -> failure-in-B
+lib.get_trap(trapcode) -> trap;  // gets existing handler
+lib.set_trap(trapcode, trap);    // installs a new trap
+lib.sig(proc, signal);           // sends a signal, pushing signal value onto queue for proc,
+                                 // fails the proc if its signal queue is overfull.
