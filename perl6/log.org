@@ -1,0 +1,6 @@
+  /home/eiselekd/git/lang/perl6:
+  total used in directory 16 available 722804224
+  drwxrwxr-x  2 eiselekd eiselekd   4 Jul  5 13:03 .
+  drwxrwxr-x 20 eiselekd eiselekd  23 Jul  5 13:02 ..
+  -rw-rw-r--  1 eiselekd eiselekd 386 Jul  5 13:03 parse.pl6
+  -rw-rw-r--  1 eiselekd eiselekd   0 Jul  5 13:02 parse.pl6~
