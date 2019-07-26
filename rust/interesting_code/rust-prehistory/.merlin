@@ -1,0 +1,6 @@
+S src/boot/be
+S src/boot/driver
+S src/boot/fe
+S src/boot/llvm
+S src/boot/me
+S src/boot/util
