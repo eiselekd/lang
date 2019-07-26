@@ -6,3 +6,4 @@ GPATH
 .xmonad/xmobar-git/
 .xmonad/xmonad-contrib-git/
 .xmonad/xmonad-git/
+haskell/dist/
