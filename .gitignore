@@ -7,3 +7,9 @@ GPATH
 .xmonad/xmonad-contrib-git/
 .xmonad/xmonad-git/
 haskell/dist/
+*.cmi
+*.cmt
+*.cmx
+*.o
+*.so
+*.d

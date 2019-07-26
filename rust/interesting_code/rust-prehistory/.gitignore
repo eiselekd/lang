@@ -1,0 +1,9 @@
+*.cmi
+*.cmt
+*.cmx
+*.o
+*.so
+*.d
+src/rustboot
+src/rustc
+src/boot/fe/lexer.ml

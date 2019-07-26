@@ -4,3 +4,5 @@ S src/boot/fe
 S src/boot/llvm
 S src/boot/me
 S src/boot/util
+
+B src/boot/*
