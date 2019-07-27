@@ -1,12 +1,15 @@
 
 ############ ocaml ##############
 
-O_MLS= lex.ml \
+O_MLS= \
+	common.ml \
+	token.ml \
+	lex.ml \
 	main.ml
 
 OTESTS=test
 
-ML_INCS := -I .
+ML_INCS := -I . -I .obj
 ML_NATIVE_LIBS := unix.cmxa nums.cmxa bigarray.cmxa
 OCAMLC_FLAGS := -bin-annot -g $(ML_INCS) -w Ael
 OCAMLOPT_FLAGS := -bin-annot $(ML_INCS) -w Ael
@@ -21,7 +24,8 @@ O_CMIS := $(addprefix .obj/, $(O_MLS:.ml=.cmi))
 ML_DEPFILES := $(addprefix .obj/, $(O_MLS:.ml=.dep))
 
 
-all: $(MKFILES) $(OTESTS:=.oexe)
+all: $(MKFILES) $(O_CMXS) $(OTESTS:=.oexe)
+#	echo $(O_CMXS)
 
 .obj/%.cmo: %.ml
 	@$(call CFG_ECHO, compile: $<)
@@ -33,7 +37,7 @@ all: $(MKFILES) $(OTESTS:=.oexe)
 	@$(call CFG_ECHO, compile: $<)
 	$(CFG_QUIET)ocamlopt$(OPT) -c -o $@ $(OCAMLOPT_FLAGS) $<
 
-.obj/%.ml: %.mll
+%.ml: %.mll
 	@$(call CFG_ECHO, lex-gen: $<)
 	$(CFG_QUIET)ocamllex$(OPT) -q -o $@ $<
 
@@ -45,7 +49,6 @@ all: $(MKFILES) $(OTESTS:=.oexe)
 	@$(call CFG_ECHO, dep: $<)
 	$(CFG_QUIET)ocamldep$(OPT) $(ML_INCS) $< $(CFG_PATH_MUNGE) >$@
 
-
 %.oexe: $(O_CMXS)
 	@$(call CFG_ECHO, compile: $<)
 	$(CFG_QUIET)ocamlopt$(OPT) -o $@ $(OCAMLOPT_FLAGS) $(ML_NATIVE_LIBS) $(O_CMXS)
@@ -56,7 +59,7 @@ clean:
 
 test:
 	make all
-	./test.exe
+	./test.oexe data.txt
 
 test_dllist:
 	$(CC) -g dllist.cpp -o dllist.exe
