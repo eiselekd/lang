@@ -65,3 +65,7 @@ test_dllist:
 	$(CC) -g dllist.cpp -o dllist.exe
 
 -include $(ML_DEPFILES) $(wildcard bin/*dep) $(wildcard *dep)
+
+
+control0.oexe: control0.ml
+	$(CFG_QUIET)ocamlfind ocamlopt -linkpkg -package fmt -o $@ control0.ml

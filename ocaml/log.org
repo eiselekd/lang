@@ -1,4 +1,31 @@
+* opam 
 
+opam init => error but no cleanup
+opam switch create 4.06.0
+opam install utop merlin topkg
+
+opam update; opam install opam-devel
 
 [1] https://caml.inria.fr/pub/docs/manual-ocaml/lexyacc.html
 [2] https://github.com/ocaml/merlin/wiki/emacs-from-scratch
+[3] https://caml.inria.fr/pub/docs/manual-ocaml/intfc.html
+
+
+* tutorials 
+[1] https://ocaml.org/learn/tutorials/if_statements_loops_and_recursion.html
+
+[2] https://ocaml.org/learn/tutorials/99problems.html
+[3] https://ocaml.org/learn/tutorials/compiling_ocaml_projects.html
+
+* format
+[1] https://hal.archives-ouvertes.fr/hal-01503081/file/format-unraveled.pdf
+* polymorphic 
+
+[1] http://roscidus.com/blog/blog/2013/12/20/polymorphism-for-beginners/
+
+* packages
+[1] https://stackoverflow.com/questions/5985215/why-are-3rd-party-libraries-not-found-on-the-ocaml-search-path
+* discuss
+
+[1] https://discuss.ocaml.org/
+

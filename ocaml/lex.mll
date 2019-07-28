@@ -9,6 +9,19 @@
 
   exception Lex_err of (string * Common.pos);;
 
+
+  let keyword_table = Hashtbl.create 100
+  let _ =
+    List.iter (fun (kwd, tok) -> Common.htab_put keyword_table kwd tok)
+              [ ("if", IF);
+                ("else", ELSE);
+                ("while", WHILE);
+                ("do", DO);
+                ("alt", ALT);
+                ("case", CASE);
+              ]
+  ;;
+
 }
 
 let hexdig = ['0'-'9' 'a'-'f' 'A'-'F']
@@ -34,10 +47,15 @@ rule token = parse
 | '*'                          { STAR       }
 | '/'                          { SLASH      }
 
+| id as i
+                               { try
+                                     Hashtbl.find keyword_table i
+                                 with
+                                     Not_found -> IDENT (i)
+                               }
+
+
 | eof                          { EOF        }
-
-
-
 
 
 (*
