@@ -24,8 +24,7 @@
   ;;
 
 
-
-# 29 "lex.ml"
+# 28 "lex.ml"
 let __ocaml_lex_tables = {
   Lexing.lex_base =
    "\000\000\247\255\075\000\250\255\251\255\252\255\001\000\254\255\
@@ -141,60 +140,60 @@ let rec token lexbuf =
 and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 40 "lex.mll"
+# 39 "lex.mll"
                                ( token lexbuf )
-# 147 "lex.ml"
+# 146 "lex.ml"
 
   | 1 ->
-# 41 "lex.mll"
+# 40 "lex.mll"
                                ( lexbuf.Lexing.lex_curr_p
                                      <- (bump_line lexbuf.Lexing.lex_curr_p);
                                  token lexbuf )
-# 154 "lex.ml"
+# 153 "lex.ml"
 
   | 2 ->
-# 44 "lex.mll"
+# 43 "lex.mll"
                                ( token lexbuf )
-# 159 "lex.ml"
+# 158 "lex.ml"
 
   | 3 ->
-# 46 "lex.mll"
+# 45 "lex.mll"
                                ( PLUS       )
-# 164 "lex.ml"
+# 163 "lex.ml"
 
   | 4 ->
-# 47 "lex.mll"
+# 46 "lex.mll"
                                ( MINUS      )
-# 169 "lex.ml"
+# 168 "lex.ml"
 
   | 5 ->
-# 48 "lex.mll"
+# 47 "lex.mll"
                                ( STAR       )
-# 174 "lex.ml"
+# 173 "lex.ml"
 
   | 6 ->
-# 49 "lex.mll"
+# 48 "lex.mll"
                                ( SLASH      )
-# 179 "lex.ml"
+# 178 "lex.ml"
 
   | 7 ->
 let
-# 51 "lex.mll"
+# 50 "lex.mll"
         i
-# 185 "lex.ml"
+# 184 "lex.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 52 "lex.mll"
+# 51 "lex.mll"
                                ( try
                                      Hashtbl.find keyword_table i
                                  with
                                      Not_found -> IDENT (i)
                                )
-# 193 "lex.ml"
+# 192 "lex.ml"
 
   | 8 ->
-# 59 "lex.mll"
+# 58 "lex.mll"
                                ( EOF        )
-# 198 "lex.ml"
+# 197 "lex.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf;
       __ocaml_lex_token_rec lexbuf __ocaml_lex_state

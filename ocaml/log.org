@@ -29,3 +29,7 @@ opam update; opam install opam-devel
 
 [1] https://discuss.ocaml.org/
 
+
+* fft
+[1] http://www.mega-nerd.com/erikd/Blog/CodeHacking/Ocaml/calling_ocaml.html
+[2] https://caml.inria.fr/pub/docs/manual-ocaml/intfc.html

@@ -1,5 +1,5 @@
-open Lex;;
 open Token;;
+open Lex;;
 
 let add a = a + 1;;
 
