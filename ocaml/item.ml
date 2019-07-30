@@ -34,4 +34,3 @@ and parse_lit (ps:pstate) : Ast.expr =
       LIT_INT (n,s) -> (bump ps; (Ast.EXPR_atom (Ast.ATOM_literal (Ast.LIT_int(n,s)))))
     | _ -> raise (unexpected ps)
 ;;
-
