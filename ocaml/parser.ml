@@ -12,6 +12,17 @@ type pstate =
     }
 ;;
 
+let iflog ps thunk =
+  if ps.pstate_sess.Session.sess_log_parse
+  then thunk ()
+  else ()
+;;
+
+let log (ps:pstate) = Session.log "parse"
+  ps.pstate_sess.Session.sess_log_parse
+  ps.pstate_sess.Session.sess_log_out
+;;
+
 let make_parser
     (sess:Session.sess)
     (fname:string)
@@ -32,14 +43,27 @@ let make_parser
         pstate_sess = sess;
  }
     in
+      iflog ps (fun _ -> log ps "made parser for: %s\n%!" fname);
       ps
 ;;
 
-let parse_src_file
-    (sess:Session.sess)
-    : Ast.root =
-  let fname = Session.filename_of sess.sess_in in
-  let ps = make_parser sess fname in
-
-  Ast.BASE_app [||]
+exception Parse_err of (pstate * string)
 ;;
+
+let with_err_handling sess thunk =
+  try
+    thunk ()
+  with
+    Parse_err (ps, str) ->
+    1
+;;
+
+let lexpos (ps:pstate) : pos =
+  let p = ps.pstate_lexbuf.Lexing.lex_start_p in
+    (p.Lexing.pos_fname,
+     p.Lexing.pos_lnum ,
+     (p.Lexing.pos_cnum) - (p.Lexing.pos_bol))
+;;
+
+(*  Ast.BASE_app [||]
+*)

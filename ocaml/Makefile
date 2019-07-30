@@ -8,6 +8,8 @@ O_MLS= \
 	lex.ml \
 	ast.ml \
 	parser.ml \
+	item.ml \
+	stmt.ml \
 	main.ml
 
 OTESTS=test

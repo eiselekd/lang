@@ -1,11 +1,16 @@
 open Common;;
 open Token;;
 open Lex;;
+open Stmt;;
 
 let (sess:Session.sess) =
   {
     Session.sess_in = None;
     Session.sess_out = None;
+    Session.sess_log_lex = true;
+    Session.sess_log_parse = true;
+    Session.sess_log_ast = true;
+    Session.sess_log_out = stdout;
   };;
 
 let add a = a + 1;;
@@ -34,12 +39,12 @@ let doscan fn =
 
 sess.Session.sess_in <- (Some Sys.argv.(1));;
 
-
 let _ = (introtext;
          doscan (Session.filename_of sess.Session.sess_in) )
 ;;
+Printf.fprintf stdout "\n";
 
-Parser.parse_src_file sess;;
+Stmt.parse_src_file sess;;
 
 
 
