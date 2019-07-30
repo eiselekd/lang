@@ -1,5 +1,12 @@
+open Common;;
 open Token;;
 open Lex;;
+
+let (sess:Session.sess) =
+  {
+    Session.sess_in = None;
+    Session.sess_out = None;
+  };;
 
 let add a = a + 1;;
 
@@ -25,9 +32,16 @@ let doscan fn =
   done
 ;;
 
+sess.Session.sess_in <- (Some Sys.argv.(1));;
+
+
 let _ = (introtext;
-         doscan Sys.argv.(1) )
+         doscan (Session.filename_of sess.Session.sess_in) )
 ;;
+
+Parser.parse_src_file sess;;
+
+
 
 (*
  * Local Variables:

@@ -4,7 +4,10 @@
 O_MLS= \
 	common.ml \
 	token.ml \
+	session.ml \
 	lex.ml \
+	ast.ml \
+	parser.ml \
 	main.ml
 
 OTESTS=test
@@ -24,7 +27,7 @@ O_CMIS := $(addprefix .obj/, $(O_MLS:.ml=.cmi))
 ML_DEPFILES := $(addprefix .obj/, $(O_MLS:.ml=.dep))
 
 
-all: $(MKFILES) $(O_CMXS) $(OTESTS:=.oexe)
+all: $(MKFILES) $(O_CMXS) $(OTESTS:=.oexe) control0.oexe control1.oexe
 #	echo $(O_CMXS)
 
 .obj/%.cmo: %.ml
@@ -68,4 +71,7 @@ test_dllist:
 
 
 control0.oexe: control0.ml
-	$(CFG_QUIET)ocamlfind ocamlopt -linkpkg -package fmt -o $@ control0.ml
+	$(CFG_QUIET)ocamlfind ocamlc -linkpkg -package fmt -bin-annot -g -o $@ control0.ml
+
+control1.oexe: control1.ml
+	$(CFG_QUIET)ocamlfind ocamlc -linkpkg -package fmt -bin-annot -g -o $@ control1.ml

@@ -586,7 +586,7 @@ let find_main_fn
         | _ -> ()
   in
     dig None crate_items;
-    match !fns with
+^    match !fns with
         [] -> raise (err "no 'main' function found" ps)
       | [x] -> x
       | _ -> raise (err "multiple 'main' functions found" ps)

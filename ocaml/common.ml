@@ -3,6 +3,10 @@ type filename = string
 type pos = (filename * int * int)
 type span = {lo: pos; hi: pos}
 
+type node_id = Node of int
+type 'a identified = { node: 'a; id: node_id }
+;;
+
 (*
  * Auxiliary hashtable functions.
  *)

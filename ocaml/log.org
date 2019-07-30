@@ -1,3 +1,4 @@
+
 * opam 
 
 opam init => error but no cleanup
@@ -33,3 +34,6 @@ opam update; opam install opam-devel
 * fft
 [1] http://www.mega-nerd.com/erikd/Blog/CodeHacking/Ocaml/calling_ocaml.html
 [2] https://caml.inria.fr/pub/docs/manual-ocaml/intfc.html
+
+* rust-ocaml
+parser.ml.span : register span and gen identified node
