@@ -1,2 +1,4 @@
 .obj/*dep
 *.oexe
+*.cmo
+c/c-main-calls-ocaml
