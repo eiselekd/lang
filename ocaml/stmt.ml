@@ -12,7 +12,7 @@ let parse_src_file
       begin
         fun _ ->
           let apos = lexpos ps in
-          let items = Item.parse_root ps EOF in
+          let item = Item.parse_root ps EOF in
           let bpos = lexpos ps in
           let files = Hashtbl.create 0 in
           1

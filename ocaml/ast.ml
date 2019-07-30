@@ -4,12 +4,7 @@ type ident = string
 ;;
 
 type root =
-    BASE_app of stmt array
-
-and stmt' =
-    STMT_copy of (lval * expr)
-
-and stmt = stmt' identified
+    BASE_app of expr
 
 and lval =
     LVAL_base of atom
@@ -22,11 +17,11 @@ and lit =
   | LIT_char of int
 
 and atom =
-    ATOM_literal of (lit identified)
+    ATOM_literal of lit
   | ATOM_lval of lval
 
 and expr =
-    EXPR_binary of (binop * atom * atom)
+    EXPR_binary of (binop * expr * expr)
   | EXPR_atom of atom
 
 and binop =

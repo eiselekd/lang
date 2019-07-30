@@ -12,6 +12,11 @@ type pstate =
     }
 ;;
 
+
+exception Parse_err of (pstate * string)
+;;
+
+
 let iflog ps thunk =
   if ps.pstate_sess.Session.sess_log_parse
   then thunk ()
@@ -47,8 +52,6 @@ let make_parser
       ps
 ;;
 
-exception Parse_err of (pstate * string)
-;;
 
 let with_err_handling sess thunk =
   try
@@ -63,7 +66,48 @@ let lexpos (ps:pstate) : pos =
     (p.Lexing.pos_fname,
      p.Lexing.pos_lnum ,
      (p.Lexing.pos_cnum) - (p.Lexing.pos_bol))
+
 ;;
+
+let ctxt (n:string) (f:pstate -> 'a) (ps:pstate) : 'a =
+  (ps.pstate_ctxt <- (n, lexpos ps) :: ps.pstate_ctxt;
+   let res = f ps in
+     ps.pstate_ctxt <- List.tl ps.pstate_ctxt;
+     res)
+;;
+
+(* Bottom-most parser actions. *)
+
+let peek (ps:pstate) : token =
+  iflog ps
+    begin
+      fun _ ->
+        log ps "peeking at: %s     // %s"
+          (string_of_tok ps.pstate_peek)
+          (match ps.pstate_ctxt with
+               (s, _) :: _ -> s
+             | _ -> "<empty>")
+    end;
+  ps.pstate_peek
+;;
+
+
+let bump (ps:pstate) : unit =
+  begin
+    iflog ps (fun _ -> log ps "bumping past: %s"
+                (string_of_tok ps.pstate_peek));
+    ps.pstate_peek <- Lex.token ps.pstate_lexbuf
+  end
+;;
+
+let err (str:string) (ps:pstate) =
+  (Parse_err (ps, (str)))
+;;
+
+let unexpected (ps:pstate) =
+  err ("Unexpected token '" ^ (string_of_tok (peek ps)) ^ "'") ps
+;;
+
 
 (*  Ast.BASE_app [||]
 *)

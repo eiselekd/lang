@@ -46,8 +46,6 @@ Printf.fprintf stdout "\n";
 
 Stmt.parse_src_file sess;;
 
-
-
 (*
  * Local Variables:
  * fill-column: 78;
