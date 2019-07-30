@@ -11,6 +11,8 @@ type token =
   | ALT
   | CASE
 
+  | LIT_INT       of (int64 * string)
+
   | IDENT         of string
 
   | EOF
@@ -31,6 +33,8 @@ let rec string_of_tok t =
     | WHILE      -> "while"
     | ALT        -> "alt"
     | CASE       -> "case"
+
+    | LIT_INT (_,s)  -> s
 
     | IDENT s    -> s
 ;;

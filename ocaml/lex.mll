@@ -47,6 +47,7 @@ rule token = parse
 | '*'                          { STAR       }
 | '/'                          { SLASH      }
 
+| dec as n                     { LIT_INT (Int64.of_string n, n)    }
 | id as i
                                { try
                                      Hashtbl.find keyword_table i
