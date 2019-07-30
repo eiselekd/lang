@@ -7,7 +7,7 @@ open Parser;;
 
 let rec parse_root (ps:pstate) (terminal:token) : Ast.root =
   match Parser.peek ps with
-    LIT_INT (i,s) -> Ast.BASE_app (parse_term_pexp ps)
+    LIT_INT (i,s) -> Ast.BASE_app (parse_term_expr ps)
    | _ -> raise (unexpected ps)
 
 and binop_rhs
@@ -23,8 +23,8 @@ and binop_rhs
   let bpos = lexpos ps in
     Ast.EXPR_binary (op, lhs, rhs)
 
-and parse_term_pexp (ps:pstate) : Ast.expr =
-  let name = "term pexp" in
+and parse_term_expr (ps:pstate) : Ast.expr =
+  let name = "term expr" in
   let apos = lexpos ps in
   let lhs = ctxt (name ^ " lhs") parse_lit ps in
     match peek ps with
@@ -36,7 +36,6 @@ and parse_lit (ps:pstate) : Ast.expr =
   match peek ps with
       LIT_INT (n,s) -> (bump ps; (Ast.EXPR_atom (Ast.ATOM_literal (Ast.LIT_int(n,s)))))
     | _ -> raise (unexpected ps)
-
 ;;
 
 

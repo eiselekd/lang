@@ -58,7 +58,8 @@ let with_err_handling sess thunk =
     thunk ()
   with
     Parse_err (ps, str) ->
-    1
+     assert false
+(* https://ocaml.org/learn/tutorials/if_statements_loops_and_recursion.html *)
 ;;
 
 let lexpos (ps:pstate) : pos =

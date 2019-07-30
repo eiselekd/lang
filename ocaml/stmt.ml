@@ -15,7 +15,9 @@ let parse_src_file
           let item = Item.parse_root ps EOF in
           let bpos = lexpos ps in
           let files = Hashtbl.create 0 in
-          1
+
+          Printf.printf "%s" (Ast.fmt_to_str Ast.fmt_root item)
+
       end
 
 ;;
