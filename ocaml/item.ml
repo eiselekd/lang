@@ -2,9 +2,6 @@ open Common;;
 open Token;;
 open Parser;;
 
-
-
-
 let rec parse_root (ps:pstate) (terminal:token) : Ast.root =
   match Parser.peek ps with
     LIT_INT (i,s) -> Ast.BASE_app (parse_term_expr ps)
@@ -38,18 +35,3 @@ and parse_lit (ps:pstate) : Ast.expr =
     | _ -> raise (unexpected ps)
 ;;
 
-
-  (* let apos = lexpos ps in
-   * let parse_lib_name ident =
-   *   match peek ps with
-   *       EQ ->
-   *         begin
-   *           bump ps;
-   *           match peek ps with
-   *               LIT_STR s -> (bump ps; s)
-   *             | _ -> raise (unexpected ps)
-   *         end
-   *     | _ -> ps.pstate_infer_lib_name ident
-   * in
-   *
-   *   match peek ps with *)
