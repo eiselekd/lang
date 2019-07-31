@@ -4,15 +4,15 @@ trait Callable {
 
 impl<F> Callable for F
 where
-    F: Fn() -> bool,
+    F: Fn(i32) -> bool,
 {
     fn call (&self) -> bool {
-        self()
+        self(1)
     }
 }
 
 fn a1 () -> impl Callable {
-    move || { println!("Hello"); return 0==0; }
+    move |x:i32| { println!("Hello {}", x); return 0==0; }
 }
 
 fn main() {
