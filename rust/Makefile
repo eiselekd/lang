@@ -4,3 +4,10 @@ all:
 
 install:
 	curl https://sh.rustup.rs -sSf | sh
+
+
+p1:
+	rustc p1.rs -g -o p1.exe ; ./p1.exe
+
+
+.PHONY: p1
