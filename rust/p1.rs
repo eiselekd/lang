@@ -11,12 +11,13 @@ where
     }
 }
 
-fn a1 () -> impl Callable {
+fn a1 () -> impl Callable
+{
     move |x:i32| { println!("Hello {}", x); return 0==0; }
 }
 
-fn main() {
-
+fn main()
+{
     let a = a1();
     a.call();
 }

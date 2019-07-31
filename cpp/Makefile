@@ -233,3 +233,15 @@ d108_d:
 
 401:
 	g++ -std=c++17 -g 401_tagged_union.cpp -o 401_tagged_union.exe; ./401_tagged_union.exe
+
+CPPO=$(wildcard catch2/internal/*cpp) $(wildcard catch2/reporters/*cpp)
+O_CPP=$(CPPO:.cpp=.o)
+
+%.o: %.cpp
+	g++ -std=c++17 -I catch2 -c -g $< -o $@
+
+libcatch2.a: $(O_CPP)
+	ar cr $@ $^
+
+601: libcatch2.a
+	g++ -I catch2 -std=c++17 -g 601_catch.cpp -L . -Wl,--whole-archive -lcatch2 -Wl,--no-whole-archive -o 601_catch.exe; ./601_catch.exe
