@@ -12,10 +12,8 @@ type pstate =
     }
 ;;
 
-
 exception Parse_err of (pstate * string)
 ;;
-
 
 let iflog ps thunk =
   if ps.pstate_sess.Session.sess_log_parse
@@ -91,7 +89,6 @@ let peek (ps:pstate) : token =
     end;
   ps.pstate_peek
 ;;
-
 
 let bump (ps:pstate) : unit =
   begin

@@ -16,6 +16,7 @@ infixl 1 >>>=
   -> (a -> WorldT b)   -- -> (a -> World -> (b, World))
   -> WorldT b          -- -> World -> (b, World)
 wt >>>= f = uncurry f .wt
+-- uncurry: (a -> World -> (b, World)) => ((a, World) -> (b,World))
 
 whatIsYourPureNameT :: WorldT ()
 whatIsYourPureNameT =

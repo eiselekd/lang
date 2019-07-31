@@ -25,8 +25,8 @@ and parse_term_expr (ps:pstate) : Ast.expr =
   let apos = lexpos ps in
   let lhs = ctxt (name ^ " lhs") parse_lit ps in
     match peek ps with
-        PLUS  -> binop_rhs ps name apos lhs parse_lit Ast.BINOP_add
-      | MINUS -> binop_rhs ps name apos lhs parse_lit Ast.BINOP_sub
+        PLUS  -> binop_rhs ps name apos lhs parse_term_expr Ast.BINOP_add
+      | MINUS -> binop_rhs ps name apos lhs parse_term_expr Ast.BINOP_sub
       | _     -> lhs
 
 and parse_lit (ps:pstate) : Ast.expr =
