@@ -1,3 +1,5 @@
+// https://bodil.lol/parser-combinators/
+
 fn match_literal(expected: &'static str)
     -> impl Fn(&str) -> Result<(&str, ()), &str>
 {
