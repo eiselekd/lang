@@ -16,7 +16,7 @@ fn literal_parser() {
     let parse_joe = match_literal("Hello Joe!");
     assert_eq!(
         Ok(("", ())),
-        parse_joe("Hello Joe!")
+        parse_joe("Hello Joes!")
     );
     assert_eq!(
         Ok((" Hello Robert!", ())),

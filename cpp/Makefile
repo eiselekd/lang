@@ -245,3 +245,18 @@ libcatch2.a: $(O_CPP)
 
 601: libcatch2.a
 	g++ -I catch2 -std=c++17 -g 601_catch.cpp -L . -Wl,--whole-archive -lcatch2 -Wl,--no-whole-archive -o 601_catch.exe; ./601_catch.exe
+
+602: 602.cpp
+	g++ -I catch2 -std=c++17 -g 602.cpp -lgtest -lpthread -o 602.exe; ./602.exe
+
+
+#check-syntax: 602
+check-syntax:
+	@echo '$(CHK_SOURCES)' > /tmp/a
+	g++  -std=c++11 -s -o nul -S $(CHK_SOURCES)
+
+#	g++  -std=c++11 -s -o nul -S 602.cpp
+
+gtest: 602
+
+.PHONY: 602
