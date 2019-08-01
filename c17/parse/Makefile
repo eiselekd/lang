@@ -1,4 +1,5 @@
 PSRCS= parse.cpp \
+       lexer.cpp
 
 ifeq ($(USEENV),clang)
 # until c++17 is supported:
@@ -10,14 +11,15 @@ CXX=g++-7  -std=c++17
 endif
 
 CFLAGS= -g
-TESTS=test
+TESTS=test test-lexer
+ADDLIB=lib/libparse.a -lgtest -lpthread
 
 POBJS=$(foreach f,$(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(PSRCS))),.obj/$(f))
 EOBJS=$(foreach f,$(TESTS),$(f).exe)
 
 all: $(EOBJS)
 
-lib/libhash.a: $(POBJS)
+lib/libparse.a: $(POBJS)
 	@mkdir -p lib
 	$(CROSS-COMPILE)ar cr $@ $^; $(CROSS-COMPILE)ranlib $@
 	@echo "$@: $^" > $@.dep
@@ -34,12 +36,12 @@ lib/libhash.a: $(POBJS)
 	@echo -n "$@:"                                                                                   >$@.dep
 	@$(CROSS-COMPILE)$(CXX) $(CFLAGS)  $(DEBUG_F) $(TRACING) $(ADDINC) -c $< -MM | sed -e 's/.*://' >> $@.dep
 
-%.exe: %.c lib/libhash.a
+%.exe: %.c lib/libparse.a
 	$(CROSS-COMPILE)$(CC) $(DEBUG_F) $(TRACING)  $(ADDINC)  $< $(ADDLIB) -o $@
 	@echo -n "$@:"                                                                                 > $@.dep
 	@$(CROSS-COMPILE)$(CC) $(DEBUG_F) $(TRACING)  $(ADDINC)  $< $(ADDLIB) -MM   | sed -e 's/.*://' >> $@.dep
 
-%.exe: %.cpp lib/libhash.a
+%.exe: %.cpp lib/libparse.a
 	$(CROSS-COMPILE)$(CXX) $(CFLAGS) $(DEBUG_F) $(TRACING)  $(ADDINC) $< $(ADDLIB)  -o $@
 	@echo -n "$@:"                                                                                 > $@.dep
 	@$(CROSS-COMPILE)$(CXX) $(CFLAGS) $(DEBUG_F) $(TRACING)  $(ADDINC) $< $(ADDLIB) -MM   | sed -e 's/.*://' >> $@.dep
@@ -55,3 +57,6 @@ test_dllist:
 	$(CC) -g dllist.cpp -o dllist.exe
 
 -include $(wildcard .obj/*dep) $(wildcard bin/*dep) $(wildcard *dep)
+
+gtest-lexer: test-lexer.exe
+	./test-lexer.exe

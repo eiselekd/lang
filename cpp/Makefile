@@ -257,6 +257,6 @@ check-syntax:
 
 #	g++  -std=c++11 -s -o nul -S 602.cpp
 
-gtest: 602
+gtest2: 602
 
 .PHONY: 602
