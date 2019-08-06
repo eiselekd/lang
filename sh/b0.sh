@@ -48,3 +48,14 @@ for i in ${!h[@]}; do
 done
 
 # break line according to regex
+string="1:1.0:2.0:3.0\n2 2.1 2.2 2.3"
+set -f                      # avoid globbing (expansion of *).
+IFS=' '
+array=(${string//:/ })
+for i in "${!array[@]}"
+do
+    echo "$i=>${array[i]}"
+done
+
+
+
