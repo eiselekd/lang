@@ -11,14 +11,21 @@ array+=(5)
 array[${#array[@]}]=6
 
 # iterate over array
-echo ;for i in $(seq 0 $(( ${#array[@]}-1 )) ); do echo $i: ${array[$i]}; done
+
+# use nameref "-n" variable given as name
+function printar() {
+    local -n larray
+    larray=$1
+    for i in $(seq 0 $(( ${#larray[@]}-1 )) ); do echo $i: ${larray[$i]}; done
+}
+
+echo ;printar array
 
 unset array[$((${#array[@]}-1))]
 echo ;for i in $(seq 0 $(( ${#array[@]}-1 )) ); do echo $i: ${array[$i]}; done
 
 array=("${array[@]:0:${#array[@]}-1}")
 echo ;for i in $(seq 0 $(( ${#array[@]}-1 )) ); do echo $i: ${array[$i]}; done
-
 
 unset array[-1] # bash 4.3
 echo ;for i in $(seq 0 $(( ${#array[@]}-1 )) ); do echo $i: ${array[$i]}; done
