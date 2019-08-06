@@ -19,7 +19,8 @@ echo ;for i in $(seq 0 $(( ${#array[@]}-1 )) ); do echo $i: ${array[$i]}; done
 array=("${array[@]:0:${#array[@]}-1}")
 echo ;for i in $(seq 0 $(( ${#array[@]}-1 )) ); do echo $i: ${array[$i]}; done
 
-unset array[-1]
+
+unset array[-1] # bash 4.3
 echo ;for i in $(seq 0 $(( ${#array[@]}-1 )) ); do echo $i: ${array[$i]}; done
 echo ${array[-1]}
 
@@ -38,6 +39,5 @@ unset h[butterfly]
 for i in ${!h[@]}; do
     echo $i: ${h[$i]}
 done
-
 
 # break line according to regex
