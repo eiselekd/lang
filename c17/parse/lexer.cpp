@@ -42,12 +42,14 @@ lex(const char *p, int len)
     return 0;
 }
 
-TEST(Lexing, Rawtokens) {
+TEST(Lexing, Rawtokens)
+{
     EXPECT_EQ(TOK_INT, lex("1",1));
     EXPECT_EQ(TOK_STR, lex("\"str\"",5));
 }
 
-int lexer_main(int argc, char **argv) {
+int lexer_main(int argc, char **argv)
+{
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
