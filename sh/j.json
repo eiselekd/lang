@@ -1,0 +1,12 @@
+[
+    { "vendor"   : "intel1",
+      "manifests" : [
+	  {"n" : "test1.xml",
+	   "deeps" : [{ "n" : "deepn" },{ "n" : "deepn2" },{ "n" : "deepn3" }]}]
+    },
+    { "vendor"   : "google2",
+      "manifests" : [
+	  {"n" : "test2.xml",
+	   "deeps" : [{ "n" : "deepn" },{ "n" : "deepn4" },{ "n" : "deepn5" }]}]
+    }
+]
