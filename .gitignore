@@ -13,3 +13,9 @@ haskell/dist/
 *.o
 *.so
 *.d
+*.exe
+*.exe.dep
+.obj
+obj_dir
+simx.vcd
+*.vcd
