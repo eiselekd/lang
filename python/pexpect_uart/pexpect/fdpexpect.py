@@ -24,9 +24,60 @@ PEXPECT LICENSE
 from .spawnbase import SpawnBase
 from .exceptions import ExceptionPexpect, TIMEOUT
 from .utils import select_ignore_interrupts
-import os
+import os, time
 
-__all__ = ['fdspawn']
+__all__ = ['fdspawn', 'fdspawn_readerthread']
+
+def getnow():
+    return time.time()
+
+class fdspawn_readerthread(fdspawn):
+
+    def __init__ (self, fd, args=None, timeout=30, maxread=2000, searchwindowsize=None,
+                  logfile=None, encoding=None, codec_errors='strict'):
+        fdspawn.__init__(self, fd, args, timeout, maxread, searchwindowsize,
+                  logfile, encoding, codec_errors)
+
+        self.l = threading.Lock()
+        self.e = threading.Event()
+        self.r = threading.Thread(target=self.reader, args = (self,))
+        self.data = b'';
+
+    def reader(self, arg0):
+
+        while not self.closed :
+            try:
+                data = fdspawn.read_nonblocking(32, 0.1)
+            except serial.SerialException as e:
+                print("-------- SerialException -------" + str(e))
+                error = e
+                break
+            else:
+                if data:
+                    self.l.aquire(True);
+                    self.data += data
+                    self.l.release();
+                    self.e.set()
+
+    def read_nonblocking(self, size=1, timeout=-1):
+        if (timeout == -1):
+            timeout = self.timeout
+        i0 = time.time() + timeout
+        while len(self.data) < size:
+            c = time.time()
+            if (c > i0):
+                break;
+            if self.e.wait(i0-c):
+                continue;
+            else:
+                break;
+        r = b'';
+        self.l.aquire(True);
+        r = self.data[0:size];
+        self.data = data[size:]
+        self.l.release();
+        return r;
+
 
 class fdspawn(SpawnBase):
     '''This is like pexpect.spawn but allows you to supply your own open file
