@@ -24,60 +24,9 @@ PEXPECT LICENSE
 from .spawnbase import SpawnBase
 from .exceptions import ExceptionPexpect, TIMEOUT
 from .utils import select_ignore_interrupts
-import os, time
+import os, time, threading
 
 __all__ = ['fdspawn', 'fdspawn_readerthread']
-
-def getnow():
-    return time.time()
-
-class fdspawn_readerthread(fdspawn):
-
-    def __init__ (self, fd, args=None, timeout=30, maxread=2000, searchwindowsize=None,
-                  logfile=None, encoding=None, codec_errors='strict'):
-        fdspawn.__init__(self, fd, args, timeout, maxread, searchwindowsize,
-                  logfile, encoding, codec_errors)
-
-        self.l = threading.Lock()
-        self.e = threading.Event()
-        self.r = threading.Thread(target=self.reader, args = (self,))
-        self.data = b'';
-
-    def reader(self, arg0):
-
-        while not self.closed :
-            try:
-                data = fdspawn.read_nonblocking(32, 0.1)
-            except serial.SerialException as e:
-                print("-------- SerialException -------" + str(e))
-                error = e
-                break
-            else:
-                if data:
-                    self.l.aquire(True);
-                    self.data += data
-                    self.l.release();
-                    self.e.set()
-
-    def read_nonblocking(self, size=1, timeout=-1):
-        if (timeout == -1):
-            timeout = self.timeout
-        i0 = time.time() + timeout
-        while len(self.data) < size:
-            c = time.time()
-            if (c > i0):
-                break;
-            if self.e.wait(i0-c):
-                continue;
-            else:
-                break;
-        r = b'';
-        self.l.aquire(True);
-        r = self.data[0:size];
-        self.data = data[size:]
-        self.l.release();
-        return r;
-
 
 class fdspawn(SpawnBase):
     '''This is like pexpect.spawn but allows you to supply your own open file
@@ -191,3 +140,61 @@ class fdspawn(SpawnBase):
             if self.child_fd not in rlist:
                 raise TIMEOUT('Timeout exceeded.')
         return super(fdspawn, self).read_nonblocking(size)
+
+
+def getnow():
+    return time.time()
+
+class fdspawn_readerthread(fdspawn):
+
+    def __init__ (self, fd, args=None, timeout=30, maxread=2000, searchwindowsize=None,
+                  logfile=None, encoding=None, codec_errors='strict'):
+        fdspawn.__init__(self, fd, args, timeout, maxread, searchwindowsize,
+                  logfile, encoding, codec_errors)
+
+        self.data = b'';
+        self.l = threading.Lock()
+        self.e = threading.Event()
+        self.r = threading.Thread(target=self.reader, args = (self,))
+        self.r.start()
+
+    def reader(self, arg0):
+
+        while not self.goon.is_set():
+            try:
+                data = fdspawn.read_nonblocking(self, 32, 0.1)
+                #print(data)
+            except TIMEOUT as e:
+                pass
+            except Exception as e:
+                print("-------- SerialException -------" + str(type(e)))
+                error = e
+                break
+            else:
+                if data:
+                    self.l.acquire(True);
+                    self.data += data
+                    self.l.release();
+                    self.e.set()
+
+
+    def read_nonblocking(self, size=1, timeout=-1):
+        if (timeout == -1):
+            timeout = self.timeout
+        i0 = time.time() + timeout
+        while len(self.data) < size:
+            c = time.time()
+            if (c > i0):
+                break;
+            if self.e.wait(i0-c):
+                continue;
+            else:
+                break;
+        r = b'';
+        self.l.acquire(True);
+        r = self.data[0:size];
+        self.data = self.data[size:]
+        self.l.release();
+
+        print(self.data[0:10])
+        return r;
