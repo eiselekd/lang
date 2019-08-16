@@ -141,29 +141,31 @@ class fdspawn(SpawnBase):
                 raise TIMEOUT('Timeout exceeded.')
         return super(fdspawn, self).read_nonblocking(size)
 
-
-def getnow():
-    return time.time()
+data=[]
 
 class fdspawn_readerthread(fdspawn):
 
     def __init__ (self, fd, args=None, timeout=30, maxread=2000, searchwindowsize=None,
                   logfile=None, encoding=None, codec_errors='strict'):
+
         fdspawn.__init__(self, fd, args, timeout, maxread, searchwindowsize,
                   logfile, encoding, codec_errors)
 
-        self.data = b'';
+        global data
         self.l = threading.Lock()
         self.e = threading.Event()
-        self.r = threading.Thread(target=self.reader, args = (self,))
+        self.dataidx = len(data)
+        data.append( b'');
+        self.r = threading.Thread(target=self.reader, args = (self.dataidx,))
         self.r.start()
+        print(self.dataidx)
 
-    def reader(self, arg0):
-
+    def reader(self, dataidx):
+        global data
+        print("start thread with index %d"%(dataidx))
         while not self.goon.is_set():
             try:
-                data = fdspawn.read_nonblocking(self, 32, 0.1)
-                #print(data)
+                v = fdspawn.read_nonblocking(self, 32, 0.1)
             except TIMEOUT as e:
                 pass
             except Exception as e:
@@ -171,30 +173,34 @@ class fdspawn_readerthread(fdspawn):
                 error = e
                 break
             else:
-                if data:
+                if v:
                     self.l.acquire(True);
-                    self.data += data
+                    data[dataidx] = data[dataidx] + v
                     self.l.release();
                     self.e.set()
+                    #print(data);
 
 
     def read_nonblocking(self, size=1, timeout=-1):
+        global data
         if (timeout == -1):
             timeout = self.timeout
         i0 = time.time() + timeout
-        while len(self.data) < size:
+        while len(data[self.dataidx]) == 0:
             c = time.time()
             if (c > i0):
-                break;
+                raise TIMEOUT('Timeout exceeded.')
             if self.e.wait(i0-c):
+                self.e.clear()
                 continue;
             else:
-                break;
+                raise TIMEOUT('Timeout exceeded.')
         r = b'';
         self.l.acquire(True);
-        r = self.data[0:size];
-        self.data = self.data[size:]
+        r = data[self.dataidx][0:size];
+        data[self.dataidx] = data[self.dataidx][size:]
         self.l.release();
 
-        print(self.data[0:10])
+        #print(data[self.dataidx][0:10])
+        #print(self.dataidx)
         return r;
