@@ -192,3 +192,67 @@ class fdspawn(SpawnBase):
             if self.child_fd not in rlist:
                 raise TIMEOUT('Timeout exceeded.')
         return super(fdspawn, self).read_nonblocking(size)
+
+data=[]
+
+class fdspawn_readerthread(fdspawn):
+
+    def __init__ (self, fd, args=None, timeout=30, maxread=2000, searchwindowsize=None,
+                  logfile=None, encoding=None, codec_errors='strict'):
+
+        fdspawn.__init__(self, fd, args, timeout, maxread, searchwindowsize,
+                  logfile, encoding, codec_errors)
+
+        global data
+        self.l = threading.Lock()
+        self.e = threading.Event()
+        self.dataidx = len(data)
+        data.append( b'');
+        self.r = threading.Thread(target=self.reader, args = (self.dataidx,))
+        self.r.start()
+        print(self.dataidx)
+
+    def reader(self, dataidx):
+        global data
+        print("start thread with index %d"%(dataidx))
+        while not self.goon.is_set():
+            try:
+                v = fdspawn.read_nonblocking(self, 32, 0.1)
+            except TIMEOUT as e:
+                pass
+            except Exception as e:
+                print("-------- SerialException -------" + str(type(e)))
+                error = e
+                break
+            else:
+                if v:
+                    self.l.acquire(True);
+                    data[dataidx] = data[dataidx] + v
+                    self.l.release();
+                    self.e.set()
+                    #print(data);
+
+
+    def read_nonblocking(self, size=1, timeout=-1):
+        global data
+        if (timeout == -1):
+            timeout = self.timeout
+        i0 = time.time() + timeout
+        while len(data[self.dataidx]) == 0:
+            c = time.time()
+            if (c > i0):
+                raise TIMEOUT('Timeout exceeded.')
+            if self.e.wait(i0-c):
+                self.e.clear()
+                continue;
+            else:
+                raise TIMEOUT('Timeout exceeded.')
+        r = b'';
+        self.l.acquire(True);
+        r = data[self.dataidx][0:size];
+        data[self.dataidx] = data[self.dataidx][size:]
+        self.l.release();
+
+        #print(data[self.dataidx][0:10])
+        #print(self.dataidx)
+        return r;
