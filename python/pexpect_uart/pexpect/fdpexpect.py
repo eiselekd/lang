@@ -24,7 +24,7 @@ PEXPECT LICENSE
 from .spawnbase import SpawnBase
 from .exceptions import ExceptionPexpect, TIMEOUT
 from .utils import select_ignore_interrupts
-import os, time
+import os, time, threading
 
 __all__ = ['fdspawn', 'fdspawn_readerthread']
 
@@ -35,6 +35,7 @@ class fdspawn_readerthread(fdspawn):
 
     def __init__ (self, fd, args=None, timeout=30, maxread=2000, searchwindowsize=None,
                   logfile=None, encoding=None, codec_errors='strict'):
+
         fdspawn.__init__(self, fd, args, timeout, maxread, searchwindowsize,
                   logfile, encoding, codec_errors)
 
