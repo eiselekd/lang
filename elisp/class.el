@@ -4,8 +4,9 @@
 
 (require 'cl-lib)
 
+(cl-defstruct person name age sex)
+(setq dave (make-person :name "Dave" :sex 'male :age 11))
 
-(setq dave (create-person :name "Dave" :sex 'male :age 11))
 (person-p dave)
 (person-age dave)
 
@@ -25,3 +26,18 @@
   (waiting-caller t)
   (result-caller nil))
 
+(defmacro struct-with-slots (class-name slots obj &rest body)
+  "Bind slot names SLOTS in an instance OBJ of class CLASS-NAME, and execute BODY."
+  (declare (indent 3))
+  `(cl-symbol-macrolet
+       ,(cl-loop for slot in slots
+                 collect `(,slot (cl-struct-slot-value ',class-name ',slot ,obj)))
+     ,@body))
+
+(message "%s" dave)
+
+(defun a (o)
+  (struct-with-slots person ( name ) o
+		     (message "name: %s" name)))
+
+(a dave)
