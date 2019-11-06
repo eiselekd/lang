@@ -38,7 +38,7 @@
     "node-cache": "^4.1.1",
     "request": "^2.81.0",
     "robots-parser": "^1.0.1",
-    "sequelize": "^4.4.2",
+    "sequelize": "^5.21.2",
     "sqlite3": "^3.1.8"
   }
 }
