@@ -1,5 +1,11 @@
 all:
+
+test-keystone:
 	python3 asm.py
+
+test-unicorn:
+	python3 uni.py
+
 
 prepare-keystone:
 	sudo apt-get install cmake
