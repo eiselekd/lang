@@ -1,7 +1,9 @@
 from keystone.keystone import *
 
 # separate assembly instructions by ; or \n
-CODE = b"inc ecx"
+CODE = b'''inc ecx
+ret
+'''
 
 try:
     # Initialize engine in X86-32bit mode
