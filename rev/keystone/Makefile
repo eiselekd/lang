@@ -6,6 +6,8 @@ test-keystone:
 test-unicorn:
 	python3 uni.py
 
+test:
+	python3 test.py
 
 prepare-keystone:
 	sudo apt-get install cmake
