@@ -10,8 +10,11 @@ def convert_binary(a):
     return b;
 
 # separate assembly instructions by ; or \n
+#sub    eax, eax
+#sub    esp, 0xc
 CODE = b'''
-inc ecx
+sub    eax, eax
+mov    [ecx-0xc], eax
 '''
 
 # callback for tracing memory access (READ or WRITE)
@@ -30,6 +33,9 @@ encoding, count = ks.asm(CODE)
 print("%s = %s (number of statements: %u)" %(CODE, encoding, count))
 
 e = bytes(encoding)
+
+for i in e:
+    sys.stdout.write("%02x " %(i))
 
 # Initialize emulator in X86-32bit mode
 mu = Uc(UC_ARCH_X86, UC_MODE_32)
@@ -50,7 +56,7 @@ mu.hook_add(UC_HOOK_MEM_READ, hook_mem_access)
 mu.reg_write(UC_X86_REG_RSP, ADDRESS + 0x200000)
 
 # emulate machine code in infinite time
-mu.emu_start(ADDRESS, ADDRESS + len(e))
+#mu.emu_start(ADDRESS, ADDRESS + len(e))
 
-r_ecx = mu.reg_read(UC_X86_REG_ECX)
-print(">>> ECX = 0x%x" %r_ecx)
+#r_ecx = mu.reg_read(UC_X86_REG_ECX)
+#print(">>> ECX = 0x%x" %r_ecx)
