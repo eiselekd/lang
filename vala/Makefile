@@ -4,4 +4,7 @@ all:
 	valac -C v.vala -o v.c
 
 e:
-	vala e.vala
+	valac --pkg gtk+-3.0 e.vala -o e.exe
+
+prepare:
+	apt-get install libgtk-3-dev
