@@ -10,3 +10,4 @@ Id = {Letter}{AlphaNumeric}*
 
 <Then Stm>  ::= if Id then <Then Stm> else <Then Stm>
               | Id ':=' Id
+
