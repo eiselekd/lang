@@ -4,6 +4,7 @@
  * End:
  */
 
+/* apt-get install libgtest-dev g++-7 */
 /*
 [a-zA-Z0-9_]+    : symbol
 [0-9]+           : numbers
@@ -39,12 +40,14 @@ lex(const char *p, int len)
 	    i++;
 	return TOK_INT;
     };
+
     return 0;
+
 }
 
 TEST(Lexing, Rawtokens)
 {
-    EXPECT_EQ(TOK_INT, lex("1",1));
+    EXPECT_EQ(TOK_INT, lex("1", 2));
     EXPECT_EQ(TOK_STR, lex("\"str\"",5));
 }
 
