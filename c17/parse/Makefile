@@ -1,7 +1,7 @@
 PSRCS= parse.cpp \
        lexer.cpp \
-       lang_l.cpp \
        lang_y.cpp \
+       lang_l.cpp \
 
 ifeq ($(USEENV),clang)
 # until c++17 is supported:
@@ -52,8 +52,10 @@ lib/libparse.a: $(POBJS)
 %.cpp : %.lex
 	flex -o $@ $<
 
+lang_l.cpp : lang_y.cpp
+
 %.cpp : %.y
-	bison -o $@ $<
+	bison -d -o $@ $<
 
 
 clean:

@@ -5,13 +5,15 @@
 %{
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "./token.h"
+#include "./lang_y.hpp"
 #include <vector>
+
+using namespace testing;
 %}
 
 %option noyywrap
 
-digit         [0-9]
+digit  [0-9]
 
 %%
 
@@ -20,19 +22,19 @@ digit         [0-9]
 
 %%
 
-int prep_yy_lex(const char *v) {
+std::vector<int> prep_yy_lex(const char *v) {
+    int i; std::vector<int> vec;
     yy_scan_string(v);
-    return yylex();
+    while ( (i = yylex())) {
+	vec.push_back(i);
+    }
+    return vec;
 }
 
 TEST(FlexLexing, Lextokens)
 {
-    EXPECT_EQ(TOK_STR, prep_yy_lex("part fn"));
-
-    std::vector v{1,2,3};
-    EXPECT_THAT(v, ::testing::ElementsAreArray({1,2,3}));
-
-    EXPECT_EQ(TOK_INT, prep_yy_lex("fn"));
+    EXPECT_THAT(prep_yy_lex("part"),    ElementsAreArray({TOK_STR}));
+    EXPECT_THAT(prep_yy_lex("part fn"), ElementsAreArray({TOK_STR, TOK_INT}));
 }
 
 int flex_lexer_main(int argc, char **argv)
