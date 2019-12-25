@@ -1,8 +1,6 @@
-/*
- * Local Variables:
- * buffer-gtest-rule:"gtest-lexer"
- * End:
- */
+/* Local Variables: */
+/* buffer-gtest-rule:"gtest-lexer" */
+/* End: */
 
 /* apt-get install libgtest-dev g++-7 */
 /*

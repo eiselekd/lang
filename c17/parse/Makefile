@@ -1,5 +1,7 @@
 PSRCS= parse.cpp \
-       lexer.cpp
+       lexer.cpp \
+       lang_l.cpp \
+       lang_y.cpp \
 
 ifeq ($(USEENV),clang)
 # until c++17 is supported:
@@ -12,7 +14,7 @@ endif
 
 CFLAGS= -g
 TESTS=test test-lexer
-ADDLIB=lib/libparse.a -lgtest -lpthread
+ADDLIB=-Wl,--whole-archive lib/libparse.a -Wl,--no-whole-archive -lgtest -lpthread
 
 POBJS=$(foreach f,$(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(PSRCS))),.obj/$(f))
 EOBJS=$(foreach f,$(TESTS),$(f).exe)
@@ -45,6 +47,14 @@ lib/libparse.a: $(POBJS)
 	$(CROSS-COMPILE)$(CXX) $(CFLAGS) $(DEBUG_F) $(TRACING)  $(ADDINC) $< $(ADDLIB)  -o $@
 	@echo -n "$@:"                                                                                 > $@.dep
 	@$(CROSS-COMPILE)$(CXX) $(CFLAGS) $(DEBUG_F) $(TRACING)  $(ADDINC) $< $(ADDLIB) -MM   | sed -e 's/.*://' >> $@.dep
+
+
+%.cpp : %.lex
+	flex -o $@ $<
+
+%.cpp : %.y
+	bison -o $@ $<
+
 
 clean:
 	-rm -rf .obj/*.o lib/*.a .obj/*.dep lib/*.dep
