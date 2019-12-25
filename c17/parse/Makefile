@@ -1,7 +1,9 @@
 PSRCS= parse.cpp \
-       lexer.cpp \
-       lang_y.cpp \
-       lang_l.cpp \
+       lexer.cpp
+
+
+#       lang_y.cpp \
+#       lang_l.cpp \
 
 ifeq ($(USEENV),clang)
 # until c++17 is supported:

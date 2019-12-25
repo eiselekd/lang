@@ -13,14 +13,53 @@ fun, if, for     : keywords
 */
 
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 #include <ctype.h>
 #include "./token.h"
+#include <vector>
+#include <string>
 
-int
-lex(const char *p, int len)
+using namespace testing;
+using namespace std;
+
+struct str {
+    str(const char *p, int len) : p(p), len(len) { }
+    const char *p;
+    int len;
+};
+
+bool operator == (const struct str &a, const struct str &b) {
+    return a.len == b.len &&
+	strncmp(a.p, b.p, a.len) == 0;
+};
+
+struct tok {
+    int tag;
+    str tok;
+    string as_string() const { return string(tok.p,tok.len); }
+};
+
+bool operator == (const struct tok &a, const struct tok &b) {
+    return a.tag == b.tag &&
+	a.tok == b.tok;
+}
+
+std::ostream& operator<<(std::ostream& os, const tok &e) {
+    return os << e.tag << ":'" << e.as_string() << "'";
+}
+
+tok
+lex(const char **_p, int len)
 {
-    int i = 0, j = 0, prev, c0, c1;
+    int i = 0, prev, c0, c1;
+    int tag = 0; int tokstart = 0;
+    const char *p = *_p;
+
+restart:
     switch(c0 = p[i]) {
+    case ' ':
+	tokstart = ++i;
+	goto restart;
     case 'a'...'z':
     case 'A'...'Z':
 	break;
@@ -31,22 +70,36 @@ lex(const char *p, int len)
 	{
 	    prev = (prev == '\\' && c1 == '\\') ? 0 : c1;
 	}
-	return TOK_STR;
+	tag = TOK_STR; break;
     }
     case '0'...'9':
 	while (i < len && isdigit(p[i]))
 	    i++;
-	return TOK_INT;
+	tag = TOK_INT; break;
     };
+    *_p = p+i;
+    return tok{tag,{p+tokstart,i-tokstart}};
+}
 
-    return 0;
-
+vector<tok>
+lex_all(const char *p) {
+    vector<tok> v; int l = strlen(p);
+    const char *e = p + l;
+    while(e > p) {
+	tok i = lex(&p, e-p);
+	v.push_back(i);
+    }
+    return v;
 }
 
 TEST(Lexing, Rawtokens)
 {
-    EXPECT_EQ(TOK_INT, lex("1", 2));
-    EXPECT_EQ(TOK_STR, lex("\"str\"",5));
+    EXPECT_THAT(lex_all("1 2"),ElementsAreArray(
+		    {tok{TOK_INT,{"1",1}},
+		     tok{TOK_INT,{"2",1}}}));
+    EXPECT_THAT(lex_all("\"str\""),ElementsAreArray(
+		    {tok{TOK_STR,{"\"str\"",5}}}));
+
 }
 
 int lexer_main(int argc, char **argv)
