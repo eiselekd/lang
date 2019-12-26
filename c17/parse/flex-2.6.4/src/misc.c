@@ -694,6 +694,9 @@ void skelout (void)
 	char   *buf = buf_storage;
 	bool   do_copy = true;
 
+	if (tables_only)
+		return;
+
     /* "reset" the state by clearing the buffer and pushing a '1' */
     if(sko_len > 0)
         sko_peek(&do_copy);

@@ -133,6 +133,8 @@ optspec_t flexopts[] = {
 	,
 	{"--posix-compat", OPT_POSIX_COMPAT, 0}
 	,			/* Maximal compatibility with POSIX lex. */
+	{"-x", OPT_TABLES_ONLY, 0}
+	,
         {"--preproc=NUM", OPT_PREPROC_LEVEL, 0}
         ,
 	{"-L", OPT_NO_LINE, 0}

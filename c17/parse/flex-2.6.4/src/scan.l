@@ -950,8 +950,13 @@ nmstr[yyleng - 2 - end_is_ws] = '\0';  /* chop trailing brace */
                 ++linenum;
                 ACTION_ECHO;
                 if (bracelevel <= 0) {
-                   if ( doing_rule_action )
-                      add_action( "\tYY_BREAK]""]\n" );
+		    if ( doing_rule_action ) {
+			if (!tables_only) {
+			    add_action( "\tYY_BREAK]""]\n" );
+			} else {
+			    add_action( "\tYY_BREAK\n" );
+			}
+		    }
 
                    doing_rule_action = false;
                    BEGIN(SECT2);

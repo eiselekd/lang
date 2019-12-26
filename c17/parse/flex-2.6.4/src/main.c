@@ -49,7 +49,7 @@ void set_up_initial_allocations(void);
 
 /* these globals are all defined and commented in flexdef.h */
 int     printstats, syntaxerror, eofseen, ddebug, trace, nowarn, spprdflt;
-int     interactive, lex_compat, posix_compat, do_yylineno,
+int     interactive, lex_compat, posix_compat, do_yylineno, tables_only,
 	useecs, fulltbl, usemecs;
 int     fullspd, gen_line_dirs, performance_report, backing_up_report;
 int     C_plus_plus, long_align, use_read, yytext_is_array, do_yywrap,
@@ -184,7 +184,10 @@ int flex_main (int argc, char *argv[])
 			      rule_linenum[default_rule]);
 
 	/* Generate the C state transition tables from the DFA. */
-	make_tables ();
+	if (tables_only)
+		make_tables_only ();
+	else
+		make_tables ();
 
 	/* Note, flexend does not return.  It exits with its argument
 	 * as status.
@@ -768,6 +771,8 @@ void flexend (int exit_status)
 			putc ('l', stderr);
 		if (posix_compat)
 			putc ('X', stderr);
+		if (tables_only)
+			putc ('x', stderr);
 		if (performance_report > 0)
 			putc ('p', stderr);
 		if (performance_report > 1)
@@ -950,7 +955,7 @@ void flexinit (int argc, char **argv)
 	scanopt_t sopt;
 
 	printstats = syntaxerror = trace = spprdflt = false;
-	lex_compat = posix_compat = C_plus_plus = backing_up_report =
+	lex_compat = posix_compat = C_plus_plus = backing_up_report = tables_only =
 		ddebug = fulltbl = false;
 	fullspd = long_align = nowarn = yymore_used = continued_action =
 		false;
@@ -1121,6 +1126,10 @@ void flexinit (int argc, char **argv)
 
 		case OPT_POSIX_COMPAT:
 			posix_compat = true;
+			break;
+
+		case OPT_TABLES_ONLY:
+			tables_only = true;
 			break;
 
         case OPT_PREPROC_LEVEL:
@@ -1612,6 +1621,7 @@ void readin (void)
 	if (ddebug)
 		outn ("\n#define FLEX_DEBUG");
 
+	if (!tables_only) {
 	OUT_BEGIN_CODE ();
 	outn ("typedef flex_uint8_t YY_CHAR;");
 	OUT_END_CODE ();
@@ -1717,6 +1727,7 @@ void readin (void)
 		if (yyclass)
 			flexerror (_
 				   ("%option yyclass only meaningful for C++ scanners"));
+	}
 	}
 
 	if (useecs)

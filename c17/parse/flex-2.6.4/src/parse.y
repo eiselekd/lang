@@ -140,7 +140,10 @@ goal		:  initlex sect1 sect1end sect2 initforrule
 			else
 				add_action( "ECHO" );
 
-			add_action( ";\n\tYY_BREAK]]\n" );
+                        if (!tables_only)
+			        add_action( ";\n\tYY_BREAK]]\n" );
+                        else
+			        add_action( ";\n\tYY_BREAK\n" );
 			}
 		;
 
