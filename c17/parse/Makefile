@@ -74,3 +74,13 @@ test_dllist:
 
 gtest-lexer: test-lexer.exe
 	./test-lexer.exe
+
+
+prep-flex:
+	cd flex-2.6.4; ./configure --prefix=$(CURDIR)/bin-flex; make; make install
+
+.PHONY: lang_l_simple.c
+
+lang_l_simple.c: lang_l_simple.lex
+	$(CURDIR)/bin-flex/bin/flex -x -o lang_l_simple.c lang_l_simple.lex
+	$(CURDIR)/bin-flex/bin/flex -o lang_l_simple.reference.c lang_l_simple.lex

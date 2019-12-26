@@ -1,7 +1,6 @@
 %{
 %}
 
-%option noyywrap
 digit  [0-9]
 
 %%

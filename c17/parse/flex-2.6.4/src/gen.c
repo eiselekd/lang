@@ -1485,6 +1485,23 @@ void indent_puts (const char *str)
 	outn (str);
 }
 
+void make_tables_only(void)
+{
+	char fn[512];
+
+	sprintf(fn, "%s.tables.c", outfilename);
+	freopen (fn, "w+", stdout);
+	gentabs ();
+
+	sprintf(fn, "%s.actions.c", outfilename);
+	freopen (fn, "w+", stdout);
+
+	out (&action_array[action_offset]);
+
+	sprintf(fn, "%s.rest.c", outfilename);
+	freopen (fn, "w+", stdout);
+
+}
 
 /* make_tables - generate transition tables and finishes generating output file
  */

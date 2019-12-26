@@ -358,7 +358,7 @@
 
 extern int printstats, syntaxerror, eofseen, ddebug, trace, nowarn,
 	spprdflt;
-extern int interactive, lex_compat, posix_compat, do_yylineno;
+extern int interactive, lex_compat, posix_compat, do_yylineno, tables_only;
 extern int useecs, fulltbl, usemecs, fullspd;
 extern int gen_line_dirs, performance_report, backing_up_report;
 extern int reentrant, bison_bridge_lval, bison_bridge_lloc;
@@ -771,6 +771,7 @@ extern void indent_put2s(const char *, const char *);
 extern void indent_puts(const char *);
 
 extern void make_tables(void);	/* generate transition tables */
+extern void make_tables_only(void);	/* generate transition tables */
 
 
 /* from file main.c */

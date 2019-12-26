@@ -19,24 +19,26 @@ calc_no:	$(OBJS_NO)
 
 ##########################
 ## without shift/reduce conflict
-bison_conflict_no_lex.o: bison_conflict_no.lex
-		flex bison_conflict_no.lex
-		$(CC) $(CFLAGS) -c lex.yy.c -o bison_conflict_no_lex.o
-
+.PHONY: bison_conflict_no_lex.o bison_conflict_no.o
 bison_conflict_no.o: bison_conflict_no.y
 		bison -d -v bison_conflict_no.y
 		$(CC) $(CFLAGS) -c bison_conflict_no.tab.c -o bison_conflict_no.o
 
+bison_conflict_no_lex.o: bison_conflict_no.lex
+		flex -d -o bison_conflict_no.lex.autogen.c bison_conflict_no.lex
+		$(CC) $(CFLAGS) -c bison_conflict_no.lex.autogen.c -o bison_conflict_no_lex.o
+
 ##########################
 ## with shift/reduce conflict
-bison_conflict_lex.o: bison_conflict.lex
-		flex bison_conflict.lex
-		$(CC) $(CFLAGS) -c lex.yy.c -o bison_conflict_lex.o
-
+.PHONY: bison_conflict_lex.o bison_conflict.o
 
 bison_conflict.o: bison_conflict.y
 		bison -d -v bison_conflict.y
 		$(CC) $(CFLAGS) -c bison_conflict.tab.c -o bison_conflict.o
+
+bison_conflict_lex.o: bison_conflict.lex
+		flex -d -o bison_conflict.lex.autogen.c bison_conflict.lex
+		$(CC) $(CFLAGS) -c bison_conflict.lex.autogen.c -o bison_conflict_lex.o
 
 
 .PHONY: bison_conflict_no.o bison_conflict.o
