@@ -17,7 +17,7 @@ int yylex(void);
 %start	start
 
 %token TOK_IF TOK_STR TOK_THEN TOK_ELSE
-%token TOK_INT
+%token TOK_INT TOK_DIRINOUT TOK_DIRIN TOK_DIROUT
 
 %%
 

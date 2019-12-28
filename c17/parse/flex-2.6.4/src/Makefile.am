@@ -62,6 +62,8 @@ COMMON_SOURCES = \
 	main.c \
 	misc.c \
 	nfa.c \
+	gentest.cpp \
+	gentest.h \
 	options.c \
 	options.h \
 	parse.y \
@@ -79,7 +81,7 @@ COMMON_SOURCES = \
 	version.h \
 	yylex.c
 
-LDADD = $(LIBOBJS) @LIBINTL@
+LDADD = $(LIBOBJS) @LIBINTL@ -lstdc++
 
 $(LIBOBJS): $(LIBOBJDIR)$(am__dirstamp)
 
@@ -147,6 +149,8 @@ indentfiles = \
 	main.c \
 	misc.c \
 	nfa.c \
+	gentest.cpp \
+	gentest.h \
 	options.c \
 	options.h \
 	regex.c \

@@ -49,8 +49,9 @@ void set_up_initial_allocations(void);
 
 /* these globals are all defined and commented in flexdef.h */
 int     printstats, syntaxerror, eofseen, ddebug, trace, nowarn, spprdflt;
-int     interactive, lex_compat, posix_compat, do_yylineno, tables_only,
+int     interactive, lex_compat, posix_compat, do_yylineno,
 	useecs, fulltbl, usemecs;
+char *tables_only = 0;
 int     fullspd, gen_line_dirs, performance_report, backing_up_report;
 int     C_plus_plus, long_align, use_read, yytext_is_array, do_yywrap,
 	csize;
@@ -64,7 +65,7 @@ int     skel_ind = 0;
 char   *action_array;
 int     action_size, defs1_offset, prolog_offset, action_offset,
 	action_index;
-char   *infilename = NULL, *outfilename = NULL, *headerfilename = NULL;
+char   *infilename = NULL, *outfilename = NULL, *outfilename_h = NULL, *headerfilename = NULL;
 int     did_outfilename;
 char   *prefix, *yyclass, *extra_type = NULL;
 int     do_stdinit, use_stdout;
@@ -339,6 +340,22 @@ void check_options (void)
 			lerr (_("could not create %s"), outfilename);
 
 		outfile_created = 1;
+	}
+	if (tables_only) {
+		if (!outfilename_h) {
+			outfilename_h = malloc(512);
+			sprintf(outfilename_h, ".header.h");
+			if (outfilename) {
+				int l = strlen(outfilename);
+				if (l >= 3) {
+					if (strcmp(outfilename+l-3,"cpp") == 0) {
+						sprintf(outfilename_h, "%s", outfilename);
+						outfilename_h[l-3] = 'h';
+					}
+				}
+			}
+		}
+		h_stdout = fopen (outfilename_h, "w+");
 	}
 
 
@@ -954,9 +971,11 @@ void flexinit (int argc, char **argv)
 	char   *arg;
 	scanopt_t sopt;
 
+	outfilename_h = 0;
 	printstats = syntaxerror = trace = spprdflt = false;
-	lex_compat = posix_compat = C_plus_plus = backing_up_report = tables_only =
+	lex_compat = posix_compat = C_plus_plus = backing_up_report =
 		ddebug = fulltbl = false;
+	tables_only = 0;
 	fullspd = long_align = nowarn = yymore_used = continued_action =
 		false;
 	do_yylineno = yytext_is_array = in_rule = reject = do_stdinit =
@@ -1129,7 +1148,7 @@ void flexinit (int argc, char **argv)
 			break;
 
 		case OPT_TABLES_ONLY:
-			tables_only = true;
+			tables_only = arg;
 			break;
 
         case OPT_PREPROC_LEVEL:
@@ -1152,6 +1171,10 @@ void flexinit (int argc, char **argv)
 		case OPT_OUTFILE:
 			outfilename = arg;
 			did_outfilename = 1;
+			break;
+
+		case OPT_OUTFILE_H:
+			outfilename_h = arg;
 			break;
 
 		case OPT_PREFIX:

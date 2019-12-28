@@ -595,12 +595,12 @@ static const yytype_uint16 yyrline[] =
      176,   180,   183,   186,   190,   193,   194,   197,   202,   204,
      208,   210,   212,   216,   218,   220,   224,   236,   272,   296,
      319,   324,   327,   330,   348,   351,   353,   355,   359,   382,
-     438,   441,   484,   502,   508,   513,   540,   548,   551,   579,
-     593,   615,   622,   628,   634,   662,   676,   695,   729,   747,
-     757,   760,   763,   778,   779,   780,   785,   787,   794,   854,
-     872,   880,   888,   889,   890,   891,   892,   893,   894,   899,
-     900,   901,   902,   903,   909,   910,   911,   912,   913,   914,
-     915,   916,   917,   918,   919,   925,   933,   949
+     438,   441,   484,   502,   509,   514,   541,   550,   553,   581,
+     595,   617,   624,   630,   636,   664,   678,   697,   731,   749,
+     759,   762,   765,   780,   781,   782,   787,   789,   796,   856,
+     874,   882,   890,   891,   892,   893,   894,   895,   896,   901,
+     902,   903,   904,   905,   911,   912,   913,   914,   915,   916,
+     917,   918,   919,   920,   921,   927,   935,   951
 };
 #endif
 
@@ -1947,18 +1947,19 @@ yyreduce:
     {
 			varlength = true;
 			yyval = mkor( yyvsp[-2], yyvsp[0] );
+
 			}
-#line 1952 "parse.c"
+#line 1953 "parse.c"
     break;
 
   case 44:
-#line 509 "parse.y"
+#line 510 "parse.y"
     { yyval = yyvsp[0]; }
-#line 1958 "parse.c"
+#line 1959 "parse.c"
     break;
 
   case 45:
-#line 514 "parse.y"
+#line 515 "parse.y"
     {
 			/* This rule is written separately so the
 			 * reduction will occur before the trailing
@@ -1983,28 +1984,29 @@ yyreduce:
 			current_state_type = STATE_TRAILING_CONTEXT;
 			yyval = yyvsp[-1];
 			}
-#line 1987 "parse.c"
+#line 1988 "parse.c"
     break;
 
   case 46:
-#line 541 "parse.y"
+#line 542 "parse.y"
     {
 			/* This is where concatenation of adjacent patterns
 			 * gets done.
 			 */
 			yyval = link_machines( yyvsp[-1], yyvsp[0] );
+
 			}
-#line 1998 "parse.c"
+#line 2000 "parse.c"
     break;
 
   case 47:
-#line 549 "parse.y"
+#line 551 "parse.y"
     { yyval = yyvsp[0]; }
-#line 2004 "parse.c"
+#line 2006 "parse.c"
     break;
 
   case 48:
-#line 552 "parse.y"
+#line 554 "parse.y"
     {
 			varlength = true;
 
@@ -2031,11 +2033,11 @@ yyreduce:
 					yyval = mkrep( yyvsp[-5], yyvsp[-3], yyvsp[-1] );
 				}
 			}
-#line 2035 "parse.c"
+#line 2037 "parse.c"
     break;
 
   case 49:
-#line 580 "parse.y"
+#line 582 "parse.y"
     {
 			varlength = true;
 
@@ -2048,11 +2050,11 @@ yyreduce:
 			else
 				yyval = mkrep( yyvsp[-4], yyvsp[-2], INFINITE_REPEAT );
 			}
-#line 2052 "parse.c"
+#line 2054 "parse.c"
     break;
 
   case 50:
-#line 594 "parse.y"
+#line 596 "parse.y"
     {
 			/* The series could be something like "(foo)",
 			 * in which case we have no idea what its length
@@ -2071,39 +2073,39 @@ yyreduce:
 				yyval = link_machines( yyvsp[-3],
 						copysingl( yyvsp[-3], yyvsp[-1] - 1 ) );
 			}
-#line 2075 "parse.c"
+#line 2077 "parse.c"
     break;
 
   case 51:
-#line 616 "parse.y"
+#line 618 "parse.y"
     {
 			varlength = true;
 
 			yyval = mkclos( yyvsp[-1] );
 			}
-#line 2085 "parse.c"
+#line 2087 "parse.c"
     break;
 
   case 52:
-#line 623 "parse.y"
+#line 625 "parse.y"
     {
 			varlength = true;
 			yyval = mkposcl( yyvsp[-1] );
 			}
-#line 2094 "parse.c"
+#line 2096 "parse.c"
     break;
 
   case 53:
-#line 629 "parse.y"
+#line 631 "parse.y"
     {
 			varlength = true;
 			yyval = mkopt( yyvsp[-1] );
 			}
-#line 2103 "parse.c"
+#line 2105 "parse.c"
     break;
 
   case 54:
-#line 635 "parse.y"
+#line 637 "parse.y"
     {
 			varlength = true;
 
@@ -2130,11 +2132,11 @@ yyreduce:
 					yyval = mkrep( yyvsp[-5], yyvsp[-3], yyvsp[-1] );
 				}
 			}
-#line 2134 "parse.c"
+#line 2136 "parse.c"
     break;
 
   case 55:
-#line 663 "parse.y"
+#line 665 "parse.y"
     {
 			varlength = true;
 
@@ -2147,11 +2149,11 @@ yyreduce:
 			else
 				yyval = mkrep( yyvsp[-4], yyvsp[-2], INFINITE_REPEAT );
 			}
-#line 2151 "parse.c"
+#line 2153 "parse.c"
     break;
 
   case 56:
-#line 677 "parse.y"
+#line 679 "parse.y"
     {
 			/* The singleton could be something like "(foo)",
 			 * in which case we have no idea what its length
@@ -2169,48 +2171,48 @@ yyreduce:
 				yyval = link_machines( yyvsp[-3],
 						copysingl( yyvsp[-3], yyvsp[-1] - 1 ) );
 			}
-#line 2173 "parse.c"
+#line 2175 "parse.c"
     break;
 
   case 57:
-#line 696 "parse.y"
+#line 698 "parse.y"
     {
-			if ( ! madeany )
-				{
+			    if ( ! madeany )
+			    {
 				/* Create the '.' character class. */
-                    ccldot = cclinit();
-                    ccladd( ccldot, '\n' );
-                    cclnegate( ccldot );
+				ccldot = cclinit();
+				ccladd( ccldot, '\n' );
+				cclnegate( ccldot );
 
-                    if ( useecs )
-                        mkeccl( ccltbl + cclmap[ccldot],
-                            ccllen[ccldot], nextecm,
-                            ecgroup, csize, csize );
+				if ( useecs )
+				    mkeccl( ccltbl + cclmap[ccldot],
+					    ccllen[ccldot], nextecm,
+					    ecgroup, csize, csize );
 
 				/* Create the (?s:'.') character class. */
-                    cclany = cclinit();
-                    cclnegate( cclany );
+				cclany = cclinit();
+				cclnegate( cclany );
 
-                    if ( useecs )
-                        mkeccl( ccltbl + cclmap[cclany],
-                            ccllen[cclany], nextecm,
-                            ecgroup, csize, csize );
+				if ( useecs )
+				    mkeccl( ccltbl + cclmap[cclany],
+					    ccllen[cclany], nextecm,
+					    ecgroup, csize, csize );
 
 				madeany = true;
-				}
+			    }
 
-			++rulelen;
+			    ++rulelen;
 
             if (sf_dot_all())
                 yyval = mkstate( -cclany );
             else
                 yyval = mkstate( -ccldot );
 			}
-#line 2210 "parse.c"
+#line 2212 "parse.c"
     break;
 
   case 58:
-#line 730 "parse.y"
+#line 732 "parse.y"
     {
 				/* Sort characters for fast searching.
 				 */
@@ -2227,11 +2229,11 @@ yyreduce:
 
 			yyval = mkstate( -yyvsp[0] );
 			}
-#line 2231 "parse.c"
+#line 2233 "parse.c"
     break;
 
   case 59:
-#line 748 "parse.y"
+#line 750 "parse.y"
     {
 			++rulelen;
 
@@ -2240,23 +2242,23 @@ yyreduce:
 
 			yyval = mkstate( -yyvsp[0] );
 			}
-#line 2244 "parse.c"
+#line 2246 "parse.c"
     break;
 
   case 60:
-#line 758 "parse.y"
+#line 760 "parse.y"
     { yyval = yyvsp[-1]; }
-#line 2250 "parse.c"
+#line 2252 "parse.c"
     break;
 
   case 61:
-#line 761 "parse.y"
+#line 763 "parse.y"
     { yyval = yyvsp[-1]; }
-#line 2256 "parse.c"
+#line 2258 "parse.c"
     break;
 
   case 62:
-#line 764 "parse.y"
+#line 766 "parse.y"
     {
 			++rulelen;
 
@@ -2269,38 +2271,38 @@ yyreduce:
             else
                 yyval = mkstate( yyvsp[0] );
 			}
-#line 2273 "parse.c"
+#line 2275 "parse.c"
     break;
 
   case 63:
-#line 778 "parse.y"
+#line 780 "parse.y"
     { yyval = ccl_set_diff  (yyvsp[-2], yyvsp[0]); }
-#line 2279 "parse.c"
+#line 2281 "parse.c"
     break;
 
   case 64:
-#line 779 "parse.y"
+#line 781 "parse.y"
     { yyval = ccl_set_union (yyvsp[-2], yyvsp[0]); }
-#line 2285 "parse.c"
+#line 2287 "parse.c"
     break;
 
   case 66:
-#line 785 "parse.y"
+#line 787 "parse.y"
     { yyval = yyvsp[-1]; }
-#line 2291 "parse.c"
+#line 2293 "parse.c"
     break;
 
   case 67:
-#line 788 "parse.y"
+#line 790 "parse.y"
     {
 			cclnegate( yyvsp[-1] );
 			yyval = yyvsp[-1];
 			}
-#line 2300 "parse.c"
+#line 2302 "parse.c"
     break;
 
   case 68:
-#line 795 "parse.y"
+#line 797 "parse.y"
     {
 
 			if (sf_case_ins())
@@ -2359,11 +2361,11 @@ yyreduce:
 
 			yyval = yyvsp[-3];
 			}
-#line 2363 "parse.c"
+#line 2365 "parse.c"
     break;
 
   case 69:
-#line 855 "parse.y"
+#line 857 "parse.y"
     {
 			ccladd( yyvsp[-1], yyvsp[0] );
 			cclsorted = cclsorted && (yyvsp[0] > lastchar);
@@ -2380,193 +2382,193 @@ yyreduce:
 
 			yyval = yyvsp[-1];
 			}
-#line 2384 "parse.c"
+#line 2386 "parse.c"
     break;
 
   case 70:
-#line 873 "parse.y"
+#line 875 "parse.y"
     {
 			/* Too hard to properly maintain cclsorted. */
 			cclsorted = false;
 			yyval = yyvsp[-1];
 			}
-#line 2394 "parse.c"
+#line 2396 "parse.c"
     break;
 
   case 71:
-#line 880 "parse.y"
+#line 882 "parse.y"
     {
 			cclsorted = true;
 			lastchar = 0;
 			currccl = yyval = cclinit();
 			}
-#line 2404 "parse.c"
+#line 2406 "parse.c"
     break;
 
   case 72:
-#line 888 "parse.y"
+#line 890 "parse.y"
     { CCL_EXPR(isalnum); }
-#line 2410 "parse.c"
+#line 2412 "parse.c"
     break;
 
   case 73:
-#line 889 "parse.y"
+#line 891 "parse.y"
     { CCL_EXPR(isalpha); }
-#line 2416 "parse.c"
+#line 2418 "parse.c"
     break;
 
   case 74:
-#line 890 "parse.y"
+#line 892 "parse.y"
     { CCL_EXPR(IS_BLANK); }
-#line 2422 "parse.c"
+#line 2424 "parse.c"
     break;
 
   case 75:
-#line 891 "parse.y"
+#line 893 "parse.y"
     { CCL_EXPR(iscntrl); }
-#line 2428 "parse.c"
+#line 2430 "parse.c"
     break;
 
   case 76:
-#line 892 "parse.y"
+#line 894 "parse.y"
     { CCL_EXPR(isdigit); }
-#line 2434 "parse.c"
+#line 2436 "parse.c"
     break;
 
   case 77:
-#line 893 "parse.y"
+#line 895 "parse.y"
     { CCL_EXPR(isgraph); }
-#line 2440 "parse.c"
+#line 2442 "parse.c"
     break;
 
   case 78:
-#line 894 "parse.y"
+#line 896 "parse.y"
     { 
                           CCL_EXPR(islower);
                           if (sf_case_ins())
                               CCL_EXPR(isupper);
                         }
-#line 2450 "parse.c"
+#line 2452 "parse.c"
     break;
 
   case 79:
-#line 899 "parse.y"
+#line 901 "parse.y"
     { CCL_EXPR(isprint); }
-#line 2456 "parse.c"
+#line 2458 "parse.c"
     break;
 
   case 80:
-#line 900 "parse.y"
+#line 902 "parse.y"
     { CCL_EXPR(ispunct); }
-#line 2462 "parse.c"
+#line 2464 "parse.c"
     break;
 
   case 81:
-#line 901 "parse.y"
+#line 903 "parse.y"
     { CCL_EXPR(isspace); }
-#line 2468 "parse.c"
+#line 2470 "parse.c"
     break;
 
   case 82:
-#line 902 "parse.y"
+#line 904 "parse.y"
     { CCL_EXPR(isxdigit); }
-#line 2474 "parse.c"
+#line 2476 "parse.c"
     break;
 
   case 83:
-#line 903 "parse.y"
+#line 905 "parse.y"
     {
                     CCL_EXPR(isupper);
                     if (sf_case_ins())
                         CCL_EXPR(islower);
 				}
-#line 2484 "parse.c"
+#line 2486 "parse.c"
     break;
 
   case 84:
-#line 909 "parse.y"
+#line 911 "parse.y"
     { CCL_NEG_EXPR(isalnum); }
-#line 2490 "parse.c"
+#line 2492 "parse.c"
     break;
 
   case 85:
-#line 910 "parse.y"
+#line 912 "parse.y"
     { CCL_NEG_EXPR(isalpha); }
-#line 2496 "parse.c"
+#line 2498 "parse.c"
     break;
 
   case 86:
-#line 911 "parse.y"
+#line 913 "parse.y"
     { CCL_NEG_EXPR(IS_BLANK); }
-#line 2502 "parse.c"
+#line 2504 "parse.c"
     break;
 
   case 87:
-#line 912 "parse.y"
+#line 914 "parse.y"
     { CCL_NEG_EXPR(iscntrl); }
-#line 2508 "parse.c"
+#line 2510 "parse.c"
     break;
 
   case 88:
-#line 913 "parse.y"
+#line 915 "parse.y"
     { CCL_NEG_EXPR(isdigit); }
-#line 2514 "parse.c"
+#line 2516 "parse.c"
     break;
 
   case 89:
-#line 914 "parse.y"
+#line 916 "parse.y"
     { CCL_NEG_EXPR(isgraph); }
-#line 2520 "parse.c"
+#line 2522 "parse.c"
     break;
 
   case 90:
-#line 915 "parse.y"
+#line 917 "parse.y"
     { CCL_NEG_EXPR(isprint); }
-#line 2526 "parse.c"
+#line 2528 "parse.c"
     break;
 
   case 91:
-#line 916 "parse.y"
+#line 918 "parse.y"
     { CCL_NEG_EXPR(ispunct); }
-#line 2532 "parse.c"
+#line 2534 "parse.c"
     break;
 
   case 92:
-#line 917 "parse.y"
+#line 919 "parse.y"
     { CCL_NEG_EXPR(isspace); }
-#line 2538 "parse.c"
+#line 2540 "parse.c"
     break;
 
   case 93:
-#line 918 "parse.y"
+#line 920 "parse.y"
     { CCL_NEG_EXPR(isxdigit); }
-#line 2544 "parse.c"
+#line 2546 "parse.c"
     break;
 
   case 94:
-#line 919 "parse.y"
+#line 921 "parse.y"
     { 
 				if ( sf_case_ins() )
 					lwarn(_("[:^lower:] is ambiguous in case insensitive scanner"));
 				else
 					CCL_NEG_EXPR(islower);
 				}
-#line 2555 "parse.c"
+#line 2557 "parse.c"
     break;
 
   case 95:
-#line 925 "parse.y"
+#line 927 "parse.y"
     {
 				if ( sf_case_ins() )
 					lwarn(_("[:^upper:] ambiguous in case insensitive scanner"));
 				else
 					CCL_NEG_EXPR(isupper);
 				}
-#line 2566 "parse.c"
+#line 2568 "parse.c"
     break;
 
   case 96:
-#line 934 "parse.y"
+#line 936 "parse.y"
     {
 			if ( yyvsp[0] == nlch )
 				rule_has_nl[num_rules] = true;
@@ -2580,17 +2582,17 @@ yyreduce:
 
 			yyval = link_machines( yyvsp[-1], yyval);
 			}
-#line 2584 "parse.c"
+#line 2586 "parse.c"
     break;
 
   case 97:
-#line 949 "parse.y"
+#line 951 "parse.y"
     { yyval = mkstate( SYM_EPSILON ); }
-#line 2590 "parse.c"
+#line 2592 "parse.c"
     break;
 
 
-#line 2594 "parse.c"
+#line 2596 "parse.c"
 
       default: break;
     }
@@ -2822,7 +2824,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 952 "parse.y"
+#line 954 "parse.y"
 
 
 

@@ -133,7 +133,9 @@ optspec_t flexopts[] = {
 	,
 	{"--posix-compat", OPT_POSIX_COMPAT, 0}
 	,			/* Maximal compatibility with POSIX lex. */
-	{"-x", OPT_TABLES_ONLY, 0}
+	{"-x CLASS", OPT_TABLES_ONLY, 0}
+	,
+	{"--tableonly CLASS", OPT_TABLES_ONLY, 0}
 	,
         {"--preproc=NUM", OPT_PREPROC_LEVEL, 0}
         ,
@@ -154,6 +156,10 @@ optspec_t flexopts[] = {
 	{"-o FILE", OPT_OUTFILE, 0}
 	,
 	{"--outfile=FILE", OPT_OUTFILE, 0}
+	,			/* Write to FILE (default is lex.yy.c) */
+	{"-O FILE", OPT_OUTFILE_H, 0}
+	,
+	{"--outheader=FILE", OPT_OUTFILE_H, 0}
 	,			/* Write to FILE (default is lex.yy.c) */
 	{"-p", OPT_PERF_REPORT, 0}
 	,

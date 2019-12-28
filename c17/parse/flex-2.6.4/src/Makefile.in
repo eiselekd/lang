@@ -163,34 +163,34 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = flex-buf.$(OBJEXT) flex-ccl.$(OBJEXT) \
 	flex-dfa.$(OBJEXT) flex-ecs.$(OBJEXT) flex-filter.$(OBJEXT) \
 	flex-gen.$(OBJEXT) flex-main.$(OBJEXT) flex-misc.$(OBJEXT) \
-	flex-nfa.$(OBJEXT) flex-options.$(OBJEXT) flex-parse.$(OBJEXT) \
-	flex-regex.$(OBJEXT) flex-scanflags.$(OBJEXT) \
-	flex-scanopt.$(OBJEXT) flex-skel.$(OBJEXT) flex-sym.$(OBJEXT) \
-	flex-tables.$(OBJEXT) flex-tables_shared.$(OBJEXT) \
-	flex-tblcmp.$(OBJEXT) flex-yylex.$(OBJEXT)
+	flex-nfa.$(OBJEXT) gentest.$(OBJEXT) flex-options.$(OBJEXT) \
+	flex-parse.$(OBJEXT) flex-regex.$(OBJEXT) \
+	flex-scanflags.$(OBJEXT) flex-scanopt.$(OBJEXT) \
+	flex-skel.$(OBJEXT) flex-sym.$(OBJEXT) flex-tables.$(OBJEXT) \
+	flex-tables_shared.$(OBJEXT) flex-tblcmp.$(OBJEXT) \
+	flex-yylex.$(OBJEXT)
 am_flex_OBJECTS = $(am__objects_1)
 nodist_flex_OBJECTS = flex-stage1scan.$(OBJEXT)
 flex_OBJECTS = $(am_flex_OBJECTS) $(nodist_flex_OBJECTS)
 flex_LDADD = $(LDADD)
 flex_DEPENDENCIES = $(LIBOBJS)
-flex_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(flex_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am__stage1flex_SOURCES_DIST = scan.l buf.c ccl.c dfa.c ecs.c filter.c \
-	flexdef.h flexint.h gen.c main.c misc.c nfa.c options.c \
-	options.h parse.y regex.c scanflags.c scanopt.c scanopt.h \
-	skel.c sym.c tables.c tables.h tables_shared.c tables_shared.h \
-	tblcmp.c version.h yylex.c ../lib/malloc.c ../lib/realloc.c
+	flexdef.h flexint.h gen.c main.c misc.c nfa.c gentest.cpp \
+	gentest.h options.c options.h parse.y regex.c scanflags.c \
+	scanopt.c scanopt.h skel.c sym.c tables.c tables.h \
+	tables_shared.c tables_shared.h tblcmp.c version.h yylex.c \
+	../lib/malloc.c ../lib/realloc.c
 am__objects_2 = stage1flex-buf.$(OBJEXT) stage1flex-ccl.$(OBJEXT) \
 	stage1flex-dfa.$(OBJEXT) stage1flex-ecs.$(OBJEXT) \
 	stage1flex-filter.$(OBJEXT) stage1flex-gen.$(OBJEXT) \
 	stage1flex-main.$(OBJEXT) stage1flex-misc.$(OBJEXT) \
-	stage1flex-nfa.$(OBJEXT) stage1flex-options.$(OBJEXT) \
-	stage1flex-parse.$(OBJEXT) stage1flex-regex.$(OBJEXT) \
-	stage1flex-scanflags.$(OBJEXT) stage1flex-scanopt.$(OBJEXT) \
-	stage1flex-skel.$(OBJEXT) stage1flex-sym.$(OBJEXT) \
-	stage1flex-tables.$(OBJEXT) stage1flex-tables_shared.$(OBJEXT) \
-	stage1flex-tblcmp.$(OBJEXT) stage1flex-yylex.$(OBJEXT)
+	stage1flex-nfa.$(OBJEXT) gentest.$(OBJEXT) \
+	stage1flex-options.$(OBJEXT) stage1flex-parse.$(OBJEXT) \
+	stage1flex-regex.$(OBJEXT) stage1flex-scanflags.$(OBJEXT) \
+	stage1flex-scanopt.$(OBJEXT) stage1flex-skel.$(OBJEXT) \
+	stage1flex-sym.$(OBJEXT) stage1flex-tables.$(OBJEXT) \
+	stage1flex-tables_shared.$(OBJEXT) stage1flex-tblcmp.$(OBJEXT) \
+	stage1flex-yylex.$(OBJEXT)
 @CROSS_TRUE@am__objects_3 = ../lib/stage1flex-malloc.$(OBJEXT) \
 @CROSS_TRUE@	../lib/stage1flex-realloc.$(OBJEXT)
 am_stage1flex_OBJECTS = stage1flex-scan.$(OBJEXT) $(am__objects_2) \
@@ -227,12 +227,12 @@ am__depfiles_remade = ../lib/$(DEPDIR)/malloc.Po \
 	./$(DEPDIR)/flex-stage1scan.Po ./$(DEPDIR)/flex-sym.Po \
 	./$(DEPDIR)/flex-tables.Po ./$(DEPDIR)/flex-tables_shared.Po \
 	./$(DEPDIR)/flex-tblcmp.Po ./$(DEPDIR)/flex-yylex.Po \
-	./$(DEPDIR)/libmain.Plo ./$(DEPDIR)/libyywrap.Plo \
-	./$(DEPDIR)/stage1flex-buf.Po ./$(DEPDIR)/stage1flex-ccl.Po \
-	./$(DEPDIR)/stage1flex-dfa.Po ./$(DEPDIR)/stage1flex-ecs.Po \
-	./$(DEPDIR)/stage1flex-filter.Po ./$(DEPDIR)/stage1flex-gen.Po \
-	./$(DEPDIR)/stage1flex-main.Po ./$(DEPDIR)/stage1flex-misc.Po \
-	./$(DEPDIR)/stage1flex-nfa.Po \
+	./$(DEPDIR)/gentest.Po ./$(DEPDIR)/libmain.Plo \
+	./$(DEPDIR)/libyywrap.Plo ./$(DEPDIR)/stage1flex-buf.Po \
+	./$(DEPDIR)/stage1flex-ccl.Po ./$(DEPDIR)/stage1flex-dfa.Po \
+	./$(DEPDIR)/stage1flex-ecs.Po ./$(DEPDIR)/stage1flex-filter.Po \
+	./$(DEPDIR)/stage1flex-gen.Po ./$(DEPDIR)/stage1flex-main.Po \
+	./$(DEPDIR)/stage1flex-misc.Po ./$(DEPDIR)/stage1flex-nfa.Po \
 	./$(DEPDIR)/stage1flex-options.Po \
 	./$(DEPDIR)/stage1flex-parse.Po \
 	./$(DEPDIR)/stage1flex-regex.Po ./$(DEPDIR)/stage1flex-scan.Po \
@@ -262,6 +262,24 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CXXFLAGS) $(CXXFLAGS)
+AM_V_CXX = $(am__v_CXX_@AM_V@)
+am__v_CXX_ = $(am__v_CXX_@AM_DEFAULT_V@)
+am__v_CXX_0 = @echo "  CXX     " $@;
+am__v_CXX_1 = 
+CXXLD = $(CXX)
+CXXLINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
+am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
+am__v_CXXLD_0 = @echo "  CXXLD   " $@;
+am__v_CXXLD_1 = 
 LEXCOMPILE = $(LEX) $(AM_LFLAGS) $(LFLAGS)
 LTLEXCOMPILE = $(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=compile $(LEX) $(AM_LFLAGS) $(LFLAGS)
@@ -513,6 +531,8 @@ COMMON_SOURCES = \
 	main.c \
 	misc.c \
 	nfa.c \
+	gentest.cpp \
+	gentest.h \
 	options.c \
 	options.h \
 	parse.y \
@@ -530,7 +550,7 @@ COMMON_SOURCES = \
 	version.h \
 	yylex.c
 
-LDADD = $(LIBOBJS) @LIBINTL@
+LDADD = $(LIBOBJS) @LIBINTL@ -lstdc++
 include_HEADERS = \
 	FlexLexer.h
 
@@ -565,6 +585,8 @@ indentfiles = \
 	main.c \
 	misc.c \
 	nfa.c \
+	gentest.cpp \
+	gentest.h \
 	options.c \
 	options.h \
 	regex.c \
@@ -581,7 +603,7 @@ all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .l .lo .o .obj .y
+.SUFFIXES: .c .cpp .l .lo .o .obj .y
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -752,7 +774,7 @@ parse.h: parse.c
 
 flex$(EXEEXT): $(flex_OBJECTS) $(flex_DEPENDENCIES) $(EXTRA_flex_DEPENDENCIES) 
 	@rm -f flex$(EXEEXT)
-	$(AM_V_CCLD)$(flex_LINK) $(flex_OBJECTS) $(flex_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(CXXLINK) $(flex_OBJECTS) $(flex_LDADD) $(LIBS)
 ../lib/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) ../lib/$(DEPDIR)
 	@: > ../lib/$(DEPDIR)/$(am__dirstamp)
@@ -797,6 +819,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex-tables_shared.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex-tblcmp.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex-yylex.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gentest.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmain.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libyywrap.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stage1flex-buf.Po@am__quote@ # am--include-marker
@@ -1467,6 +1490,30 @@ stage1flex-yylex.obj: yylex.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(stage1flex_CFLAGS) $(CFLAGS) -c -o ../lib/stage1flex-realloc.obj `if test -f '../lib/realloc.c'; then $(CYGPATH_W) '../lib/realloc.c'; else $(CYGPATH_W) '$(srcdir)/../lib/realloc.c'; fi`
 
+.cpp.o:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ $<
+
+.cpp.obj:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.cpp.lo:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
 .l.c:
 	$(AM_V_LEX)$(am__skiplex) $(SHELL) $(YLWRAP) $< $(LEX_OUTPUT_ROOT).c $@ -- $(LEXCOMPILE)
 
@@ -1690,6 +1737,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/flex-tables_shared.Po
 	-rm -f ./$(DEPDIR)/flex-tblcmp.Po
 	-rm -f ./$(DEPDIR)/flex-yylex.Po
+	-rm -f ./$(DEPDIR)/gentest.Po
 	-rm -f ./$(DEPDIR)/libmain.Plo
 	-rm -f ./$(DEPDIR)/libyywrap.Plo
 	-rm -f ./$(DEPDIR)/stage1flex-buf.Po
@@ -1783,6 +1831,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/flex-tables_shared.Po
 	-rm -f ./$(DEPDIR)/flex-tblcmp.Po
 	-rm -f ./$(DEPDIR)/flex-yylex.Po
+	-rm -f ./$(DEPDIR)/gentest.Po
 	-rm -f ./$(DEPDIR)/libmain.Plo
 	-rm -f ./$(DEPDIR)/libyywrap.Plo
 	-rm -f ./$(DEPDIR)/stage1flex-buf.Po

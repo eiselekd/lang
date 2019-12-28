@@ -5,8 +5,12 @@ digit  [0-9]
 
 %%
 
-"part" { return TOK_STR; }
-"fn"   { return TOK_INT; }
+"«»" { return TOK_DIRINOUT; }
+"»"  { return TOK_DIRIN; }
+"«"  { return TOK_DIROUT; }
+
+"part" { return TOK_PART; }
+"fn"   { return TOK_FN; }
 
 %%
 

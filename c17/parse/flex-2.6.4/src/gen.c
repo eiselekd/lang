@@ -50,33 +50,36 @@ static int indent_level = 0;	/* each level is 8 spaces */
  * 0 elements of its arrays, too.)
  */
 
+#define INIT_PREFIX "static "
+#define INIT_ZERO_ARRAY (gentables ? "=\n    {   0,\n" : "= 0;\n")
+
 static const char *get_int16_decl (void)
 {
 	return (gentables)
-		? "static const flex_int16_t %s[%d] =\n    {   0,\n"
-		: "static const flex_int16_t * %s = 0;\n";
+		? "const flex_int16_t %s[%d] "
+		: "const flex_int16_t * %s";
 }
 
 
 static const char *get_int32_decl (void)
 {
 	return (gentables)
-		? "static const flex_int32_t %s[%d] =\n    {   0,\n"
-		: "static const flex_int32_t * %s = 0;\n";
+		? "const flex_int32_t %s[%d] "
+		: "const flex_int32_t * %s";
 }
 
 static const char *get_state_decl (void)
 {
 	return (gentables)
-		? "static const yy_state_type %s[%d] =\n    {   0,\n"
-		: "static const yy_state_type * %s = 0;\n";
+		? "const yy_state_type %s[%d] "
+		: "const yy_state_type * %s";
 }
 
 static const char *get_yy_char_decl (void)
 {
 	return (gentables)
-		? "static const YY_CHAR %s[%d] =\n    {   0,\n"
-		: "static const YY_CHAR * %s = 0;\n";
+		? "const YY_CHAR %s[%d] "
+		: "const YY_CHAR * %s";
 }
 
 /* Indent to the current level. */
@@ -129,8 +132,10 @@ static void geneoltbl (void)
 
 	outn ("m4_ifdef( [[M4_YY_USE_LINENO]],[[");
 	outn ("/* Table of booleans, true if rule could match eol. */");
+	out(INIT_PREFIX);
 	out_str_dec (get_int32_decl (), "yy_rule_can_match_eol",
 		     num_rules + 1);
+	out(INIT_ZERO_ARRAY);
 
 	if (gentables) {
 		for (i = 1; i <= num_rules; i++) {
@@ -466,8 +471,21 @@ void genecs (void)
 {
 	int ch, row;
 	int     numrows;
+	char yy_ec_n[256];
+	char yy_ec_hn[256];
 
-	out_str_dec (get_yy_char_decl (), "yy_ec", csize);
+	sprintf(yy_ec_n, "yy_ec");
+	if (tables_only) {
+		sprintf(yy_ec_n, "%s::%s", tables_only, "yy_ec");
+		sprintf(yy_ec_hn, "yy_ec");
+	}
+
+	if (!tables_only) out(INIT_PREFIX);
+	out_str_dec (get_yy_char_decl (), yy_ec_n, csize);
+	out(INIT_ZERO_ARRAY);
+	out_h(INIT_PREFIX);
+	out_str_dec_h (get_yy_char_decl (), yy_ec_hn, csize);
+	out_h(";\n");
 
 	for (ch = 1; ch < csize; ++ch) {
 		ecgroup[ch] = ABS (ecgroup[ch]);
@@ -685,8 +703,13 @@ void genftbl (void)
 	int i;
 	int     end_of_buffer_action = num_rules + 1;
 
+	if (!tables_only) out(INIT_PREFIX);
 	out_str_dec (long_align ? get_int32_decl () : get_int16_decl (),
 		     "yy_accept", lastdfa + 1);
+	out(INIT_ZERO_ARRAY);
+	out_str_dec_h (long_align ? get_int32_decl () : get_int16_decl (),
+		     "yy_accept", lastdfa + 1);
+	out_h(";\n");
 
 	dfaacc[end_of_buffer_state].dfaacc_state = end_of_buffer_action;
 
@@ -1048,6 +1071,10 @@ void gen_start_state (void)
 	}
 }
 
+void gentabs_header (void)
+{
+}
+
 
 /* gentabs - generate data statements for the transition tables */
 
@@ -1060,6 +1087,40 @@ void gentabs (void)
 	flex_int32_t *yyacc_data = 0, *yybase_data = 0, *yydef_data = 0,
 		*yynxt_data = 0, *yychk_data = 0, *yyacclist_data=0;
 	flex_int32_t yybase_curr = 0, yyacclist_curr=0,yyacc_curr=0;
+
+	char yy_acclist_n[256], yy_accept_n[256], yy_meta_n[256], yy_base_n[256], yy_def_n[256];
+	char yy_nxt_n[256], yy_chk_n[256];
+	char yy_acclist_hn[256], yy_accept_hn[256], yy_meta_hn[256], yy_base_hn[256], yy_def_hn[256];
+	char yy_nxt_hn[256], yy_chk_hn[256];
+
+	sprintf(yy_acclist_n, "yy_acclist");
+	sprintf(yy_accept_n, "yy_accept");
+	sprintf(yy_meta_n, "yy_meta");
+	sprintf(yy_base_n, "yy_base");
+	sprintf(yy_def_n, "yy_def");
+	sprintf(yy_def_n, "yy_def");
+	sprintf(yy_nxt_n, "yy_nxt");
+	sprintf(yy_chk_n, "yy_chk");
+
+	if (tables_only) {
+		sprintf(yy_acclist_n, "%s::%s", tables_only, "yy_acclist");
+		sprintf(yy_accept_n,  "%s::%s", tables_only, "yy_accept");
+		sprintf(yy_meta_n,  "%s::%s", tables_only, "yy_meta");
+		sprintf(yy_base_n,  "%s::%s", tables_only, "yy_base");
+		sprintf(yy_def_n,  "%s::%s", tables_only, "yy_def");
+		sprintf(yy_def_n,  "%s::%s", tables_only, "yy_def");
+		sprintf(yy_nxt_n,  "%s::%s", tables_only, "yy_nxt");
+		sprintf(yy_chk_n,  "%s::%s", tables_only, "yy_chk");
+
+		sprintf(yy_acclist_hn, "yy_acclist");
+		sprintf(yy_accept_hn, "yy_accept");
+		sprintf(yy_meta_hn, "yy_meta");
+		sprintf(yy_base_hn, "yy_base");
+		sprintf(yy_def_hn, "yy_def");
+		sprintf(yy_def_hn, "yy_def");
+		sprintf(yy_nxt_hn, "yy_nxt");
+		sprintf(yy_chk_hn, "yy_chk");
+	}
 
 	acc_array = allocate_integer_array (current_max_dfas);
 	nummt = 0;
@@ -1087,9 +1148,17 @@ void gentabs (void)
 		dfaacc[end_of_buffer_state].dfaacc_set =
 			EOB_accepting_list;
 
+		if (!tables_only) out(INIT_PREFIX);
 		out_str_dec (long_align ? get_int32_decl () :
-			     get_int16_decl (), "yy_acclist", MAX (numas,
+			     get_int16_decl (), yy_acclist_n, MAX (numas,
 								   1) + 1);
+		out(INIT_ZERO_ARRAY);
+		out_h(INIT_PREFIX);
+		out_str_dec_h (long_align ? get_int32_decl () :
+			     get_int16_decl (), yy_acclist_hn, MAX (numas,
+								   1) + 1);
+		out_h(";\n");
+
         
         buf_prints (&yydmap_buf,
                 "\t{YYTD_ID_ACCLIST, (void**)&yy_acclist, sizeof(%s)},\n",
@@ -1197,8 +1266,14 @@ void gentabs (void)
 		 */
 		++k;
 
+	if (!tables_only) out(INIT_PREFIX);
 	out_str_dec (long_align ? get_int32_decl () : get_int16_decl (),
-		     "yy_accept", k);
+		     yy_accept_n, k);
+	out(INIT_ZERO_ARRAY);
+	out_h(INIT_PREFIX);
+	out_str_dec_h (long_align ? get_int32_decl () : get_int16_decl (),
+		     yy_accept_hn, k);
+	out_h(";\n");
 
 	buf_prints (&yydmap_buf,
 		    "\t{YYTD_ID_ACCEPT, (void**)&yy_accept, sizeof(%s)},\n",
@@ -1272,7 +1347,12 @@ void gentabs (void)
 			fputs (_("\n\nMeta-Equivalence Classes:\n"),
 			       stderr);
 
-		out_str_dec (get_yy_char_decl (), "yy_meta", numecs + 1);
+		if (!tables_only) out(INIT_PREFIX);
+		out_str_dec (get_yy_char_decl (), yy_meta_n, numecs + 1);
+		out(INIT_ZERO_ARRAY);
+		out_h(INIT_PREFIX);
+		out_str_dec_h (get_yy_char_decl (), yy_meta_hn, numecs + 1);
+		out_h(";\n");
 		buf_prints (&yydmap_buf,
 			    "\t{YYTD_ID_META, (void**)&yy_meta, sizeof(%s)},\n",
 			    "YY_CHAR");
@@ -1300,9 +1380,16 @@ void gentabs (void)
 	total_states = lastdfa + numtemps;
 
 	/* Begin generating yy_base */
+	if (!tables_only) out(INIT_PREFIX);
 	out_str_dec ((tblend >= INT16_MAX || long_align) ?
 		     get_int32_decl () : get_int16_decl (),
-		     "yy_base", total_states + 1);
+		     yy_base_n, total_states + 1);
+	out(INIT_ZERO_ARRAY);
+	out_h(INIT_PREFIX);
+	out_str_dec_h ((tblend >= INT16_MAX || long_align) ?
+		     get_int32_decl () : get_int16_decl (),
+		     yy_base_hn, total_states + 1);
+	out_h(";\n");
 
 	buf_prints (&yydmap_buf,
 		    "\t{YYTD_ID_BASE, (void**)&yy_base, sizeof(%s)},\n",
@@ -1357,9 +1444,16 @@ void gentabs (void)
 
 
 	/* Begin generating yy_def */
+	if (!tables_only) out(INIT_PREFIX);
 	out_str_dec ((total_states >= INT16_MAX || long_align) ?
 		     get_int32_decl () : get_int16_decl (),
-		     "yy_def", total_states + 1);
+		     yy_def_n, total_states + 1);
+	out(INIT_ZERO_ARRAY);
+	out_h(INIT_PREFIX);
+	out_str_dec_h ((total_states >= INT16_MAX || long_align) ?
+		     get_int32_decl () : get_int16_decl (),
+		     yy_def_hn, total_states + 1);
+	out_h(";\n");
 
 	buf_prints (&yydmap_buf,
 		    "\t{YYTD_ID_DEF, (void**)&yy_def, sizeof(%s)},\n",
@@ -1389,9 +1483,16 @@ void gentabs (void)
 
 
 	/* Begin generating yy_nxt */
+	if (!tables_only) out(INIT_PREFIX);
 	out_str_dec ((total_states >= INT16_MAX || long_align) ?
-		     get_int32_decl () : get_int16_decl (), "yy_nxt",
+		     get_int32_decl () : get_int16_decl (), yy_nxt_n,
 		     tblend + 1);
+	out(INIT_ZERO_ARRAY);
+	out_h(INIT_PREFIX);
+	out_str_dec_h ((total_states >= INT16_MAX || long_align) ?
+		     get_int32_decl () : get_int16_decl (), yy_nxt_hn,
+		     tblend + 1);
+	out_h(";\n");
 
 	buf_prints (&yydmap_buf,
 		    "\t{YYTD_ID_NXT, (void**)&yy_nxt, sizeof(%s)},\n",
@@ -1426,9 +1527,16 @@ void gentabs (void)
 	/* End generating yy_nxt */
 
 	/* Begin generating yy_chk */
+	if (!tables_only) out(INIT_PREFIX);
 	out_str_dec ((total_states >= INT16_MAX || long_align) ?
-		     get_int32_decl () : get_int16_decl (), "yy_chk",
+		     get_int32_decl () : get_int16_decl (), yy_chk_n,
 		     tblend + 1);
+	out(INIT_ZERO_ARRAY);
+	out_h(INIT_PREFIX);
+	out_str_dec_h ((total_states >= INT16_MAX || long_align) ?
+		     get_int32_decl () : get_int16_decl (), yy_chk_hn,
+		     tblend + 1);
+	out_h(";\n");
 
 	buf_prints (&yydmap_buf,
 		    "\t{YYTD_ID_CHK, (void**)&yy_chk, sizeof(%s)},\n",
@@ -1489,14 +1597,18 @@ void make_tables_only(void)
 {
 	char fn[512];
 
-	sprintf(fn, "%s.tables.c", outfilename);
-	freopen (fn, "w+", stdout);
+	/*sprintf(fn, "%s.tables.c", outfilename);
+	  freopen (fn, "w+", stdout);*/
 	gentabs ();
 
 	sprintf(fn, "%s.actions.c", outfilename);
 	freopen (fn, "w+", stdout);
 
 	out (&action_array[action_offset]);
+
+	/* lastdfa + 2 is the beginning of the templates */
+	out_str_dec_h ("static const int %s = %d;\n", "_YY_TEMPLATE_BEGIN", lastdfa + 2);
+	out_str_dec_h ("static const int %s = %d;\n", "_YY_JAMBASE", jambase);
 
 	sprintf(fn, "%s.rest.c", outfilename);
 	freopen (fn, "w+", stdout);
@@ -1702,8 +1814,11 @@ void make_tables (void)
 		flex_int32_t *yynultrans_data = 0;
 
 		/* Begin generating yy_NUL_trans */
+		if (!tables_only) out(INIT_PREFIX);
 		out_str_dec (get_state_decl (), "yy_NUL_trans",
 			     lastdfa + 1);
+		out(INIT_ZERO_ARRAY);
+
 		buf_prints (&yydmap_buf,
 			    "\t{YYTD_ID_NUL_TRANS, (void**)&yy_NUL_trans, sizeof(%s)},\n",
 			    (fullspd) ? "struct yy_trans_info*" :
@@ -1754,9 +1869,12 @@ void make_tables (void)
 	}
 
 	if (ddebug) {		/* Spit out table mapping rules to line numbers. */
+		if (!tables_only) out(INIT_PREFIX);
 		out_str_dec (long_align ? get_int32_decl () :
 			     get_int16_decl (), "yy_rule_linenum",
 			     num_rules);
+		out(INIT_ZERO_ARRAY);
+
 		for (i = 1; i < num_rules; ++i)
 			mkdata (rule_linenum[i]);
 		dataend ();

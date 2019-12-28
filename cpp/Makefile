@@ -230,6 +230,9 @@ d108_d:
 304:
 	g++ -std=c++17 -g 304_if.cpp -o 304_if.exe
 
+701:
+	g++ -std=c++17 -g 701_tie.cpp -o 701_tie.exe
+
 
 401:
 	g++ -std=c++17 -g 401_tagged_union.cpp -o 401_tagged_union.exe; ./401_tagged_union.exe

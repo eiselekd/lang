@@ -1,5 +1,6 @@
 PSRCS= parse.cpp \
-       lexer.cpp
+       lexer.cpp \
+       lexer_table.cpp \
 
 
 #       lang_y.cpp \
@@ -82,5 +83,5 @@ prep-flex:
 .PHONY: lang_l_simple.c
 
 lang_l_simple.c: lang_l_simple.lex
-	$(CURDIR)/bin-flex/bin/flex -x -o lang_l_simple.c lang_l_simple.lex
+	$(CURDIR)/bin-flex/bin/flex -x lexer_table -O lang_l_simple.hpp -o lang_l_simple.cpp lang_l_simple.lex
 	$(CURDIR)/bin-flex/bin/flex -o lang_l_simple.reference.c lang_l_simple.lex

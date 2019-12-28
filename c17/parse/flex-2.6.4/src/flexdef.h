@@ -358,7 +358,8 @@
 
 extern int printstats, syntaxerror, eofseen, ddebug, trace, nowarn,
 	spprdflt;
-extern int interactive, lex_compat, posix_compat, do_yylineno, tables_only;
+extern int interactive, lex_compat, posix_compat, do_yylineno;
+extern char *tables_only;
 extern int useecs, fulltbl, usemecs, fullspd;
 extern int gen_line_dirs, performance_report, backing_up_report;
 extern int reentrant, bison_bridge_lval, bison_bridge_lloc;
@@ -881,12 +882,14 @@ extern unsigned char myesc(unsigned char[]);
 
 /* Output a (possibly-formatted) string to the generated scanner. */
 extern void out(const char *);
+extern void out_h(const char *);
 extern void out_dec(const char *, int);
 extern void out_dec2(const char *, int, int);
 extern void out_hex(const char *, unsigned int);
 extern void out_str(const char *, const char *);
 extern void out_str3(const char *, const char *, const char *, const char *);
 extern void out_str_dec(const char *, const char *, int);
+extern void out_str_dec_h(const char *, const char *, int);
 extern void outc(int);
 extern void outn(const char *);
 extern void out_m4_define(const char* def, const char* val);
@@ -922,6 +925,7 @@ extern void finish_rule(int, int, int, int, int);
 
 /* Connect two machines together. */
 extern int link_machines(int, int);
+#include "gentest.h"
 
 /* Mark each "beginning" state in a machine as being a "normal" (i.e.,
  * not trailing context associated) state.
@@ -1156,5 +1160,7 @@ extern void sf_init(void);
 extern void sf_push(void);
 extern void sf_pop(void);
 
+extern FILE *h_stdout;
+extern char *outfilename_h;
 
 #endif /* not defined FLEXDEF_H */

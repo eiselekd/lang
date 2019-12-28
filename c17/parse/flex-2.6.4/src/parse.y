@@ -503,6 +503,7 @@ re		:  re '|' series
 			{
 			varlength = true;
 			$$ = mkor( $1, $3 );
+
 			}
 
 		|  series
@@ -543,6 +544,7 @@ series		:  series singleton
 			 * gets done.
 			 */
 			$$ = link_machines( $1, $2 );
+
 			}
 
 		|  singleton
@@ -694,31 +696,31 @@ singleton	:  singleton '*'
 
 		|  '.'
 			{
-			if ( ! madeany )
-				{
+			    if ( ! madeany )
+			    {
 				/* Create the '.' character class. */
-                    ccldot = cclinit();
-                    ccladd( ccldot, '\n' );
-                    cclnegate( ccldot );
+				ccldot = cclinit();
+				ccladd( ccldot, '\n' );
+				cclnegate( ccldot );
 
-                    if ( useecs )
-                        mkeccl( ccltbl + cclmap[ccldot],
-                            ccllen[ccldot], nextecm,
-                            ecgroup, csize, csize );
+				if ( useecs )
+				    mkeccl( ccltbl + cclmap[ccldot],
+					    ccllen[ccldot], nextecm,
+					    ecgroup, csize, csize );
 
 				/* Create the (?s:'.') character class. */
-                    cclany = cclinit();
-                    cclnegate( cclany );
+				cclany = cclinit();
+				cclnegate( cclany );
 
-                    if ( useecs )
-                        mkeccl( ccltbl + cclmap[cclany],
-                            ccllen[cclany], nextecm,
-                            ecgroup, csize, csize );
+				if ( useecs )
+				    mkeccl( ccltbl + cclmap[cclany],
+					    ccllen[cclany], nextecm,
+					    ecgroup, csize, csize );
 
 				madeany = true;
-				}
+			    }
 
-			++rulelen;
+			    ++rulelen;
 
             if (sf_dot_all())
                 $$ = mkstate( -cclany );

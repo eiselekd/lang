@@ -49,6 +49,8 @@
 #define CMD_IF_NOT_BISON_BRIDGE  "%if-not-bison-bridge"
 #define CMD_ENDIF            "%endif"
 
+FILE *h_stdout = 0;
+
 /* we allow the skeleton to push and pop. */
 struct sko_state {
     bool dc; /**< do_copy */
@@ -559,6 +561,13 @@ void out (const char *str)
 	fputs (str, stdout);
 }
 
+void out_h (const char *str)
+{
+	if (h_stdout) {
+		fputs (str, h_stdout);
+        }
+}
+
 void out_dec (const char *fmt, int n)
 {
 	fprintf (stdout, fmt, n);
@@ -587,6 +596,13 @@ void out_str3 (const char *fmt, const char s1[], const char s2[], const char s3[
 void out_str_dec (const char *fmt, const char str[], int n)
 {
 	fprintf (stdout,fmt, str, n);
+}
+
+void out_str_dec_h (const char *fmt, const char str[], int n)
+{
+	if (h_stdout) {
+		fprintf (h_stdout,fmt, str, n);
+	}
 }
 
 void outc (int c)

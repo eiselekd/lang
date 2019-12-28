@@ -17,6 +17,10 @@ digit  [0-9]
 
 %%
 
+"«»"  { return TOK_DIRINOUT; }
+"»"   { return TOK_DIRIN; }
+"«"   { return TOK_DIROUT; }
+
 "part" { return TOK_STR; }
 "fn"   { return TOK_INT; }
 
@@ -33,12 +37,18 @@ std::vector<int> prep_yy_lex(const char *v) {
 
 TEST(FlexLexing, Lextokens)
 {
+    EXPECT_THAT(prep_yy_lex("«"),    ElementsAreArray({TOK_DIROUT}));
+    EXPECT_THAT(prep_yy_lex("«»"),    ElementsAreArray({TOK_DIRINOUT}));
+
     EXPECT_THAT(prep_yy_lex("part"),    ElementsAreArray({TOK_STR}));
     EXPECT_THAT(prep_yy_lex("part fn"), ElementsAreArray({TOK_STR, TOK_INT}));
 }
 
+
+/*
 int flex_lexer_main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
+*/

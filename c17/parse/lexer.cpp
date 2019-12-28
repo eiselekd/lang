@@ -92,6 +92,7 @@ lex_all(const char *p) {
     return v;
 }
 
+/*
 TEST(Lexing, Rawtokens)
 {
     EXPECT_THAT(lex_all("1 2"),ElementsAreArray(
@@ -99,8 +100,8 @@ TEST(Lexing, Rawtokens)
 		     tok{TOK_INT,{"2",1}}}));
     EXPECT_THAT(lex_all("\"str\""),ElementsAreArray(
 		    {tok{TOK_STR,{"\"str\"",5}}}));
-
 }
+*/
 
 int lexer_main(int argc, char **argv)
 {
