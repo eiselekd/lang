@@ -1,10 +1,7 @@
 PSRCS= parse.cpp \
        lexer.cpp \
 
-
 #       lexer_table.cpp \
-
-
 #       lang_y.cpp \
 #       lang_l.cpp \
 
