@@ -16,7 +16,7 @@ class TestStringMethods(unittest.TestCase):
         self.subf()
 
     def test_isupper(self):
-        self.assertTrue('FOo'.isupper())
+        self.assertTrue('FOO'.isupper())
         self.assertFalse('Foo'.isupper())
 
     def test_split(self):
