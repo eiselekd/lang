@@ -1102,7 +1102,8 @@ void gentabs (void)
 	sprintf(yy_nxt_n, "yy_nxt");
 	sprintf(yy_chk_n, "yy_chk");
 
-	if (tables_only) {
+	if (tables_only)
+	{
 		sprintf(yy_acclist_n, "%s::%s", tables_only, "yy_acclist");
 		sprintf(yy_accept_n,  "%s::%s", tables_only, "yy_accept");
 		sprintf(yy_meta_n,  "%s::%s", tables_only, "yy_meta");
@@ -1597,9 +1598,11 @@ void make_tables_only(void)
 {
 	char fn[512];
 
+
 	/*sprintf(fn, "%s.tables.c", outfilename);
 	  freopen (fn, "w+", stdout);*/
 	gentabs ();
+	//out_h (&action_array[defs1_offset]);
 
 	sprintf(fn, "%s.actions.c", outfilename);
 	freopen (fn, "w+", stdout);
@@ -1609,6 +1612,10 @@ void make_tables_only(void)
 	/* lastdfa + 2 is the beginning of the templates */
 	out_str_dec_h ("static const int %s = %d;\n", "_YY_TEMPLATE_BEGIN", lastdfa + 2);
 	out_str_dec_h ("static const int %s = %d;\n", "_YY_JAMBASE", jambase);
+
+	out_str_dec_h ("static const int %s = %d;\n", "_YY_NUM_RULES", num_rules);
+	out_str_dec_h ("static const int %s = %d;\n", "_YY_END_OF_BUFFER", num_rules+1);
+
 
 	sprintf(fn, "%s.rest.c", outfilename);
 	freopen (fn, "w+", stdout);
