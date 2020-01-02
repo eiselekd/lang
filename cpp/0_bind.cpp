@@ -43,9 +43,12 @@ int add(int a, int b) {
 /*
 next
 
-* Next chapter
+major-mode minor-mode-alist (string= major-mode 'c++-mode) (get-buffer "*gud*")
+(mapcar #'car minor-mode-list)
+
+* [#A] Next chapter
 ** new functions
-* #
+* [#B] #
 */
 int main(int argc, char **argv) {
   function<int (int) > add4 = bind(&add, 4, _1);
