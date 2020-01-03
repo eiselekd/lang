@@ -21,7 +21,6 @@ my %keywords = (
 
 my $kwreg = join("|",keys(%keywords));
 
-
 sub lex
 {
     my ($a) = @_;
@@ -29,16 +28,16 @@ sub lex
     my @a = ();
     while(length($a)>pos($a)) {
     	my ($lastpos,$tokid) = (pos($a), undef);
-	print("From ".pos($a)."\n");
+	#print("From ".pos($a)."\n");
 	if ($a =~ m/\G[\s\n]+/gcms) {
 	    next;
-	    #
 	} elsif ( $a =~ m/\G[0-9]+/gcms) {
 	    $tokid = &tok::DIGIT;
-	} elsif ( $a =~ m/\G(?:$kwreg)/gcmsx) {
-	    $tokid = $keywords{$&};
 	} elsif ( $a =~ m/\G[a-zA-Z_][a-zA-Z_]*/gcms) {
 	    $tokid = &tok::IDENT;
+	    if (defined($keywords{$&})) {
+		$tokid = $keywords{$&};
+	    }
 	} elsif ( $a =~ m/\G(?:
 		  [\{\}\(\):])
 		  /gcmsx) {
@@ -55,9 +54,27 @@ sub lex
 
 lex($file_content);
 
+sub ok_lex {
+    my ($m, $b) = @_;
+    my @a = lex($m);
+    for (my $i = 0; $i < scalar(@a); $i++) {
+	#print($i.":".$a[$i]{'id'}.":".ref($$b[$i])."\n");
+	if (!($a[$i]{'id'} == $$b[$i])) {
+	    print ($a[$i]{'id'}."==".$$b[$i]."\n");
+	    return 0;
+	}
+	#ok(1==2);
+    }
+    return 1;
+}
+
+ok(ok_lex("1 1",[&tok::DIGIT, &tok::DIGIT]));
+ok(ok_lex("{}",[ord('{'), ord('}')]));
+ok(ok_lex("if then else",[&tok::IF, &tok::THEN, &tok::ELSE]));
+
 sub test{
     $a = 10;
-    ok(1==2);
+    ok(1==1);
 }
 
 test();
