@@ -9,7 +9,11 @@ use constant {
     IF    => 256+4,
     THEN  => 256+5,
     ELSE  => 256+6,
-    PART  => 256+7
+    PART  => 256+7,
+
+    LSHIFT => 256+100,
+    RSHIFT => 256+101,
+    ARROW  => 256+102,
 };
 
 #$DIGIT = 256+2;
