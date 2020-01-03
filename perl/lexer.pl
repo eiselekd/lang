@@ -5,46 +5,59 @@
 
 use Test::More;
 use File::Slurp;
+use Data::Dumper;
 use Carp qw( croak );
+use FindBin qw($Bin);
+require "${Bin}/tok.pm";
 
 my $file_content = read_file('lang.txt');
+
+my %keywords = (
+    "if"   => &tok::IF,
+    "then" => &tok::THEN,
+    "else" => &tok::ELSE,
+    "part" => &tok::PART,
+    );
+
+my $kwreg = join("|",keys(%keywords));
+
 
 sub lex
 {
     my ($a) = @_;
     pos($a) = 0;
+    my @a = ();
     while(length($a)>pos($a)) {
+    	my ($lastpos,$tokid) = (pos($a), undef);
 	print("From ".pos($a)."\n");
 	if ($a =~ m/\G[\s\n]+/gcms) {
+	    next;
 	    #
 	} elsif ( $a =~ m/\G[0-9]+/gcms) {
-	    print ("Found digit '$&'\n");
-	} elsif ( $a =~ m/\G(?:
-		  if|
-		  then|
-		  else|
-		  part)
-		  /gcmsx) {
-	    print ("Found keyword '$&'\n");
+	    $tokid = &tok::DIGIT;
+	} elsif ( $a =~ m/\G(?:$kwreg)/gcmsx) {
+	    $tokid = $keywords{$&};
 	} elsif ( $a =~ m/\G[a-zA-Z_][a-zA-Z_]*/gcms) {
-	    print ("Found ident '$&'\n");
+	    $tokid = &tok::IDENT;
 	} elsif ( $a =~ m/\G(?:
 		  [\{\}\(\):])
 		  /gcmsx) {
-	    print ("Found single-char '$&'\n");
+	    $tokid = ord($&);
 	} else {
 	    croak("Can't parse	'".substr($a,pos($a))."'");
 	}
-
+	my $i = ::tok->new($a,$lastpos,$&,$tokid);
+	push(@a, $i);
     }
-
+    #print (Dumper(\@a));
+    return @a;
 }
 
 lex($file_content);
 
 sub test{
     $a = 10;
-    ok(1==1);
+    ok(1==2);
 }
 
 test();
