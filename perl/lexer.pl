@@ -20,6 +20,11 @@ my %keywords = (
     "<<"   => &tok::LSHIFT,
     ">>"   => &tok::RSHIFT,
     "->"   => &tok::ARROW,
+    "«»"   => &tok::INOUT,
+    "»"    => &tok::IN,
+    "«"    => &tok::OUT,
+    "þ"    => &tok::THORN,
+    "Ω"    => &tok::OMEGA,
     );
 
 my $kwreg = join("|",keys(%keywords));
@@ -42,6 +47,10 @@ sub lex
 		$tokid = $keywords{$&};
 	    }
 	} elsif ( $a =~ m/\G(?:
+		  «»|
+		  «|
+		  »|
+		  þ|
 		  <<|
 		  >>|
 		  ->)/gcmsx) {
@@ -96,6 +105,7 @@ ok(ok_lex("if then else",[&tok::IF, &tok::THEN, &tok::ELSE]));
 ok(ok_lex("a.b,c",[&tok::IDENT, ord('.'), &tok::IDENT, ord(','), &tok::IDENT]));
 ok(ok_lex("< << >> >",[ord('<'), &tok::LSHIFT, &tok::RSHIFT, ord('>')]));
 ok(ok_lex("->",[&tok::ARROW]));
+ok(ok_lex("« «» »",[&tok::OUT, &tok::INOUT, &tok::IN]));
 
 sub test{
     $a = 10;

@@ -14,6 +14,13 @@ use constant {
     LSHIFT => 256+100,
     RSHIFT => 256+101,
     ARROW  => 256+102,
+
+    INOUT  => 256+103,
+    IN     => 256+104,
+    OUT    => 256+105,
+
+    THORN  => 256+106,
+    OMEGA  => 256+107,
 };
 
 #$DIGIT = 256+2;
