@@ -1,13 +1,17 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE InstanceSigs #-}
 
+-- http://hackage.haskell.org/package/base-4.12.0.0/docs/src/GHC.Base.html#fmap
+
 data Maybe2 v = Just2 v | Nothing2 deriving (Show)
 
 instance Functor Maybe2 where
+
   fmap g (Just2 a) = Just2 (g a)
   fmap _ Nothing2  = Nothing2
 
 instance  Applicative Maybe2 where
+
   pure x = Just2 x
   (<*>) :: Maybe2 (a->b) -> Maybe2 a -> Maybe2 b
   a <*> b =
@@ -18,18 +22,21 @@ instance  Applicative Maybe2 where
 newtype ZipList a = ZipList { getZipList :: [a] }
 
 instance Functor ZipList where
+
   fmap f g = ZipList (map f (getZipList g))
 
 instance Applicative ZipList where
+
   pure :: a -> ZipList a
-  pure = undefined   -- exercise
+  pure = undefined
+
   (<*>) :: ZipList (a -> b) -> ZipList a -> ZipList b
   (ZipList gs) <*> (ZipList xs) = ZipList (zipWith ($) gs xs)
 
 main :: IO ()
 main = do
-  print  (pure (+) <*> Just2 1 <*> Just2 2)
 
+  print ( pure (+) <*> Just2 1 <*> Just2 2 )
 
   -- instance Show Maybe2 v where
   --   show Just2 a  = show a
