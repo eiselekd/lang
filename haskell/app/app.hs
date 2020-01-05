@@ -2,6 +2,7 @@
 {-# LANGUAGE InstanceSigs #-}
 
 -- http://hackage.haskell.org/package/base-4.12.0.0/docs/src/GHC.Base.html#fmap
+-- https://wiki.haskell.org/Evaluation_order_and_state_tokens
 
 data Maybe2 v = Just2 v | Nothing2 deriving (Show)
 
