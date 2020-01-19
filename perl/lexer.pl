@@ -9,89 +9,21 @@ use Data::Dumper;
 use Carp qw( croak );
 use FindBin qw($Bin);
 require "${Bin}/tok.pm";
+no warnings "once";
 
 my $file_content = read_file('lang.txt');
-
-my %keywords = (
-    "if"   => &tok::IF,
-    "then" => &tok::THEN,
-    "else" => &tok::ELSE,
-    "part" => &tok::PART,
-    "<<"   => &tok::LSHIFT,
-    ">>"   => &tok::RSHIFT,
-    "->"   => &tok::ARROW,
-    "«»"   => &tok::INOUT,
-    "»"    => &tok::IN,
-    "«"    => &tok::OUT,
-    "þ"    => &tok::THORN,
-    "Ω"    => &tok::OMEGA,
-    );
-
-my $kwreg = join("|",keys(%keywords));
-
-sub lex
-{
-    my ($a) = @_;
-    pos($a) = 0;
-    my @a = ();
-    while(length($a)>pos($a)) {
-    	my ($lastpos,$tokid) = (pos($a), undef);
-	#print("From ".pos($a)."\n");
-	if ($a =~ m/\G[\s\n]+/gcms) {
-	    next;
-	} elsif ( $a =~ m/\G[0-9]+/gcms) {
-	    $tokid = &tok::DIGIT;
-	} elsif ( $a =~ m/\G[a-zA-Z_][a-zA-Z_]*/gcms) {
-	    $tokid = &tok::IDENT;
-	    if (defined($keywords{$&})) {
-		$tokid = $keywords{$&};
-	    }
-	} elsif ( $a =~ m/\G(?:
-		  «»|
-		  «|
-		  »|
-		  þ|
-		  <<|
-		  >>|
-		  ->)/gcmsx) {
-	    $tokid = $keywords{$&};
-	} elsif ( $a =~ m/\G(?:
-		  [
-		  \[
-		  \]
-		  \{
-		  \}
-		  \(
-		  \)
-		  :
-		  \+
-		  \-
-		  <
-		  >
-		  ,
-		  \.
-		  ])
-		  /gcmsx) {
-	    $tokid = ord($&);
-	} else {
-	    croak("Can't parse	'".substr($a,pos($a))."'");
-	}
-	my $i = ::tok->new($a,$lastpos,$&,$tokid);
-	push(@a, $i);
-    }
-    #print (Dumper(\@a));
-    return @a;
-}
-
-lex($file_content);
+my @a = lex::lex($file_content);
+print(join("\n",@a));
 
 sub ok_lex {
     my ($m, $b) = @_;
-    my @a = lex($m);
+    my @a = lex::lex($m);
+    #print(join("\n",@a));
+
     for (my $i = 0; $i < scalar(@a); $i++) {
 	#print($i.":".$a[$i]{'id'}.":".ref($$b[$i])."\n");
 	if (!($a[$i]{'id'} == $$b[$i])) {
-	    print ($a[$i]{'id'}."==".$$b[$i]."\n");
+	    #print ($a[$i]{'id'}."==".$$b[$i]."\n");
 	    return 0;
 	}
 	#ok(1==2);
@@ -99,13 +31,13 @@ sub ok_lex {
     return 1;
 }
 
-ok(ok_lex("1+1",[&tok::DIGIT, ord('+'), &tok::DIGIT]));
+ok(ok_lex("1+1",[$tok::TK_DIGIT, ord('+'), $tok::TK_DIGIT]));
 ok(ok_lex("{}()",[ord('{'), ord('}'), ord('('), ord(')')]));
-ok(ok_lex("if then else",[&tok::IF, &tok::THEN, &tok::ELSE]));
-ok(ok_lex("a.b,c",[&tok::IDENT, ord('.'), &tok::IDENT, ord(','), &tok::IDENT]));
-ok(ok_lex("< << >> >",[ord('<'), &tok::LSHIFT, &tok::RSHIFT, ord('>')]));
-ok(ok_lex("->",[&tok::ARROW]));
-ok(ok_lex("« «» »",[&tok::OUT, &tok::INOUT, &tok::IN]));
+ok(ok_lex("if then else",[$tok::TK_IF, $tok::TK_THEN, $tok::TK_ELSE]));
+ok(ok_lex("a.b,c",[$tok::TK_IDENT, ord('.'), $tok::TK_IDENT, ord(','), $tok::TK_IDENT]));
+ok(ok_lex("< << >> >",[ord('<'), $tok::TK_LSHIFT, $tok::TK_RSHIFT, ord('>')]));
+ok(ok_lex("->",[$tok::TK_ARROW]));
+ok(ok_lex("« «» »",[$tok::TK_OUT, $tok::TK_INOUT, $tok::TK_IN]));
 
 sub test{
     $a = 10;
@@ -115,6 +47,9 @@ sub test{
 test();
 
 done_testing;
+
+#print "keys:".join("\n",keys(%tok::))
+
 
 # (flycheck-mode)
 # (require 'utils/perl-checker.el)
