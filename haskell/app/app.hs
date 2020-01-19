@@ -53,3 +53,6 @@ main = do
   --   Just2 a  -> print "Hello"
   --   Nothing2 -> print "World"
   -- (pure (+) <*> (Just2 10) <*> (Just2 4))
+
+
+-- newtype IO2 a = IO2 (State# RealWorld -> (# State# RealWorld, a #))
