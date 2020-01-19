@@ -7,12 +7,14 @@ no warnings "once";
 $TK_SPACE = 256+1;
 $TK_DIGIT = 256+2;
 $TK_IDENT = 256+3;
+$TK_STR   = 256+4;
 
-
-$TK_IF    = 256+4;
-$TK_THEN  = 256+5;
-$TK_ELSE  = 256+6;
-$TK_PART  = 256+7;
+$TK_IF    = 256+5;
+$TK_THEN  = 256+6;
+$TK_ELSE  = 256+7;
+$TK_PART  = 256+8;
+$TK_LOGIC = 256+9;
+$TK_FSM   = 256+10;
 
 $TK_LSHIFT = 256+100;
 $TK_RSHIFT = 256+101;
@@ -24,7 +26,7 @@ $TK_OUT    = 256+105;
 
 $TK_THORN  = 256+106;
 $TK_OMEGA  = 256+107;
-
+$TK_CURSOR = 256+108;
 
 #$DIGIT = 256+2;
 
@@ -37,7 +39,6 @@ sub new {
     my $s = {'tok'=>$tok,'id'=>$id};
     bless $s,$c;
 }
-
 
 use overload
     '""' => \&stringify;
@@ -71,8 +72,7 @@ sub stringify {
 	}
     }
 
-
-    return sprintf('TOK(%s, "%s")',$n, $$v{'tok'});
+    return sprintf('TOK(%s, "%s")',$n, escapestr($$v{'tok'}));
 }
 
 1;
@@ -84,6 +84,8 @@ my %keywords = (
     "then" => $tok::TK_THEN,
     "else" => $tok::TK_ELSE,
     "part" => $tok::TK_PART,
+    "logic" => $tok::TK_LOGIC,
+    "fsm"  => $tok::TK_FSM,
     "<<"   => $tok::TK_LSHIFT,
     ">>"   => $tok::TK_RSHIFT,
     "->"   => $tok::TK_ARROW,
@@ -92,6 +94,7 @@ my %keywords = (
     "«"    => $tok::TK_OUT,
     "þ"    => $tok::TK_THORN,
     "Ω"    => $tok::TK_OMEGA,
+    "¶"    => $tok::TK_CURSOR
     );
 
 my $kwreg = join("|",keys(%keywords));
@@ -108,16 +111,22 @@ sub lex
 	    next;
 	} elsif ( $a =~ m/\G[0-9]+/gcms) {
 	    $tokid = $tok::TK_DIGIT;
-	} elsif ( $a =~ m/\G[a-zA-Z_][a-zA-Z_]*/gcms) {
+	} elsif ( $a =~ m/\G(?:
+		     [a-zA-Z_][a-zA-Z_]* |
+		     ->
+		  )
+		  /gcmsx) {
 	    $tokid = $tok::TK_IDENT;
 	    if (defined($keywords{$&})) {
 		$tokid = $keywords{$&};
 	    }
 	} elsif ( $a =~ m/\G(?:
 		  «»|
+		  ¶|
 		  «|
 		  »|
 		  þ|
+		  Ω|
 		  <<|
 		  >>|
 		  ->)/gcmsx) {
@@ -131,8 +140,11 @@ sub lex
 		  \(
 		  \)
 		  :
+		  ;
 		  \+
 		  \-
+		  |
+		  &
 		  <
 		  >
 		  ,
@@ -140,7 +152,11 @@ sub lex
 		  ])
 		  /gcmsx) {
 	    $tokid = ord($&);
-	} else {
+	} elsif ( $a =~ m/\G"(?:[^\\"]+|\\.)*"/gcmsx)
+	{
+	    $tokid = $tok::TK_STR;
+	}
+	else {
 	    croak("Can't parse	'".substr($a,pos($a))."'");
 	}
 	my $i = ::tok->new($a,$lastpos,$&,$tokid);
