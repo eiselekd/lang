@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import LibLearn
 
 main :: IO ()
-main = someFunc
+main = print "a"
