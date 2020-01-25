@@ -1,0 +1,1 @@
+instance Maybe of Applicative
