@@ -15,7 +15,7 @@ extra-source-files:
     README.md
 
 executable monad-exe
-  main-is: M.hs
+  main-is: monad.hs
   other-modules:
       Ha, Sim, Simsym, Simval
   hs-source-dirs:
