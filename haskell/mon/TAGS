@@ -1,0 +1,94 @@
+
+./src/Lib.hs,42
+module LibLib0,1
+someFunc someFunc4,5
+
+./tsoding1.hs,62
+whatIsYourPureName whatIsYourPureName2,3
+branch branch8,9
+
+./tsoding2.hs,101
+type WorldT WorldT2,3
+readStrT readStrT4,5
+printStrT printStrT7,8
+(>(>>>=)10,11
+wt wt13,14
+
+./bit.hs,0
+
+./tsoding0.hs,35
+whatIsYourName whatIsYourName1,2
+
+./Sim.hs,28
+module SimSim0,1
+c=c3,4
+
+./Perform.hs,126
+module Perform Perform1,2
+data World World5,6
+data World = World World5,6
+printStr printStr7,8
+readStr readStr10,11
+
+./tsoding4.hs,475
+type WorldT WorldT5,6
+readStrT readStrT7,8
+printStrT printStrT10,11
+infixl infixl13,14
+(>(>>>=)14,15
+wt wt17,18
+whatIsYourPureNameT whatIsYourPureNameT20,21
+newtype WorldM WorldM29,30
+newtype WorldM a = WorldM { asT asT29,30
+instance Applicative Applicative WorldM31,32
+  pure pure32,33
+  wtf wtf33,34
+instance Monad Monad WorldM37,38
+  wt wt38,39
+printStrM printStrM40,41
+readStrM readStrM43,44
+whatIsYourPureNameM whatIsYourPureNameM46,47
+
+./app/Main.hs,37
+module Main Main0,1
+main main4,5
+
+./Fa.hs,26
+module FaFa0,1
+a=a3,4
+
+./tsodingw.hs,95
+data World World0,1
+data World = WorldWorld0,1
+printStr printStr2,3
+readStr readStr5,6
+
+./Simsym.hs,25
+module SimsymSimsym0,1
+
+./monad.hs,15
+main main7,8
+
+./test/Spec.hs,15
+main main0,1
+
+./Simval.hs,25
+module SimvalSimval0,1
+
+./Setup.hs,15
+main main1,2
+
+./tsoding.hs,43
+whatIsYourPureName whatIsYourPureName2,3
+
+./tsoding3.hs,148
+type WorldT WorldT3,4
+readStrT readStrT5,6
+printStrT printStrT8,9
+(>(>>>=)11,12
+wt wt14,15
+whatIsYourPureNameT whatIsYourPureNameT16,17
+
+./Ha.hs,26
+module HaHa0,1
+b=b5,6

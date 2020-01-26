@@ -429,3 +429,14 @@ Status #haskellX
 [20:18] <hopsing> dmj`: It sound really interesting. I can imagine it is very powerful.But must say I dont understand much still..
 [20:19] == bzm3r [4b9c1ace@gateway/web/cgi-irc/kiwiirc.com/ip.75.156.26.206] has quit [Remote host closed the connection]
 [20:19] <zincy> What are free monads for?
+
+* hie
+ - needed:
+   - stack.yaml
+   - hie.yaml, point ot cabal package
+   - cabal with library section
+     library
+       other-modules:
+         path_mod
+   - test with running hie
+

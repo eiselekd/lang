@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
-name:           monad
+name:           m
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/learn#readme>
 homepage:       https://github.com/githubuser/learn#readme
@@ -14,8 +14,14 @@ build-type:     Simple
 extra-source-files:
     README.md
 
-executable monad-exe
-  main-is: monad.hs
+library
+  other-modules:
+      Perform
+  build-depends:
+      base >=4.7 && <5
+
+executable m
+  main-is: m.hs
   other-modules:
       Ha, Sim, Simsym, Simval
   hs-source-dirs:
