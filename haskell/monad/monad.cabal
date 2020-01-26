@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
-name:           M
+name:           monad
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/learn#readme>
 homepage:       https://github.com/githubuser/learn#readme
@@ -14,7 +14,7 @@ build-type:     Simple
 extra-source-files:
     README.md
 
-executable learn-exe
+executable monad-exe
   main-is: M.hs
   other-modules:
       Ha, Sim, Simsym, Simval
@@ -23,6 +23,5 @@ executable learn-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
-    , learn
   default-language: Haskell2010
 
