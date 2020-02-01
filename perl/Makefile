@@ -1,1 +1,2 @@
 all:
+	perl lexer.pl

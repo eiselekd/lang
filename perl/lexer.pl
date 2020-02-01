@@ -50,7 +50,6 @@ done_testing;
 
 #print "keys:".join("\n",keys(%tok::))
 
-
 # (flycheck-mode)
 # (require 'utils/perl-checker.el)
 # (flycheck-add-next-checker (flycheck-get-checker-for-buffer) '(warning . utils/perl-checker-makefile-checker ))
