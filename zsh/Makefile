@@ -1,0 +1,6 @@
+
+
+
+
+clear:
+	rm .zcompdump-*
