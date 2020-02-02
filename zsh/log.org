@@ -1,0 +1,6 @@
+man zshcompsys
+
+https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org
+http://zsh.sourceforge.net/Doc/Release/Completion-System.html#Completion-System
+
+
