@@ -317,6 +317,9 @@ Hello
   (yell 5) ;; "hiya!!!!"
 #+END_SRC
 
+#+RESULTS:
+: hiya!!!!!
+
 ** Lang
 
 * Test 2
