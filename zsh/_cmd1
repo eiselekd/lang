@@ -1,1 +1,13 @@
 #compdef cmd1
+
+_arguments '-m[music file]:filename:->files' '-f[flags]:flag:->flags'
+case "$state" in
+    files)
+        local -a music_files
+	music_files=( test/*.{bin,mbin} )	
+        _multi_parts /o music_files
+        ;;
+    flags)
+        _values -s , 'flags' a b c d e
+        ;;
+esac
