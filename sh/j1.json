@@ -1,0 +1,14 @@
+[
+    {
+    "id": "q",
+    "remotes": [
+        {
+            "name": "q0",
+            "urls": [
+                "ssh://audio-plugin",
+                "ssh://audio-plugin2"
+            ]
+        }
+    ]
+    }
+]
