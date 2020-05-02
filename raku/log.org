@@ -1,0 +1,7 @@
+
+* links 
+https://www.learningraku.com/2017/02/24/testing-json-grammars/
+https://andrewshitov.com/wp-content/uploads/2020/01/Using-Raku.pdf
+http://blogs.perl.org/users/damian_conway/2019/09/itchscratch.html
+https://perlgeek.de/blog-en/perl-6/2017-006-book-grammar.html
+

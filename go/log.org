@@ -7,3 +7,5 @@ set build directory
 export GOOS=windows
 export GOARCH=amd64
 
+* links
+https://medium.com/@phanindramoganti/regex-under-the-hood-implementing-a-simple-regex-compiler-in-go-ef2af5c6079

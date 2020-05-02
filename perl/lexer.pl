@@ -2,13 +2,14 @@
 # Local Variables:
 # checker-enable:1
 # End:
-
 use Test::More;
 use File::Slurp;
 use Data::Dumper;
 use Carp qw( croak );
+use FindBin;                     # locate this script
+use lib "$FindBin::RealBin/.";  # use the directory
 use FindBin qw($Bin);
-require "${Bin}/tok.pm";
+use tok;
 no warnings "once";
 
 my $file_content = read_file('lang.txt');
