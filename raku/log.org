@@ -14,3 +14,6 @@ https://docs.raku.org/type/Signature#Type_captures
 
 * containers (variables)
 https://docs.raku.org/language/containers
+* operators
+  
+https://docs.perl6.org/language/operators#prefix_...
