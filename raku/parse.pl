@@ -6,6 +6,7 @@ use v6;
 use Test;
 
 grammar Calculator {
+
     token TOP { [ <add> | <sub> ] }
     rule  add { <num> '+' <num> }
     rule  sub { <num> '-' <num> }

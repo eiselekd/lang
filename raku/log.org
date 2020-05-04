@@ -5,3 +5,12 @@ https://andrewshitov.com/wp-content/uploads/2020/01/Using-Raku.pdf
 http://blogs.perl.org/users/damian_conway/2019/09/itchscratch.html
 https://perlgeek.de/blog-en/perl-6/2017-006-book-grammar.html
 
+https://docs.raku.org/type/Signature#Constraining_defined_and_undefined_values
+
+* types
+$a.^name
+https://docs.perl6.org/language/typesystem
+https://docs.raku.org/type/Signature#Type_captures
+
+* containers (variables)
+https://docs.raku.org/language/containers
