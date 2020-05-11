@@ -1,2 +1,7 @@
 * nqp
 https://mouq.github.io/slangs.html
+
+* sub-grammars
+nqp:
+nqp/src/NQP/Grammar.nqp
+

@@ -19,3 +19,12 @@ https://docs.raku.org/language/containers
 * operators
   
 https://docs.perl6.org/language/operators#prefix_...
+https://docs.perl6.org/language/glossary
+
+** twigil
+
+! : access object attributes in method, i.e. $!x
+* : dynamic scope (aka elisp)
+
+
+
