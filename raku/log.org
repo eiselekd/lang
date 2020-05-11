@@ -7,6 +7,8 @@ https://perlgeek.de/blog-en/perl-6/2017-006-book-grammar.html
 
 https://docs.raku.org/type/Signature#Constraining_defined_and_undefined_values
 
+http://edumentab.github.io/rakudo-and-nqp-internals-course/slides-day1.pdf
+
 * types
 $a.^name
 https://docs.perl6.org/language/typesystem
