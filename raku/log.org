@@ -21,10 +21,10 @@ https://docs.raku.org/language/containers
 https://docs.perl6.org/language/operators#prefix_...
 https://docs.perl6.org/language/glossary
 
-** twigil
+** twigil https://docs.perl6.org/language/variables#Twigils
 
 ! : access object attributes in method, i.e. $!x
 * : dynamic scope (aka elisp)
-
+? : compile time variable
 
 
