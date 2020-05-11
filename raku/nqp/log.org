@@ -1,0 +1,2 @@
+* nqp
+https://mouq.github.io/slangs.html
