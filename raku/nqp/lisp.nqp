@@ -1,13 +1,6 @@
-# NQP で実装された簡単な LISP っぽいものです｡
-#
-# AST をだす
-#
-#   nqp-m eg/lisp.nqp --target=ast
-# https://github.com/tokuhirom/Perl6-Renshu/tree/master/nqp-lisp
 use NQPHLL;
 
-# パーサーです
-grammar SakuraLisp::Grammar is HLL::Grammar {
+grammar Lisp::Grammar is HLL::Grammar {
     token TOP {
         :my $*CUR_BLOCK := QAST::Block.new(QAST::Stmts.new());
         :my $*TOP_BLOCK   := $*CUR_BLOCK;
@@ -37,7 +30,7 @@ grammar SakuraLisp::Grammar is HLL::Grammar {
     rule sexplist { <exp>* }
 }
 
-class SakuraLisp::Actions is HLL::Actions {
+class Lisp::Actions is HLL::Actions {
     method TOP($/) {
         $*CUR_BLOCK.push($<sexplist>.ast);
         make QAST::CompUnit.new( $*CUR_BLOCK );
@@ -46,14 +39,10 @@ class SakuraLisp::Actions is HLL::Actions {
     method sexplist($/) {
         my $stmts := QAST::Stmts.new( :node($/) );
 
-        # $<exp> ってなんだっけ?
-        if $<exp> {
-            for $<exp> {
-                $stmts.push($_.ast)
-            }
+        for $<exp> {
+            $stmts.push($_.ast)
         }
 
-        # make で結果を返す
         make $stmts;
     }
 
@@ -207,70 +196,29 @@ class SakuraLisp::Actions is HLL::Actions {
     }
 }
 
-# これはからっぽでいいみたい｡
-#
-# HLL::Compiler の定義は src/HLL/Compiler.nqp  にあります｡
-class SakuraLisp::Compiler is HLL::Compiler {
-    has $!backend;
+class Lisp::Compiler is HLL::Compiler {
+    method eval($code, *@_args, *%adverbs) {
+	say(" * code list '$code'");
+        my $output := self.compile($code, :compunit_ok(1), |%adverbs);
 
-    # REPL モードのときに表示するプロンプト
-    method interactive_prompt() { 'lisp> ' }
-
-    # REPL モードのときに､評価結果を表示する
-    method interactive_result($value) {
-        nqp::say(">>> " ~ ~$value)
-    }
-
-    # 評価する｡なぜか MoarVM んときに -e とかファイルからとかの読み込みがうまくいかないという
-    # 謎現象が起きておりまして､とりあえずのワークアラウンドを入れている｡
-    # どうしたらいいのかよくわからん｡
-    method eval($code, *@args, *%adverbs) {
-        my $output;
-        $!backend := self.default_backend();
-
-        if (%adverbs<profile-compile>) {
-            $output := $!backend.run_profiled({
-                self.compile($code, :compunit_ok(1), |%adverbs);
-            });
-        }
-        else {
-            $output := self.compile($code, :compunit_ok(1), |%adverbs);
-        }
-
-        if $!backend.is_compunit($output) && %adverbs<target> eq '' {
+        if %adverbs<target> eq '' {
             my $outer_ctx := %adverbs<outer_ctx>;
-            $output := $!backend.compunit_mainline($output);
+            $output := self.backend.compunit_mainline($output);
             if nqp::defined($outer_ctx) {
                 nqp::forceouterctx($output, $outer_ctx);
             }
 
-            if (%adverbs<profile>) {
-                $output := $!backend.run_profiled({ $output(|@args) });
-            }
-            elsif %adverbs<trace> {
-                $output := $!backend.run_traced(%adverbs<trace>, { $output(|@args) });
-            }
-            else {
-                # ↓ これがワークアラウンド
-                # $output := $output(|@args);
-                $output := $output();
-            }
+            $output := $output();
         }
 
         $output;
     }
 }
 
-sub MAIN(@ARGS) {
-    # コンパイラを設定します｡
-    my $comp := SakuraLisp::Compiler.new();
+sub MAIN(*@ARGS) {
+    my $comp := Lisp::Compiler.new();
     $comp.language('lisp');
-    # グラマーを設定
-    $comp.parsegrammar(SakuraLisp::Grammar);
-    # アクションを設定
-    $comp.parseactions(SakuraLisp::Actions);
-
-    # ベーシックな挙動をして欲しい場合は command_line メソッドを呼べばOKです｡
+    $comp.parsegrammar(Lisp::Grammar);
+    $comp.parseactions(Lisp::Actions);
     $comp.command_line(@ARGS, :encoding('utf8'));
 }
-

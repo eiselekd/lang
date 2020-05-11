@@ -21,22 +21,19 @@ grammar Rubyish::Grammar is HLL::Grammar {
 
 class Rubyish::Actions is HLL::Actions {
     method TOP($/) {
-	say("TOP");
         make QAST::Block.new( $<statementlist>.ast );
     }
     
     method statementlist($/) {
         my $stmts := QAST::Stmts.new( :node($/) );
         for $<statement> {
-	    say("Push one stmt");
 	    $stmts.push($_.ast)
         }
         make $stmts;
     }
     
     method statement:sym<puts>($/) {
-	say("stmt");
-        make QAST::Op.new(
+	make QAST::Op.new(
             :op('say'),
             $<quote_EXPR>.ast
         );
@@ -45,7 +42,7 @@ class Rubyish::Actions is HLL::Actions {
 
 class Rubyish::Compiler is HLL::Compiler {
     method eval($code, *@_args, *%adverbs) {
-	say("code '$code'");
+	say(" * code rubish '$code'");
         my $output := self.compile($code, :compunit_ok(1), |%adverbs);
 
         if %adverbs<target> eq '' {
