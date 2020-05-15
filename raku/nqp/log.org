@@ -1,5 +1,6 @@
 * nqp
 https://mouq.github.io/slangs.html
+http://trac.parrot.org/parrot/wiki/NQP-rx%20Operator%20Precedence%20Parsing
 
 * sub-grammars
 nqp:

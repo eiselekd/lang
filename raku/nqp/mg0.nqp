@@ -108,7 +108,6 @@ class A::Compiler is HLL::Compiler {
 
             $output := $output();
         }
-
         $output;
     }
 }
