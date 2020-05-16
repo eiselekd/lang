@@ -1,5 +1,5 @@
 use NQPHLL;
-
+# major-mode
 grammar Lisp::Grammar is HLL::Grammar {
     token TOP {
         :my $*CUR_BLOCK := QAST::Block.new(QAST::Stmts.new());

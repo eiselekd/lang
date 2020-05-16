@@ -37,3 +37,5 @@ done_testing;
 # (realgud:trepan2)
 # (perldb-put-breakpoint "lexer.pl" 15)
 # (perldb-find-breakpoints "lexer.pl" )
+
+# major-mode
