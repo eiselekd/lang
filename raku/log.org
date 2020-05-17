@@ -9,6 +9,8 @@ https://docs.raku.org/type/Signature#Constraining_defined_and_undefined_values
 
 http://edumentab.github.io/rakudo-and-nqp-internals-course/slides-day1.pdf
 
+https://docs.perl6.org/language/variables
+
 * types
 $a.^name
 https://docs.perl6.org/language/typesystem
