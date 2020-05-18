@@ -21,10 +21,13 @@ grammar Arith::Grammar is HLL::Grammar {
 
 class Arith::Actions is HLL::Actions {
     method TOP($/) {
-
+        make QAST::CompUnit.new(
+	    QAST::Block.new(QAST::Stmts.new($<EXPR>.ast)));
     }
 
     method term:sym<value>($/) { make $<value>.ast; }
+    method value:sym<integer>($/) { make QAST::NVal.new(:value(nqp::numify($/.Str))); }
+
 }
 
 class Arith::Compiler is HLL::Compiler {
