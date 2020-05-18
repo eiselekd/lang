@@ -10,6 +10,7 @@ https://docs.raku.org/type/Signature#Constraining_defined_and_undefined_values
 http://edumentab.github.io/rakudo-and-nqp-internals-course/slides-day1.pdf
 
 https://docs.perl6.org/language/variables
+https://docs.raku.org/language/5to6-nutshell
 
 * types
 $a.^name
@@ -30,3 +31,43 @@ https://docs.perl6.org/language/glossary
 ? : compile time variable
 
 
+
+* grammar
+
+# https://docs.raku.org/language/grammars
+
+non-capture : <.rule> 
+rule        : token + :sigspace 
+...:sym<P> { <sym> } : <sym> match P
+<?> : always success action
+token a {...} : called from Grammar method via $self.a
+:my $*a = 1; : add dynamic scope variables
+<?{ $*a == 1 }> : code predicates in token rules + dynamic scoped vars
+<key=.identifier> : accessed via $<key> in action
+tokens are methos of match
+methods can access grammar attributes
+$m = Grammar.parse() , return match
+rules can have arguments, pass via :args as list: :args((arg0,))
+tokens in rules can have arguments:  <a($w)>
+regex can be arguments or dynamic vars: TOP($*c) {...} token a ($b) { $b $*c } 
+
+** Actions
+$/ : match 
+$<cap> : $/<cap> if $/ is arg
+
+
+* regex
+
+<-[\/]>+ : /[~\/]+/
+\w : workchar 
+\v : 
+
+
+* class
+
+class name is base { method a {} }  : unit class name is base;  method a {}
+
+* constructs
+
+my @a = gather for @... { take .. };
+inline comments: if #`( why comment here? ) { }
