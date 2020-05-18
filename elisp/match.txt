@@ -1,3 +1,7 @@
+> 
+Stack trace of thread 1
+    0  <mainline>                 src/vm/moar/ModuleLoader.nqp:1 /home/eiselekd/bin-moarvm/share/nqp/lib/ModuleLoader.moarvm 
+    1  <load>                     :1                             /home/eiselekd/bin-moarvm/share/nqp/lib/ModuleLoader.moarvm 
+    2  <dependencies+deserialize> :1                             /home/eiselekd/bin-moarvm/share/nqp/lib/nqp.moarvm          
 
-   0 file.c 10
 

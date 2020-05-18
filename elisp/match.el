@@ -36,23 +36,23 @@
     (with-current-buffer buffer
       (progn
 	(erase-buffer)
-	(insert-file-contents "/home/eiselekd/match.txt" nil)
+	(insert-file-contents "match.txt" nil)
 	(goto-char (point-min))
 
 	(when (re-search-forward
                (rx (and line-start
 			(1+ space) "0"
 			(1+ space)
-			(group-n 1 (1+ (not space)))
+			(1+ (not space))
 			(1+ space)
+			(group-n 1 (1+ (not ":")))
+			":"
 			(group-n 2 (1+ digit))))
                nil t)
 	  (let ((filename (match-string 1))
 		(line (string-to-number (match-string 2))))
             (message (format "Found file: %s, line: %d" filename line))
             )
-
-
 	)))))
 
 (test)

@@ -6,6 +6,9 @@ test1:
 test2:
 	nqp-m lisp.nqp -e "(say (+ 1 1))"
 
+test3:
+	nqp-m arith.nqp --target=ast -e "1+2*3"
+
 dbg:
 	nqp-m --debug-port=9999 --debug-suspend lisp.nqp -e "(say (+ 1 1))"
 
