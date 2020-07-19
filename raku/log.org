@@ -12,6 +12,8 @@ http://edumentab.github.io/rakudo-and-nqp-internals-course/slides-day1.pdf
 https://docs.perl6.org/language/variables
 https://docs.raku.org/language/5to6-nutshell
 
+https://raku.guide/
+
 * types
 $a.^name
 https://docs.perl6.org/language/typesystem
@@ -72,3 +74,4 @@ class name is base { method a {} }  : unit class name is base;  method a {}
 
 my @a = gather for @... { take .. };
 inline comments: if #`( why comment here? ) { }
+
