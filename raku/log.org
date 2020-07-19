@@ -62,6 +62,7 @@ $<cap> : $/<cap> if $/ is arg
 \w : workchar 
 \v : 
 
+https://docs.raku.org/language/regexes
 
 * class
 
