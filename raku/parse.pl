@@ -19,5 +19,6 @@ class Calculations {
     method sub ($/) { make [-] $<num>; }
 }
 
+say Calculator.parse('2 + 3');
 ok(Calculator.parse('2 + 3'));
 say Calculator.parse('2 + 3', actions => Calculations).made;

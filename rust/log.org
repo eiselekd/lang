@@ -20,3 +20,7 @@
 * parser
 [4] https://bodil.lol/parser-combinators/
 
+* general
+https://play.rust-lang.org/
+https://doc.rust-lang.org/stable/rust-by-example/
+
