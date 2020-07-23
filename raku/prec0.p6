@@ -51,7 +51,6 @@ class pa {
     method EXPR ($/) {
 	my @ops = $/<infixish>;
 	my @terms  = $/<termish>;
-
 	my @stack = (shift @terms).made;
 	for @ops Z @terms -> [$op, $term] {
             opp-reduce(@stack) while (@stack >= 3

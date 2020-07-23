@@ -75,3 +75,10 @@ class name is base { method a {} }  : unit class name is base;  method a {}
 my @a = gather for @... { take .. };
 inline comments: if #`( why comment here? ) { }
 
+* hash
+https://docs.raku.org/language/subscripts#Methods_to_implement_for_associative_subscripting
+
+* Design
+
+https://design.raku.org/
+
