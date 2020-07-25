@@ -12,10 +12,12 @@ class port {
 
 class ports {
     has @.ports_ ;
+    method toStruct { @.ports_».toStruct };
 };
 
-my $p = ports.new(:ports_<[2]>);
+my $p = ports.new(:ports_(port.new()));
 
+say $p.toStruct;
 
 
 #is-deeply( $a0, [ 1, 2 ], "test0");
