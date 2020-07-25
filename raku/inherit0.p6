@@ -1,14 +1,20 @@
 #!/usr/bin/raudo
 use Test;
-
+# https://docs.raku.org/language/classtut
 class port {
     has $.dir;
+    has $.portname;
     has $.porttype;
+    method toStruct {
+	return { :dir(self.dir), :portname(self.porttype) };
+    }
 };
 
 class ports {
-    has @.ports_ of port;
+    has @.ports_ ;
 };
+
+my $p = ports.new(:ports_<[2]>);
 
 
 
