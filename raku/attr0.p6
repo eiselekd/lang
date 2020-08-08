@@ -1,5 +1,6 @@
 #!/usr/bin/raudo
 use Test;
+# https://stackoverflow.com/questions/63055923/how-to-access-attributes-in-object-dynamically-in-raku
 
 class c0 {
     has $!a0 = 1;
