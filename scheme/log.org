@@ -1,0 +1,8 @@
+
+* racket
+
+  https://www.it.uu.se/edu/course/homepage/avfunpro/ht13/lectures/Racket-2-Continuations.pdf
+  http://matt.might.net/articles/programming-with-continuations--exceptions-backtracking-search-threads-generators-coroutines/
+  call/cc: https://www.boost.org/doc/libs/1_70_0/libs/context/doc/html/context/cc.html
+  https://ds26gte.github.io/tyscheme/index-Z-H-15.html
+  http://www.madore.org/~david/computers/callcc.html

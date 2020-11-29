@@ -1,0 +1,36 @@
+* halfadder
+
+#+begin_src :
+part ha      (a : std, b : std)
+             [
+      (a,b) »|: std ;
+      (p,c) «|: std ;
+             ]
+{
+    ._p = logic { a^b } ();
+    ._c = logic { a&b } ();
+    .p <= _p;
+    .c <= _c;
+
+}
+#+end_src
+
+
+* fulladder
+  
+#+begin_src :
+part fa      (a : std, b : std, c: std)
+             [
+    (a,b,c) »|: std ;
+     (p,pc) «|: std ;
+             ]
+{
+    (.h0:, rh0) = ha( (a,b), [a»a,b»b] );
+    (.h1:, rh1) = ha( (h0.p,c) );
+
+    ._pc = logic { h0.c | h1.c } ();
+
+    p  « h1.p;
+    pc « _pc;
+}
+#+end_src
