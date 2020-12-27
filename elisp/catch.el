@@ -1,5 +1,17 @@
 ;;https://steve-yegge.blogspot.com/2008/01/emergency-elisp.html
 ;;https://github.com/alhassy/ElispCheatSheet
+
+;; * test:
+;;  sdsd
+;; * test2:
+;; ** test
+;;    this is test test
+;;    this is test test
+;;    this is test test
+;; ** #
+;;    test after
+;; * #
+
 (defun f1 (tag val)
   (message (format "thow %s" tag))
   (throw tag val)
