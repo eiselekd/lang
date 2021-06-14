@@ -1,2 +1,4 @@
 picolisp:
 https://software-lab.de/
+https://raw.githubusercontent.com/tj64/picolisp-works/master/editor.pdf
+
