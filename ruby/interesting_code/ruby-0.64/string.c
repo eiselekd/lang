@@ -21,9 +21,7 @@ VALUE C_String;
 #define STRLEN(s) RSTRING(s)->len
 
 VALUE
-str_new(ptr, len)
-    char *ptr;
-    UINT len;
+str_new(char *ptr, UINT len)
 {
     NEWOBJ(str, struct RString);
     OBJSETUP(str, C_String, T_STRING);
@@ -1038,14 +1036,14 @@ static VALUE
 Fstr_toupper(str)
     struct RString *str;
 {
-    return Fstr_upcase(str_new(str_new(str->ptr, str->len)));
+	return Fstr_upcase(str_new3((void*)str_new(str->ptr, str->len)));
 }
 
 static VALUE
 Fstr_tolower(str)
     struct RString *str;
 {
-    return Fstr_downcase(str_new(str_new(str->ptr, str->len)));
+	return Fstr_downcase(str_new3((void*)str_new(str->ptr, str->len)));
 }
 
 struct tr {

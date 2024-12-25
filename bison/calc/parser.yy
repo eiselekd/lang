@@ -7,11 +7,13 @@
 %define parse.assert
 %code requires {
 # include <string>
-	class driver;
+class driver;
 }
+
 // The parsing context.
 %param { driver& drv }
 %locations
+
 %define parse.trace
 %define parse.error detailed
 %define parse.lac full

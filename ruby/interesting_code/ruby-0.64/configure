@@ -569,9 +569,9 @@ else
 fi
 
 LIBS_save="${LIBS}"
-LIBS="${LIBS} -ldbm"
+LIBS="${LIBS} -lgdbm_compat"
 have_lib=""
-echo checking for -ldbm
+echo checking for -lgdbm_compat
 cat > conftest.c <<EOF
 #include "confdefs.h"
 
@@ -586,7 +586,7 @@ fi
 rm -f conftest*
 LIBS="${LIBS_save}"
 if test -n "${have_lib}"; then
-   :; LIBS="$LIBS -ldbm"
+   :; LIBS="$LIBS -lgdbm_compat"
 else
    :; 
 fi

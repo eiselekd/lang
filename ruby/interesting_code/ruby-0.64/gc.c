@@ -43,8 +43,7 @@ xmalloc(size)
 }
 
 void *
-xcalloc(n, size)
-    unsigned long n, size;
+xcalloc(unsigned long n, unsigned long size)
 {
     void *mem;
 

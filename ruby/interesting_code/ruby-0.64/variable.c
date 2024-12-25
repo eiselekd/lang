@@ -87,8 +87,7 @@ gc_mark_global_tbl()
 }
 
 struct global_entry*
-rb_global_entry(id)
-    ID id;
+rb_global_entry(ID id)
 {
     struct global_entry *entry;
 

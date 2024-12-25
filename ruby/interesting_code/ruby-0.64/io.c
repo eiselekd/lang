@@ -936,6 +936,7 @@ rb_xstring(str)
 
 struct timeval *time_timeval();
 
+#define _other_gbase
 #ifdef STDSTDIO
 # define READ_PENDING(fp) ((fp)->_cnt != 0)
 #else 

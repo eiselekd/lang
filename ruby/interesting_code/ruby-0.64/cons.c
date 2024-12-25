@@ -238,7 +238,7 @@ extern VALUE M_Enumerable;
 
 Init_Cons()
 {
-    C_Cons  = rb_define_class("Cons", C_Object);
+    C_Cons  = rb_define_class("Cons", (void*)C_Object);
 
     rb_undef_method(CLASS_OF(C_Cons), "new");
     rb_undef_method(C_Cons, "clone");

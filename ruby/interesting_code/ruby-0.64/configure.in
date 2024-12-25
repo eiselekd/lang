@@ -22,7 +22,7 @@ AC_DIR_HEADER
 AC_GETGROUPS_T
 AC_RETSIGTYPE
 AC_HAVE_LIBRARY(m, [LIBS="$LIBS -lm"])
-AC_HAVE_LIBRARY(dbm, [LIBS="$LIBS -ldbm"])
+AC_HAVE_LIBRARY(gdbm_compat, [LIBS="$LIBS -lgdbm_compat"])
 AC_HAVE_LIBRARY(socket, [LIBS="$LIBS -lsocket"])
 AC_HAVE_LIBRARY(crypt, [LIBS="$LIBS -lcrypt"])
 AC_VFORK

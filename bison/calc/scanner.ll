@@ -20,7 +20,7 @@
 %{
   // A number symbol corresponding to the value in S.
     yy::parser::symbol_type
-      make_NUMBER (const std::string &s, const yy::parser::location_type& loc);
+    make_NUMBER (const std::string &s, const yy::parser::location_type& loc);
 %}
 
 id    [a-zA-Z][a-zA-Z_0-9]*
@@ -58,7 +58,7 @@ blank [ \t\r]
 {id}       return yy::parser::make_IDENTIFIER (yytext, loc);
 
 .          {
-	throw yy::parser::syntax_error
+	        throw yy::parser::syntax_error
 		(loc, "invalid character: " + std::string(yytext));
 	   }
 

@@ -12,7 +12,7 @@
 
 #include "ruby.h"
 
-VALUE M_Comparable;
+extern VALUE M_Comparable;
 VALUE C_Range;
 
 static ID next, eq;

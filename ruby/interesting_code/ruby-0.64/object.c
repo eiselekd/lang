@@ -267,8 +267,7 @@ Ftrue_to_s(obj)
 }
 
 VALUE
-obj_alloc(class)
-    VALUE class;
+obj_alloc(VALUE class)
 {
     NEWOBJ(obj, struct RObject);
     OBJSETUP(obj, class, T_OBJECT);

@@ -19,6 +19,7 @@
 #include <setjmp.h>
 #include "st.h"
 
+
 void rb_clear_cache();
 
 /* #define TEST	/* prints cache miss */
@@ -206,8 +207,8 @@ VALUE Qself;
 
 #define POP_SELF() Qself = __saved_self__; }
 
-struct ENVIRON *the_env, *top_env;
-struct SCOPE   *the_scope, *top_scope;
+struct ENVIRON *the_env = 0, *top_env = 0;
+struct SCOPE   *the_scope = 0, *top_scope = 0;
 
 #define PUSH_ENV() {			\
     struct ENVIRON _env;		\
@@ -1928,14 +1929,11 @@ Fapply(argc, argv, recv)
     return rb_apply(recv, mid, rest);
 }
 
-#include <varargs.h>
+#include <stdarg.h>
+//#include <varargs.h>
 
 VALUE
-rb_funcall(recv, mid, n, va_alist)
-    VALUE recv;
-    ID mid;
-    int n;
-    va_dcl
+rb_funcall(VALUE recv, ID mid, int n, ...)
 {
     va_list ar;
     VALUE *argv;
@@ -1945,7 +1943,7 @@ rb_funcall(recv, mid, n, va_alist)
 
 	argv = ALLOCA_N(VALUE, n);
 
-	va_start(ar);
+	va_start(ar, n);
 	for (i=0;i<n;i++) {
 	    argv[i] = va_arg(ar, VALUE);
 	}

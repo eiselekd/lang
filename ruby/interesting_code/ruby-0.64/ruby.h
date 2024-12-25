@@ -26,9 +26,11 @@
 #include <alloca.h>
 #endif
 
-typedef unsigned int UINT;
-typedef UINT VALUE;
-typedef UINT ID;
+#include <stdint.h>
+
+typedef uint64_t UINT;
+typedef uint64_t VALUE;
+typedef uint64_t ID;
 
 typedef unsigned short USHORT;
 
@@ -117,6 +119,7 @@ extern VALUE C_Data;
 VALUE num2fix();
 int   num2int();
 
+struct RBasic *newobj();
 #define NEWOBJ(obj,type) type *obj = (type*)newobj()
 #define OBJSETUP(obj,c,t) {\
     RBASIC(obj)->class = (c);\
@@ -258,6 +261,9 @@ struct RCons {
 extern VALUE Qself;
 #define Qnil 0
 
+void *xmalloc(unsigned long size);
+void *xrealloc(void *ptr, unsigned long size);
+
 #define ALLOC_N(type,n) (type*)xmalloc(sizeof(type)*(n))
 #define ALLOC(type) (type*)xmalloc(sizeof(type))
 #define REALLOC_N(var,type,n) (var)=(type*)xrealloc((char*)(var),sizeof(type)*(n))
@@ -276,26 +282,51 @@ extern int trap_immediate;
 # define TRAP_END
 #endif
 
-VALUE rb_define_class();
+VALUE rb_define_class(char *name, VALUE super);
+VALUE rb_define_class_id(ID id, struct RBasic *super);
 VALUE rb_define_module();
+void rb_define_variable(char  *name, VALUE *var, VALUE (*get_hook)(), VALUE (*set_hook)(), void *data);
+void rb_define_const(struct RClass *class, char *name, VALUE val);
+void rb_define_method(struct RClass *class, char *name, VALUE (*func)(), int argc);
+void rb_define_single_method(VALUE obj, char *name, VALUE (*func)(), int argc);
 
-void rb_define_variable();
-void rb_define_const();
-
-void rb_define_method();
-void rb_define_single_method();
 void rb_undef_method();
 void rb_define_alias();
 void rb_define_attr();
 
 ID rb_intern();
-char *rb_id2name();
 
-VALUE rb_funcall();
-int rb_scan_args();
+VALUE
+rb_funcall(VALUE recv, ID mid, int n, ...);
+
+int
+rb_scan_args(int argc, VALUE *argv, char *fmt, ...);
+
 
 VALUE rb_yield();
 
 extern int verbose, debug;
+
+VALUE class_new(struct RClass *super);
+VALUE dic_new();
+VALUE obj_alloc(VALUE class);
+struct global_entry*rb_global_entry(ID id);
+VALUE single_class_new(struct RClass *super);
+VALUE str_new(char *ptr, UINT len);
+VALUE str_new2(char *ptr);
+VALUE str_new3(struct RString *str);
+VALUE ary_new2(int len);
+VALUE ary_new();
+VALUE ary_new3(int n, ...);
+VALUE ary_new4(int n, VALUE *elts);
+VALUE str_clone(struct RString *str);
+VALUE str_cat(struct RString *str, char *ptr, UINT len);
+
+
+
+VALUE assoc_new(VALUE elm1, VALUE elm2);
+VALUE obj_as_string(VALUE obj);
+char *rb_id2name(ID id);
+char *rb_class2name(struct RClass *class);
 
 #endif

@@ -469,7 +469,7 @@ static VALUE *syserr_list;
 #endif
 
 #if !defined(NT) && !defined(__FreeBSD__) && !defined(__NetBSD__) && !defined(__OpenBSD__) && !defined(sys_nerr)
-extern int sys_nerr;
+int sys_nerr;
 #endif
 
 static VALUE

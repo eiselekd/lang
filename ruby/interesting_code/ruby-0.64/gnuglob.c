@@ -88,11 +88,7 @@ extern void bcopy ();
 #  endif /* !RISC6000 */
 #endif /* USG */
 
-#if defined(HAVE_ALLOCA_H) && !defined(__GNUC__)
 #include <alloca.h>
-#else
-char *alloca ();
-#endif
 
 #include "fnmatch.h"
 

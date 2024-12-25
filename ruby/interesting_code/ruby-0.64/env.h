@@ -17,14 +17,16 @@ extern struct ENVIRON {
     ID last_func;
     struct RClass *last_class;
     struct ENVIRON *prev;
-} *the_env;
+};
+extern struct ENVIRON *the_env;
 
 struct SCOPE {
     struct RBasic super;
     ID *local_tbl;
     VALUE *local_vars;
     int flags;
-} *the_scope;
+};
+extern struct SCOPE *the_scope;
 
 #define SCOPE_MALLOCED (1<<0)
 

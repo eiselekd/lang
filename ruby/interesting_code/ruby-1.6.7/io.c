@@ -101,6 +101,10 @@ static int gets_lineno;
 static int init_p = 0, next_p = 0, first_p = 1;
 static VALUE lineno;
 
+#include <stdio.h>
+#define _IO_fpos_t
+#define _STDIO_USES_IOSTREAM
+
 #ifdef _STDIO_USES_IOSTREAM  /* GNU libc */
 #  ifdef _IO_fpos_t
 #    define READ_DATA_PENDING(fp) ((fp)->_IO_read_ptr != (fp)->_IO_read_end)

@@ -21,8 +21,7 @@ extern VALUE C_Class;
 extern VALUE C_Module;
 
 VALUE
-class_new(super)
-    struct RClass *super;
+class_new(struct RClass *super)
 {
     NEWOBJ(cls, struct RClass);
     OBJSETUP(cls, C_Class, T_CLASS);
@@ -35,8 +34,7 @@ class_new(super)
 }
 
 VALUE
-single_class_new(super)
-    struct RClass *super;
+single_class_new(struct RClass *super)
 {
     struct RClass *cls = (struct RClass*)class_new(super);
 
@@ -91,9 +89,7 @@ rb_define_class_id(id, super)
 }
 
 VALUE 
-rb_define_class(name, super)
-    char *name;
-    VALUE super;
+rb_define_class(char *name, VALUE super)
 {
     return rb_define_class_id(rb_intern(name), super);
 }
@@ -307,22 +303,19 @@ rb_define_single_attr(obj, name, pub)
     rb_define_attr(rb_single_class(obj), name, pub);
 }
 
-#include <varargs.h>
+#include <stdarg.h>
+//#include <varargs.h>
 #include <ctype.h>
 
 int
-rb_scan_args(argc, argv, fmt, va_alist)
-    int argc;
-    VALUE *argv;
-    char *fmt;
-    va_dcl
+rb_scan_args(int argc, VALUE *argv, char *fmt, ...)
 {
     int n, i;
     char *p = fmt;
     VALUE *var;
     va_list vargs;
 
-    va_start(vargs);
+    va_start(vargs, fmt);
 
     if (*p == '*') {
 	var = va_arg(vargs, VALUE*);

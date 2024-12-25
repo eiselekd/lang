@@ -12,6 +12,8 @@ static char *rcsid = "$Header: /usr/ext/cvsroot/ruby/st.c,v 1.3 1994/12/09 01:28
 extern void *xmalloc();
 static rehash();
 
+void *xcalloc(unsigned long n, unsigned long size);
+
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #define nil(type) ((type *) 0)
 #define alloc(type) (type *)xmalloc((unsigned)sizeof(type))

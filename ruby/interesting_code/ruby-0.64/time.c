@@ -15,6 +15,7 @@
 #include <sys/time.h>
 #include <sys/times.h>
 #include <math.h>
+#include <time.h>
 
 static VALUE C_Time;
 extern VALUE M_Comparable;
