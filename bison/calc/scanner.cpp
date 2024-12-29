@@ -560,7 +560,7 @@ char *yytext;
 #line 21 "scanner.ll"
   // A number symbol corresponding to the value in S.
     yy::parser::symbol_type
-      make_NUMBER (const std::string &s, const yy::parser::location_type& loc);
+    make_NUMBER (const std::string &s, const yy::parser::location_type& loc);
 #line 565 "scanner.cpp"
 #line 33 "scanner.ll"
 	// Code run each time a pattern is matched.
@@ -991,7 +991,7 @@ case 12:
 YY_RULE_SETUP
 #line 61 "scanner.ll"
 {
-	throw yy::parser::syntax_error
+	        throw yy::parser::syntax_error
 		(loc, "invalid character: " + std::string(yytext));
 	   }
 	YY_BREAK

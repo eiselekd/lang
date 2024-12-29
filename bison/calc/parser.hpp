@@ -48,7 +48,7 @@
 #line 8 "parser.yy"
 
 # include <string>
-	class driver;
+class driver;
 
 #line 54 "parser.hpp"
 

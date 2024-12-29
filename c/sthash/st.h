@@ -47,7 +47,6 @@ st_table* st_copy(st_table *old_table);
 #define st_numcmp	ST_NUMCMP
 #define st_numhash	ST_NUMHASH
 
-extern struct st_hash_type type_numhash;
 extern struct st_hash_type type_strhash;
 
 int st_strhash();

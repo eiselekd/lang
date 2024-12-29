@@ -42,7 +42,7 @@
 
 
 // Unqualified %code blocks.
-#line 18 "parser.yy"
+#line 20 "parser.yy"
 
 	# include "driver.hh"
 
@@ -324,19 +324,19 @@ namespace yy {
         switch (yykind)
     {
       case symbol_kind::S_IDENTIFIER: // "identifier"
-#line 35 "parser.yy"
+#line 37 "parser.yy"
                  { yyo << yysym.value.template as < std::string > (); }
 #line 330 "parser.cpp"
         break;
 
       case symbol_kind::S_NUMBER: // "number"
-#line 35 "parser.yy"
+#line 37 "parser.yy"
                  { yyo << yysym.value.template as < int > (); }
 #line 336 "parser.cpp"
         break;
 
       case symbol_kind::S_exp: // exp
-#line 35 "parser.yy"
+#line 37 "parser.yy"
                  { yyo << yysym.value.template as < int > (); }
 #line 342 "parser.cpp"
         break;
@@ -608,67 +608,67 @@ namespace yy {
           switch (yyn)
             {
   case 2: // unit: assignments exp
-#line 39 "parser.yy"
+#line 41 "parser.yy"
                        { drv.result = yystack_[0].value.as < int > (); }
 #line 614 "parser.cpp"
     break;
 
   case 3: // assignments: %empty
-#line 42 "parser.yy"
+#line 44 "parser.yy"
                        {}
 #line 620 "parser.cpp"
     break;
 
   case 4: // assignments: assignments assignment
-#line 43 "parser.yy"
+#line 45 "parser.yy"
                          {}
 #line 626 "parser.cpp"
     break;
 
   case 5: // assignment: "identifier" ":=" exp
-#line 46 "parser.yy"
+#line 48 "parser.yy"
                       { drv.variables[yystack_[2].value.as < std::string > ()] = yystack_[0].value.as < int > (); }
 #line 632 "parser.cpp"
     break;
 
   case 6: // exp: "number"
-#line 51 "parser.yy"
+#line 53 "parser.yy"
   { yylhs.value.as < int > () = yystack_[0].value.as < int > (); }
 #line 638 "parser.cpp"
     break;
 
   case 7: // exp: "identifier"
-#line 52 "parser.yy"
+#line 54 "parser.yy"
                   { yylhs.value.as < int > () = drv.variables[yystack_[0].value.as < std::string > ()]; }
 #line 644 "parser.cpp"
     break;
 
   case 8: // exp: exp "+" exp
-#line 53 "parser.yy"
+#line 55 "parser.yy"
                 { yylhs.value.as < int > () = yystack_[2].value.as < int > () + yystack_[0].value.as < int > (); }
 #line 650 "parser.cpp"
     break;
 
   case 9: // exp: exp "-" exp
-#line 54 "parser.yy"
+#line 56 "parser.yy"
                 { yylhs.value.as < int > () = yystack_[2].value.as < int > () - yystack_[0].value.as < int > (); }
 #line 656 "parser.cpp"
     break;
 
   case 10: // exp: exp "*" exp
-#line 55 "parser.yy"
+#line 57 "parser.yy"
                 { yylhs.value.as < int > () = yystack_[2].value.as < int > () * yystack_[0].value.as < int > (); }
 #line 662 "parser.cpp"
     break;
 
   case 11: // exp: exp "/" exp
-#line 56 "parser.yy"
+#line 58 "parser.yy"
                 { yylhs.value.as < int > () = yystack_[2].value.as < int > () / yystack_[0].value.as < int > (); }
 #line 668 "parser.cpp"
     break;
 
   case 12: // exp: "(" exp ")"
-#line 57 "parser.yy"
+#line 59 "parser.yy"
                 { yylhs.value.as < int > () = yystack_[1].value.as < int > (); }
 #line 674 "parser.cpp"
     break;
@@ -1206,8 +1206,8 @@ namespace yy {
   const signed char
   parser::yyrline_[] =
   {
-       0,    39,    39,    42,    43,    46,    51,    52,    53,    54,
-      55,    56,    57
+       0,    41,    41,    44,    45,    48,    53,    54,    55,    56,
+      57,    58,    59
   };
 
   void
@@ -1241,7 +1241,7 @@ namespace yy {
 } // yy
 #line 1243 "parser.cpp"
 
-#line 58 "parser.yy"
+#line 60 "parser.yy"
 
 void
 yy::parser::error (const location_type& l, const std::string& m)

@@ -2806,6 +2806,9 @@ int
 yyparse (YYPARSE_PARAM_ARG)
      YYPARSE_PARAM_DECL
 {
+
+  yydebug=1;
+
   /* If reentrant, generate the variables here. */
 #if YYPURE
   YY_DECL_VARIABLES
