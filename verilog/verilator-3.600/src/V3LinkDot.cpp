@@ -43,6 +43,8 @@
 #include "V3Graph.h"
 #include "V3Ast.h"
 
+#include <string.h>
+
 //######################################################################
 
 class LinkDotGraph : public V3Graph {

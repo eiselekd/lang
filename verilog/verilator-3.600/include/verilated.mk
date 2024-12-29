@@ -29,15 +29,13 @@ VK_CPPFLAGS_ALWAYS += \
 		-DVL_PRINTF=printf \
 		-DVM_TRACE=$(VM_TRACE) \
 
-ifeq ($(VERILATOR_AUTHOR_SITE),1)	# Local... Else don't burden users
-VK_CPPFLAGS_WALL += -Wall \
+VK_CPPFLAGS_WALL +=  \
 		-Wno-char-subscripts \
 		-Wno-sign-compare \
 		-Wno-unused-parameter \
 		-Wno-unused-variable \
 		-Wno-uninitialized \
-		-Werror
-endif
+		-noWwrite-strings \
 
 CPPFLAGS += -I. $(VK_CPPFLAGS_ALWAYS) $(VK_CPPFLAGS_WALL)
 

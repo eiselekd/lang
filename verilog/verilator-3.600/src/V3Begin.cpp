@@ -38,6 +38,8 @@
 #include "V3Inst.h"
 #include "V3Ast.h"
 
+#include <string.h>
+
 //######################################################################
 
 class BeginVisitor : public AstNVisitor {

@@ -26,6 +26,8 @@
 #include <algorithm>
 #include "V3Number.h"
 
+#include <string.h>
+
 //######################################################################
 // Read class functions
 // CREATION

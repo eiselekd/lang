@@ -35,6 +35,7 @@
 #include "V3PreShell.h"
 
 #include "config_rev.h"
+#include <string.h>
 
 //######################################################################
 // V3 Internal state

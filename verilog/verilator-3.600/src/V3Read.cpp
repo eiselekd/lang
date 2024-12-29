@@ -46,7 +46,7 @@
 
 V3Read*	V3Read::s_readp = NULL;
 
-extern bool yyparse();
+extern int yyparse(void);
 extern int yydebug;
 
 //######################################################################

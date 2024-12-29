@@ -194,7 +194,7 @@ string V3PreProcImp::defParams(const string& name) {
 }
 FileLine* V3PreProcImp::defFileline(const string& name) {
     DefinesMap::iterator iter = m_defines.find(name);
-    if (iter == m_defines.end()) return false;
+    if (iter == m_defines.end()) return 0;
     return iter->second.fileline();
 }
 void V3PreProcImp::define(FileLine* fl, const string& name, const string& value, const string& params) {
@@ -515,7 +515,7 @@ int V3PreProcImp::getRawToken() {
       next_tok:
 	if (m_lineAdd) {
 	    m_lineAdd--;
-	    yytext="\n"; yyleng=1;
+	    yytext=(char *)"\n"; yyleng=1;
 	    return (VP_TEXT);
 	}
 	if (m_lineCmt!="") {
@@ -864,7 +864,7 @@ string V3PreProcImp::getline() {
     // Get a single line from the parse stream.  Buffer unreturned text until the newline.
     if (isEof()) return "";
     char* rtnp;
-    while (NULL==(rtnp=strchr(m_lineChars.c_str(),'\n'))) {
+    while (NULL==(rtnp=strchr((char *)m_lineChars.c_str(),'\n'))) {
 	int tok = getToken();
 	if (debug()>4) {
 	    char buf[100000];
