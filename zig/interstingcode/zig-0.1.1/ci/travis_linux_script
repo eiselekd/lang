@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -x
+set -e
+
+export CC=clang-5.0
+export CXX=clang++-5.0
+echo $PATH
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$(pwd) -DZIG_LIBC_LIB_DIR=$(dirname $($CC -print-file-name=crt1.o)) -DZIG_LIBC_INCLUDE_DIR=$(echo -n | $CC -E -x c - -v 2>&1 | grep -B1 "End of search list." | head -n1 | cut -c 2- | sed "s/ .*//") -DZIG_LIBC_STATIC_LIB_DIR=$(dirname $($CC -print-file-name=crtbegin.o))
+make VERBOSE=1
+make install
+./zig build --build-file ../build.zig test
+
+./zig test ../test/behavior.zig --target-os windows --target-arch i386 --target-environ msvc
+wine test.exe
+
+./zig test ../test/behavior.zig --target-os windows --target-arch i386 --target-environ msvc --release-fast
+wine test.exe
+
+./zig test ../test/behavior.zig --target-os windows --target-arch i386 --target-environ msvc --release-safe
+wine test.exe
+
+./zig test ../test/behavior.zig --target-os windows --target-arch x86_64 --target-environ msvc
+wine64 test.exe
+
+#./zig test ../test/behavior.zig --target-os windows --target-arch x86_64 --target-environ msvc --release-fast
+#wine64 test.exe
+#
+#./zig test ../test/behavior.zig --target-os windows --target-arch x86_64 --target-environ msvc --release-safe
+#wine64 test.exe
