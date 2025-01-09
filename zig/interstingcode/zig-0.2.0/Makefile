@@ -1,0 +1,18 @@
+#	export PATH=/home/eiselekd/bin-cmake-3.4.3:$$PATH;
+# -DZIG_FORCE_EXTERNAL_LLD=1
+
+all: compile
+
+configure:
+	rm -rf build; mkdir -p build
+	cd build; \
+	CXX=clang-6.0 cmake  ..
+	#
+	make compile
+
+compile:
+	cd build; \
+		VERBOSE=1 make -i
+
+apt:
+	apt-get install llvm-6.0-dev

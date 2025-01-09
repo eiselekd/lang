@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2016 Andrew Kelley
+ *
+ * This file is part of zig, which is MIT licensed.
+ * See http://opensource.org/licenses/MIT
+ */
+
+#ifndef ZIG_CONFIG_H
+#define ZIG_CONFIG_H
+
+#define ZIG_VERSION_MAJOR @ZIG_VERSION_MAJOR@
+#define ZIG_VERSION_MINOR @ZIG_VERSION_MINOR@
+#define ZIG_VERSION_PATCH @ZIG_VERSION_PATCH@
+#define ZIG_VERSION_STRING "@ZIG_VERSION@"
+
+#define ZIG_INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@"
+#define ZIG_LIBC_INCLUDE_DIR "@ZIG_LIBC_INCLUDE_DIR_ESCAPED@"
+#define ZIG_LIBC_LIB_DIR "@ZIG_LIBC_LIB_DIR_ESCAPED@"
+#define ZIG_LIBC_STATIC_LIB_DIR "@ZIG_LIBC_STATIC_LIB_DIR_ESCAPED@"
+#define ZIG_DYNAMIC_LINKER "@ZIG_DYNAMIC_LINKER@"
+
+#cmakedefine ZIG_EACH_LIB_RPATH
+
+// Only used for running tests before installing.
+#define ZIG_TEST_DIR "@CMAKE_SOURCE_DIR@/test"
+
+// Used for communicating build information to self hosted build.
+#define ZIG_CMAKE_BINARY_DIR "@CMAKE_BINARY_DIR@"
+#define ZIG_CXX_COMPILER "@CMAKE_CXX_COMPILER@"
+#define ZIG_LLD_INCLUDE_PATH "@LLD_INCLUDE_DIRS@"
+#define ZIG_LLD_LIBRARIES "@LLD_LIBRARIES@"
+#define ZIG_LLVM_CONFIG_EXE "@LLVM_CONFIG_EXE@"
+#define ZIG_STD_FILES "@ZIG_STD_FILES@"
+#define ZIG_C_HEADER_FILES "@ZIG_C_HEADER_FILES@"
+#define ZIG_DIA_GUIDS_LIB "@ZIG_DIA_GUIDS_LIB_ESCAPED@"
+
+#endif
