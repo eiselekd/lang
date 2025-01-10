@@ -47,10 +47,10 @@ option(ZIG_TEST_COVERAGE "Build Zig with test coverage instrumentation" OFF)
 option(ZIG_FORCE_EXTERNAL_LLD "If your system has the LLD patches use it instead of the embedded LLD" OFF)
 
 find_package(llvm)
-include_directories(${LLVM_INCLUDE_DIRS})
+#include_directories(${LLVM_INCLUDE_DIRS})
 
 find_package(clang)
-include_directories(${CLANG_INCLUDE_DIRS})
+#include_directories(${CLANG_INCLUDE_DIRS})
 
 if(ZIG_FORCE_EXTERNAL_LLD)
     find_package(lld)
@@ -98,11 +98,9 @@ else()
         "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Arch/ARM.cpp"
         "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Arch/AVR.cpp"
         "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Arch/SPARCV9.cpp"
-        "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Arch/Mips.cpp"
         "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Arch/AArch64.cpp"
         "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Arch/X86_64.cpp"
         "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Arch/PPC64.cpp"
-        "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Arch/MipsArchTree.cpp"
         "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Arch/X86.cpp"
         "${CMAKE_SOURCE_DIR}/deps/lld/ELF/GdbIndex.cpp"
         "${CMAKE_SOURCE_DIR}/deps/lld/ELF/Driver.cpp"
@@ -357,6 +355,9 @@ include_directories(
     ${CMAKE_BINARY_DIR}
     "${CMAKE_SOURCE_DIR}/src"
 )
+
+include_directories(${LLVM_INCLUDE_DIRS})
+include_directories(${CLANG_INCLUDE_DIRS})
 
 if(MSVC)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /w")

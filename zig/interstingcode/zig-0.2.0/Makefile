@@ -3,6 +3,7 @@
 
 all: compile
 
+#CXXFLAGS="-std=c++11 -stdlib=libstdc++"
 configure:
 	rm -rf build; mkdir -p build
 	cd build; \

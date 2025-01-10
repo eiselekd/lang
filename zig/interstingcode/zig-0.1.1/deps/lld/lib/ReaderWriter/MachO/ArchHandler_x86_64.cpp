@@ -621,7 +621,7 @@ void ArchHandler_x86_64::applyFixupFinal(
     // Fall into llvm_unreachable().
     break;
   }
-  return;
+  llvm_unreachable("invalid x86_64 Reference Kind");
 }
 
 void ArchHandler_x86_64::applyFixupRelocatable(const Reference &ref,

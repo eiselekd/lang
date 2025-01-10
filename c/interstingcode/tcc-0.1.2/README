@@ -1,0 +1,27 @@
+TCC Extension
+=============
+
+This PHP Extension provides an interface to the TCC(Tiny C Compiler)
+See http://fabrice.bellard.free.fr/tcc/ for more information on TCC.
+
+INSTALLATION
+------------
+
+To install this module type the following:
+
+   phpize
+   ./configure --with-tcc=/path/to/tcc
+   make
+
+DEPENDENCIES
+------------
+
+This module requires these other modules and libraries:
+
+  tcc-0.9.23 or later
+
+
+TODO
+----
+ * add tcc_set_error_func()
+ * more tests

@@ -12,6 +12,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+#ifndef LLD_COMMON_LLVM_H
+#define LLD_COMMON_LLVM_H
+
 #ifndef LLD_CORE_LLVM_H
 #define LLD_CORE_LLVM_H
 
@@ -79,5 +82,7 @@ public:
   }
 };
 }
+
+#endif
 
 #endif
