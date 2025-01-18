@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 
-#define TEXT_SIZE       20000
+#define TEXT_SIZE       4096*64
 #define DATA_SIZE       2000
 #define SYM_TABLE_SIZE  10000
 #define VAR_TABLE_SIZE  4096
@@ -903,7 +904,8 @@ int main(int c, char **v)
            "int\0void\0char\0if\0else\0while\0break\0return\0define\0main", 53);
     idptr = idtable + 53;
     glo = malloc(DATA_SIZE);
-    prog = malloc(TEXT_SIZE);
+    prog = mmap(0, TEXT_SIZE, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+    //prog = malloc(TEXT_SIZE);
     vac = malloc(VAR_TABLE_SIZE);
     vat = malloc(VAR_TABLE_SIZE);
     lsym = malloc(256);
