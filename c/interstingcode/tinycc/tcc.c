@@ -1,9 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define TEXT_SIZE       20000
 #define DATA_SIZE       2000
 #define SYM_TABLE_SIZE  10000
 #define VAR_TABLE_SIZE  4096
+
+void expr();
+void decl(int l);
+FILE *file = 0;
 
 /* vac: offset of variables 
    vat: type of variables
@@ -17,7 +23,7 @@
    astk: arg position stack
 */
 int tok, *vac, *vat, *lsym, rsym, 
-    prog, ind, loc, glo, file, vt, 
+    prog, ind, loc, glo, vt, 
     vc, *macro_stack, *macro_stack_ptr;
 char *idtable, *idptr, *idlast;
 
@@ -101,6 +107,7 @@ void warning(char *msg)
     printf("%d: warning: %s\n", ftell(file), msg);
 }
 #endif
+
 
 int inp()
 {
@@ -836,7 +843,7 @@ void block()
 }
 
 /* 'l' is true if local declarations */
-void decl(l)
+void decl(int l)
 {
     int *a, t, b;
 

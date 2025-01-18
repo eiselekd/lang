@@ -1,4 +1,13 @@
-all: test cvt
+all: tcc
+#test cvt
+
+.PHONY: tcc
+
+tcc:
+	gcc -g -m32 -o tcc tcc.c \
+		-Wno-implicit-int \
+		-Wno-implicit-function-declaration \
+		-Wno-int-conversion -ldl
 
 test: prog.bin 
 	cmp -l prog.bin prog.bin.ref
