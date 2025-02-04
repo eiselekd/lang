@@ -179,7 +179,7 @@ else()
     if(MSVC)
         set(ZIG_LLD_COMPILE_FLAGS "-std=c++11 -D_CRT_SECURE_NO_WARNINGS /w")
     else()
-        set(ZIG_LLD_COMPILE_FLAGS " -Wno-comment")
+        set(ZIG_LLD_COMPILE_FLAGS "-std=c++11 -Wno-comment")
     endif()
     set_target_properties(embedded_lld_lib PROPERTIES
         COMPILE_FLAGS ${ZIG_LLD_COMPILE_FLAGS}
@@ -674,7 +674,7 @@ endif()
 if(MSVC)
   set(EXE_CFLAGS "-std=c++11")
 else()
-  set(EXE_CFLAGS "-std=c++11 -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D_GNU_SOURCE -fno-exceptions -fno-rtti  -Werror=strict-prototypes -Werror=old-style-definition -Werror=type-limits -Wno-missing-braces")
+  set(EXE_CFLAGS "-std=c++11 -stdlib=libstdc++ -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D_GNU_SOURCE   -Werror=strict-prototypes -Werror=old-style-definition -Werror=type-limits -Wno-missing-braces")
 endif()
 
 set(EXE_LDFLAGS " ")

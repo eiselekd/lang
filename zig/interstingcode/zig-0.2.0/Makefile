@@ -3,7 +3,7 @@
 
 all: compile
 
-#CXXFLAGS="-std=c++11 -stdlib=libstdc++"
+#CXX=clang-6.0  CXXFLAGS="-std=c++11 -stdlib=libstdc++"
 configure:
 	rm -rf build; mkdir -p build
 	cd build; \
@@ -13,7 +13,7 @@ configure:
 
 compile:
 	cd build; \
-		VERBOSE=1 make -i
+		VERBOSE=1 make -j 1
 
 apt:
 	apt-get install llvm-6.0-dev
