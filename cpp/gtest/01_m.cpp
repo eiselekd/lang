@@ -6,7 +6,7 @@ int myfunc(int n) {
 
 TEST(asdfTest, HandlesPositiveInput) {
     EXPECT_EQ(myfunc(1), 2);
-    EXPECT_EQ(myfunc(2), 3);
+    EXPECT_EQ(myfunc(2), 4);
 }
 
 int main(int argc, char **argv) {
