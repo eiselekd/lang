@@ -9,7 +9,7 @@
 #include <emscripten/val.h>
 
 EM_JS(void, call_js_agrs, (const char *title, int lentitle, const char *msg, int lenmsg), {
-    jsMethodAgrs(UTF8ToString(title, lentitle), UTF8ToString(msg, lenmsg));
+    console.log(UTF8ToString(title, lentitle), UTF8ToString(msg, lenmsg));
 });
 
 bool callJsBackWithAgrs()
@@ -23,4 +23,11 @@ bool callJsBackWithAgrs()
 EMSCRIPTEN_BINDINGS(module)
 {
     emscripten::function("callJsBackWithAgrs", &callJsBackWithAgrs);
+}
+
+
+int main() {
+  printf("try call:\n");
+  callJsBackWithAgrs();
+  return 0;
 }

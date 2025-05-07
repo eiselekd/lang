@@ -1714,9 +1714,9 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  3904: function($0, $1) {setTimeout(function() { __emscripten_do_dispatch_to_thread($0, $1); }, 0);}
+  4464: function($0, $1) {setTimeout(function() { __emscripten_do_dispatch_to_thread($0, $1); }, 0);}
 };
-function call_js_agrs(title,lentitle,msg,lenmsg){ jsMethodAgrs(UTF8ToString(title, lentitle), UTF8ToString(msg, lenmsg)); }
+function call_js_agrs(title,lentitle,msg,lenmsg){ console.log(UTF8ToString(title, lentitle), UTF8ToString(msg, lenmsg)); }
 function initPthreadsJS(){ PThread.initRuntime(); }
 
 
@@ -4001,6 +4001,9 @@ var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__w
 var ___em_js__call_js_agrs = Module["___em_js__call_js_agrs"] = createExportWrapper("__em_js__call_js_agrs");
 
 /** @type {function(...*):?} */
+var _main = Module["_main"] = createExportWrapper("main");
+
+/** @type {function(...*):?} */
 var ___getTypeName = Module["___getTypeName"] = createExportWrapper("__getTypeName");
 
 /** @type {function(...*):?} */
@@ -4104,7 +4107,7 @@ var _memalign = Module["_memalign"] = createExportWrapper("memalign");
 /** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
-var __emscripten_main_thread_futex = Module['__emscripten_main_thread_futex'] = 4456;
+var __emscripten_main_thread_futex = Module['__emscripten_main_thread_futex'] = 5016;
 
 
 
@@ -4441,6 +4444,37 @@ dependenciesFulfilled = function runCaller() {
   if (!calledRun) dependenciesFulfilled = runCaller; // try this again later, after new deps are fulfilled
 };
 
+function callMain(args) {
+  assert(runDependencies == 0, 'cannot call main when async dependencies remain! (listen on Module["onRuntimeInitialized"])');
+  assert(__ATPRERUN__.length == 0, 'cannot call main when preRun functions remain to be called');
+
+  // User requested the PROXY_TO_PTHREAD option, so call a stub main which pthread_create()s a new thread
+  // that will call the user's real main() for the application.
+  var entryFunction = Module['_emscripten_proxy_main'];
+
+  args = args || [];
+
+  var argc = args.length+1;
+  var argv = stackAlloc((argc + 1) * 4);
+  HEAP32[argv >> 2] = allocateUTF8OnStack(thisProgram);
+  for (var i = 1; i < argc; i++) {
+    HEAP32[(argv >> 2) + i] = allocateUTF8OnStack(args[i - 1]);
+  }
+  HEAP32[(argv >> 2) + argc] = 0;
+
+  try {
+
+    var ret = entryFunction(argc, argv);
+
+    // In PROXY_TO_PTHREAD builds, we should never exit the runtime below, as
+    // execution is asynchronously handed off to a pthread.
+    assert(ret == 0, '_emscripten_proxy_main failed to start proxy thread: ' + ret);
+  } finally {
+    calledMain = true;
+
+  }
+}
+
 /** @type {function(Array=)} */
 function run(args) {
   args = args || arguments_;
@@ -4475,7 +4509,7 @@ function run(args) {
 
     if (Module['onRuntimeInitialized']) Module['onRuntimeInitialized']();
 
-    assert(!Module['_main'], 'compiled without a main, but one is present. if you added it from JS, use Module["onRuntimeInitialized"]');
+    if (shouldRunNow) callMain(args);
 
     postRun();
   }
@@ -4579,6 +4613,11 @@ if (Module['preInit']) {
     Module['preInit'].pop()();
   }
 }
+
+// shouldRunNow refers to calling main(), not run().
+var shouldRunNow = true;
+
+if (Module['noInitialRun']) shouldRunNow = false;
 
 // EXIT_RUNTIME=0 only applies to the default behavior of the main browser
 // thread.

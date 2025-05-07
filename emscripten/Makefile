@@ -10,7 +10,7 @@ h:
 		export BINARYEN=$(CURDIR)/tools/install; \
 	$(CURDIR)/tools/install/emscripten/emcc h.c -o h.html
 	@echo "http://localhost:8000/h.html"
-	python3 -m http.server 8000
+	pnpm dev
 
 
 
@@ -28,7 +28,7 @@ c:
 	-o c.html
 	#
 	@echo "http://localhost:8000/c.html"
-	python3 -m http.server 8000
+	pnpm dev
 
 
 dep:
