@@ -1,3 +1,13 @@
+
+// https://github.com/Anil8753/WASMDemo/blob/master/CallJsFromCpp/src/main.cpp
+
+#include <iostream>
+#include <string>
+
+#include <emscripten.h>
+#include <emscripten/bind.h>
+#include <emscripten/val.h>
+
 EM_JS(void, call_js_agrs, (const char *title, int lentitle, const char *msg, int lenmsg), {
     jsMethodAgrs(UTF8ToString(title, lentitle), UTF8ToString(msg, lenmsg));
 });

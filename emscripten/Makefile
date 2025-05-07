@@ -18,7 +18,15 @@ c:
 		export NODE=$(CURDIR)/tools/node-linux-x64/bin/node; \
 		export LLVM=$(CURDIR)/tools/install/bin; \
 		export BINARYEN=$(CURDIR)/tools/install; \
-	$(CURDIR)/tools/install/emscripten/emcc c.cpp -o c.html
+	$(CURDIR)/tools/install/emscripten/emcc c.cpp \
+	-s RESERVED_FUNCTION_POINTERS=20 \
+	-s USE_PTHREADS=1 \
+	-s PTHREAD_POOL_SIZE=5 \
+	-s PROXY_TO_PTHREAD=1 \
+	-s TOTAL_MEMORY=1073741824 \
+	--bind \
+	-o c.html
+	#
 	@echo "http://localhost:8000/c.html"
 	python3 -m http.server 8000
 
