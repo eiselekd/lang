@@ -1,4 +1,5 @@
 <script >
+  import Listelem from './Listelem.svelte';
   import {
       params
   } from "./store.js";
@@ -17,6 +18,7 @@
       const response = await fetch(url);
       const example = await response.json();
       $params = example.params;
+      console.log($params);
   }
 
 </script>
@@ -33,5 +35,10 @@
     {/each}
   </select>
 </div>
+
+<div> 
+  <Listelem data={$params}  />
+</div>
+
 
 <h1>Hello2 !</h1>
