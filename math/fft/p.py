@@ -12,7 +12,7 @@ frequencies = np.abs(data_fft)
 
 plt.subplot(4,1,1)
 plt.plot(data[:800])
-plt.title("Original wave: " + infile)
+plt.title("Original wave: " + str(frequencies[5]))
 
 plt.subplot(4,1,2)
 plt.plot(frequencies)
@@ -26,7 +26,7 @@ frequencies2 = np.abs(data_fft2)
 
 plt.subplot(4,1,3)
 plt.plot(data[shift:800+shift])
-plt.title("Original wave 2: " + infile)
+plt.title("Original wave 2: " + str(frequencies2[5]))
 
 plt.subplot(4,1,4)
 plt.plot(frequencies2)

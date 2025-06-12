@@ -24,3 +24,8 @@
 https://play.rust-lang.org/
 https://doc.rust-lang.org/stable/rust-by-example/
 
+
+
+fn type_of<T>(_:&T) -> String {
+    format!("{}", std::any::type_name::<T>())
+}
