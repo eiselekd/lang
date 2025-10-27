@@ -1,3 +1,11 @@
+
+
 fn main() {
-    println!("Hello, world!");
+    
+    let i  = 1;
+    let v : = 10;
+    
+    println!("Hello, world! {i}");
+
+    println!("{v}");
 }
