@@ -40,5 +40,8 @@ def windowPlot(impulse, impulseResponse, w):
 
     ax3.set_title('FFT Output')
     ax3.set_ylabel('Magnitude (dB)')
-    ax3.plot(fft_impulse_db)
-    ax3.plot(fft_impulseResponse_db)
+    #ax3.plot(fft_impulse_db)
+    
+    x=np.linspace(0, 1, fft_impulseResponse_db.size)
+    #ax3.plot(x, fft_impulseResponse_db, label='b')
+    ax3.plot(x,fft_impulseResponse_db)

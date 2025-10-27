@@ -34,3 +34,4 @@ cpp/bison/lex.yy.c
 raku/lib/
 sh/0_a_0.jpg
 sh/a.jpg
+.aider*
