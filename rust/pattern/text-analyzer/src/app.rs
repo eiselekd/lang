@@ -381,6 +381,7 @@ impl App {
         let start_line = self.scroll_offset;
         let end_line = (start_line + visible_lines).min(analysis.line_stats.len());
 
+
         let items: Vec<ListItem> = analysis.line_stats[start_line..end_line]
             .iter()
             .map(|line_stat| {
