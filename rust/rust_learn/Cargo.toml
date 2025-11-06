@@ -1,6 +1,12 @@
 [package]
-name = "learn2"
+name = "test1"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+anyhow = "1.0.100"
+bevy_reflect = "0.17.2"
+clap = { version = "4.5.51", features = ["derive"] }
+json = "0.12.4"
+regex = "1.12.2"
+    
