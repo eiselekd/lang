@@ -189,8 +189,8 @@ fn main () -> Result<()>
 
 
 
-    let p : &Path = Path::new("data/file0.txt");
-    let pf : &Path = Path::new("data/filters0.txt");
+    let p : &Path = Path::new("rust/rust_learn/data/file0.txt");
+    let pf : &Path = Path::new("rust/rust_learn/data/filters0.txt");
 
     f();
     
