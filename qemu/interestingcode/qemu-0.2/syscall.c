@@ -57,7 +57,7 @@
 #include <linux/cdrom.h>
 #include <linux/hdreg.h>
 #include <linux/soundcard.h>
-#include <linux/dirent.h>
+#include <dirent.h>
 #include <linux/kd.h>
 
 #include "qemu.h"
@@ -86,23 +86,53 @@ long do_rt_sigreturn(CPUX86State *env);
 #endif
 
 #ifdef __NR_gettid
-_syscall0(int, gettid)
+int gettid(void) {
+    return syscall(__NR_gettid);
+}
 #else
 static int gettid(void) {
     return -ENOSYS;
 }
 #endif
-_syscall1(int,sys_uname,struct new_utsname *,buf)
-_syscall2(int,sys_getcwd1,char *,buf,size_t,size)
-_syscall3(int, sys_getdents, uint, fd, struct dirent *, dirp, uint, count);
-_syscall3(int, sys_getdents64, uint, fd, struct dirent64 *, dirp, uint, count);
-_syscall5(int, _llseek,  uint,  fd, ulong, hi, ulong, lo,
-          loff_t *, res, uint, wh);
-_syscall2(int,sys_statfs,const char *,path,struct kernel_statfs *,buf)
-_syscall2(int,sys_fstatfs,int,fd,struct kernel_statfs *,buf)
-_syscall3(int,sys_rt_sigqueueinfo,int,pid,int,sig,siginfo_t *,uinfo)
+#include <sys/syscall.h>
+int sys_uname(struct new_utsname *buf) {
+    return syscall(__NR_sys_uname, buf);
+}
+int sys_getcwd1(char *buf, size_t size) {
+    return syscall(__NR_sys_getcwd1, buf, size);
+}
+int sys_getdents(unsigned int fd, struct dirent *dirp, unsigned int count) {
+    return syscall(__NR_sys_getdents, fd, dirp, count);
+}
+int sys_getdents64(unsigned int fd, struct dirent64 *dirp, unsigned int count) {
+    return syscall(__NR_sys_getdents64, fd, dirp, count);
+}
+int _llseek(unsigned int fd, unsigned long hi, unsigned long lo, loff_t *res, unsigned int wh) {
+#ifdef __NR__llseek
+    return syscall(__NR__llseek, fd, hi, lo, res, wh);
+#else
+    off_t offset = ((loff_t)hi << 32) | lo;
+    off_t ret = lseek(fd, offset, wh);
+    if (ret == (off_t)-1) {
+        return -1;
+    }
+    *res = ret;
+    return 0;
+#endif
+}
+int sys_statfs(const char *path, struct kernel_statfs *buf) {
+    return syscall(__NR_sys_statfs, path, buf);
+}
+int sys_fstatfs(int fd, struct kernel_statfs *buf) {
+    return syscall(__NR_sys_fstatfs, fd, buf);
+}
+int sys_rt_sigqueueinfo(int pid, int sig, siginfo_t *uinfo) {
+    return syscall(__NR_sys_rt_sigqueueinfo, pid, sig, uinfo);
+}
 #ifdef __NR_exit_group
-_syscall1(int,exit_group,int,error_code)
+int exit_group(int error_code) {
+    return syscall(__NR_exit_group, error_code);
+}
 #endif
 
 extern int personality(int);
@@ -1311,9 +1341,15 @@ long do_syscall(void *cpu_env, int num, long arg1, long arg2, long arg3,
     case TARGET_NR_stime:
         {
             int *time_ptr = (int *)arg1;
-            if (time_ptr)
+            if (time_ptr) {
                 tswap32s(time_ptr);
-            ret = get_errno(stime((time_t *)time_ptr));
+                struct timespec ts;
+                ts.tv_sec = *time_ptr;
+                ts.tv_nsec = 0;
+                ret = get_errno(clock_settime(CLOCK_REALTIME, &ts));
+            } else {
+                ret = -EFAULT;
+            }
         }
         break;
     case TARGET_NR_ptrace:

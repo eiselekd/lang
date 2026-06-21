@@ -380,10 +380,10 @@ static inline int handle_cpu_signal(unsigned long pc, unsigned long address,
 
 #if defined(__i386__)
 
-int cpu_x86_signal_handler(int host_signum, struct siginfo *info, 
+int cpu_x86_signal_handler(int host_signum, siginfo_t *info, 
                            void *puc)
 {
-    struct ucontext *uc = puc;
+    ucontext_t *uc = puc;
     unsigned long pc;
     
 #ifndef REG_EIP
@@ -401,10 +401,10 @@ int cpu_x86_signal_handler(int host_signum, struct siginfo *info,
 
 #elif defined(__powerpc)
 
-int cpu_x86_signal_handler(int host_signum, struct siginfo *info, 
+int cpu_x86_signal_handler(int host_signum, siginfo_t *info, 
                            void *puc)
 {
-    struct ucontext *uc = puc;
+    ucontext_t *uc = puc;
     struct pt_regs *regs = uc->uc_mcontext.regs;
     unsigned long pc;
     int is_write;

@@ -423,17 +423,8 @@ void OPPROTO op_idivw_AX_T0(void)
 #ifdef BUGGY_GCC_DIV64
 /* gcc 2.95.4 on PowerPC does not seem to like using __udivdi3, so we
    call it from another function */
-uint32_t div64(uint32_t *q_ptr, uint64_t num, uint32_t den)
-{
-    *q_ptr = num / den;
-    return num % den;
-}
-
-int32_t idiv64(int32_t *q_ptr, int64_t num, int32_t den)
-{
-    *q_ptr = num / den;
-    return num % den;
-}
+uint32_t div64(uint32_t *q_ptr, uint64_t num, uint32_t den);
+int32_t idiv64(int32_t *q_ptr, int64_t num, int32_t den);
 #endif
 
 void OPPROTO op_divl_EAX_T0(void)
@@ -832,7 +823,7 @@ label ## n:\
    cache flushing, but slower because of indirect jump) */
 #define JUMP_TB(tbparam, n, eip)\
 do {\
-    static void __attribute__((unused)) *__op_label ## n = &&label ## n;\
+    static void __attribute__((used)) *__op_label ## n = &&label ## n;\
     goto *((TranslationBlock *)tbparam)->tb_next[n];\
 label ## n:\
     T0 = (long)(tbparam) + (n);\

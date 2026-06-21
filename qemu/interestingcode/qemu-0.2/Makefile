@@ -1,13 +1,13 @@
 include config.mak
 
-CFLAGS=-Wall -O2 -g
-LDFLAGS=-g
+CFLAGS+=-Wall -O2 -g
+LDFLAGS+=-g
 LIBS=
 DEFINES=-DHAVE_BYTESWAP_H
 
 ifeq ($(ARCH),i386)
 CFLAGS+=-fomit-frame-pointer
-OP_CFLAGS=$(CFLAGS) -mpreferred-stack-boundary=2
+OP_CFLAGS=$(CFLAGS) -fno-pic -fno-PIE -fno-stack-protector
 ifeq ($(GCC_MAJOR),3)
 OP_CFLAGS+= -falign-functions=0
 else
@@ -74,7 +74,7 @@ LDFLAGS+=-p
 main.o: CFLAGS+=-p
 endif
 
-OBJS= elfload.o main.o syscall.o mmap.o signal.o vm86.o path.o
+OBJS= elfload.o main.o syscall.o mmap.o signal.o vm86.o path.o helper.o
 SRCS:= $(OBJS:.o=.c)
 OBJS+= libqemu.a
 
@@ -95,8 +95,8 @@ endif
 
 all: qemu qemu-doc.html
 
-qemu: $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^  $(LIBS)
+qemu: $(OBJS) crtbegin.o crtend.o
+	$(CC) $(LDFLAGS) -nodefaultlibs -nostartfiles -o $@ /usr/lib/i386-linux-gnu/crt1.o /usr/lib/i386-linux-gnu/crti.o crtbegin.o $(OBJS) /usr/lib/i386-linux-gnu/libc_nonshared.a /usr/lib32/libc.so.6 /usr/lib32/libm.so.6 /usr/lib32/libgcc_s.so.1 crtend.o /usr/lib/i386-linux-gnu/crtn.o
 ifeq ($(ARCH),alpha)
 # Mark as 32 bit binary, i. e. it will be mapped into the low 31 bit of
 # the address space (31 bit so sign extending doesn't matter)
@@ -185,6 +185,12 @@ tarbin:
                  $(BINPATH)/etc $(BINPATH)/lib $(BINPATH)/bin $(BINPATH)/usr
 	tar zcvf /tmp/qemu-$(VERSION)-i386-wine.tar.gz \
                  $(BINPATH)/wine
+
+crtbegin.o: crtbegin.S
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+crtend.o: crtend.S
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 ifneq ($(wildcard .depend),)
 include .depend

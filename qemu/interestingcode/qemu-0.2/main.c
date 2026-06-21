@@ -41,11 +41,13 @@ const char interp[] __attribute__((section(".interp"))) = "/lib/ld-linux.so.2";
 
 /* for recent libc, we add these dummies symbol which are not declared
    when generating a linked object (bug in ld ?) */
+#if 0
 #if __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)
 long __init_array_start[0];
 long __init_array_end[0];
 long __fini_array_start[0];
 long __fini_array_end[0];
+#endif
 #endif
 
 #endif

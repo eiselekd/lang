@@ -1,6 +1,7 @@
 #define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <inttypes.h>
 #include <math.h>
 #include <signal.h>
@@ -234,6 +235,7 @@ void test_lea(void)
 #define TEST_JCC(JCC, v1, v2)\
 {\
     int res;\
+    int one = 1;\
     asm("movl $1, %0\n\t"\
         "cmpl %2, %1\n\t"\
         "j" JCC " 1f\n\t"\
@@ -246,7 +248,7 @@ void test_lea(void)
     asm("movl $0, %0\n\t"\
         "cmpl %2, %1\n\t"\
         "set" JCC " %b0\n\t"\
-        : "=r" (res)\
+        : "=q" (res)\
         : "r" (v1), "r" (v2));\
     printf("%-10s %d\n", "set" JCC, res);\
  if (TEST_CMOV) {\
@@ -254,7 +256,7 @@ void test_lea(void)
         "cmpl %2, %1\n\t"\
         "cmov" JCC "l %3, %0\n\t"\
         : "=r" (res)\
-        : "r" (v1), "r" (v2), "m" (1));\
+        : "r" (v1), "r" (v2), "m" (one));\
         printf("%-10s R=0x%08x\n", "cmov" JCC "l", res);\
     asm("movl $0x12345678, %0\n\t"\
         "cmpl %2, %1\n\t"\
@@ -459,7 +461,7 @@ void test_mul(void)
     val = op0;\
     asm("xorl %1, %1 ; " #op " %" size "2, %" size "0 ; setz %b1" \
         : "=r" (res), "=q" (resz)\
-        : "g" (val));\
+        : "r" (val));\
     printf("%-10s A=%08x R=%08x %d\n", #op, val, resz ? 0 : res, resz);\
 }
 
@@ -704,9 +706,26 @@ void test_xchg(void)
 /* segmentation tests */
 
 #include <asm/ldt.h>
-#include <linux/unistd.h>
+#include <sys/syscall.h>
+#include <unistd.h>
 
-_syscall3(int, modify_ldt, int, func, void *, ptr, unsigned long, bytecount)
+struct modify_ldt_ldt_s {
+    unsigned int  entry_number;
+    unsigned int  base_addr;
+    unsigned int  limit;
+    unsigned int  seg_32bit:1;
+    unsigned int  contents:2;
+    unsigned int  read_exec_only:1;
+    unsigned int  limit_in_pages:1;
+    unsigned int  seg_not_present:1;
+    unsigned int  useable:1;
+    unsigned int  empty:25;
+};
+
+static inline int modify_ldt(int func, void *ptr, unsigned long bytecount)
+{
+    return syscall(SYS_modify_ldt, func, ptr, bytecount);
+}
 
 uint8_t seg_data1[4096];
 uint8_t seg_data2[4096];
@@ -716,13 +735,14 @@ uint8_t seg_data2[4096];
 #define TEST_LR(op, size, seg, mask)\
 {\
     int res, res2;\
+    int seg_val = seg;\
     res = 0x12345678;\
     asm (op " %" size "2, %" size "0\n" \
          "movl $0, %1\n"\
          "jnz 1f\n"\
          "movl $1, %1\n"\
          "1:\n"\
-         : "=r" (res), "=r" (res2) : "m" (seg), "0" (res));\
+         : "=r" (res), "=r" (res2) : "m" (seg_val), "0" (res));\
     printf(op ": Z=%d %08x\n", res2, res & ~(mask));\
 }
 
@@ -937,13 +957,14 @@ static inline void pushw(struct vm86_regs *r, int val)
     *(uint16_t *)seg_to_linear(r->ss, r->esp) = val;
 }
 
-#undef __syscall_return
-#define __syscall_return(type, res) \
-do { \
-	return (type) (res); \
-} while (0)
+#ifndef VIF_MASK
+#define VIF_MASK 0x00080000
+#endif
 
-_syscall2(int, vm86, int, func, struct vm86plus_struct *, v86)
+static inline int vm86(int func, struct vm86plus_struct *v86)
+{
+    return syscall(SYS_vm86, func, v86);
+}
 
 extern char vm86_code_start;
 extern char vm86_code_end;
@@ -1068,7 +1089,7 @@ int tab[2];
 
 void sig_handler(int sig, siginfo_t *info, void *puc)
 {
-    struct ucontext *uc = puc;
+    ucontext_t *uc = puc;
 
     printf("si_signo=%d si_errno=%d si_code=%d",
            info->si_signo, info->si_errno, info->si_code);
@@ -1289,3 +1310,8 @@ int main(int argc, char **argv)
     test_self_modifying_code();
     return 0;
 }
+
+void _Unwind_Resume(void *arg) {}
+void __gcc_personality_v0(void) {}
+int __unordtf2(long double a, long double b) { return 0; }
+int __letf2(long double a, long double b) { return 0; }

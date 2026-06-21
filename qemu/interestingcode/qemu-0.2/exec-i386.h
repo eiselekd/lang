@@ -51,6 +51,7 @@ register unsigned int T0 asm("ebx");
 register unsigned int T1 asm("esi");
 register unsigned int A0 asm("edi");
 register struct CPUX86State *env asm("ebp");
+#define BUGGY_GCC_DIV64
 #endif
 #ifdef __powerpc__
 register unsigned int EAX asm("r16");

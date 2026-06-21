@@ -172,6 +172,7 @@ void elf_swap_phdr(struct elf_phdr *h)
 
 /* ELF file info */
 int do_swap;
+int fd;
 struct elf_shdr *shdr;
 struct elfhdr ehdr;
 ElfW(Sym) *symtab;
@@ -304,10 +305,44 @@ void gen_code(const char *name, host_ulong offset, host_ulong size,
             len = p_end - p_start;
             if (len == 0)
                 error("empty code for %s", name);
+            
+            while (len > 0) {
+                if (p_end[-1] == 0x90) {
+                    p_end--;
+                    len--;
+                } else if (len >= 2 && p_end[-2] == 0x66 && p_end[-1] == 0x90) {
+                    p_end -= 2;
+                    len -= 2;
+                } else if (len >= 4 && p_end[-4] == 0x8d && p_end[-3] == 0x74 && p_end[-2] == 0x26 && p_end[-1] == 0x00) {
+                    p_end -= 4;
+                    len -= 4;
+                } else if (len >= 7 && p_end[-7] == 0x8d && p_end[-6] == 0xbc && p_end[-5] == 0x27 && p_end[-4] == 0x00 && p_end[-3] == 0x00 && p_end[-2] == 0x00 && p_end[-1] == 0x00) {
+                    p_end -= 7;
+                    len -= 7;
+                } else if (len >= 8 && p_end[-8] == 0x2e && p_end[-7] == 0x8d && p_end[-6] == 0xb4 && p_end[-5] == 0x26 && p_end[-4] == 0x00 && p_end[-3] == 0x00 && p_end[-2] == 0x00 && p_end[-1] == 0x00) {
+                    p_end -= 8;
+                    len -= 8;
+                } else if (len >= 3 && p_end[-3] == 0x8d && p_end[-2] == 0x76 && p_end[-1] == 0x00) {
+                    p_end -= 3;
+                    len -= 3;
+                } else if (len >= 3 && p_end[-3] == 0x8d && p_end[-2] == 0x49 && p_end[-1] == 0x00) {
+                    p_end -= 3;
+                    len -= 3;
+                } else {
+                    break;
+                }
+            }
+
             if (p_end[-1] == 0xc3) {
                 len--;
+            } else if (len >= 2 && p_end[-2] == 0xeb) {
+                /* jmp short */
+            } else if (len >= 5 && p_end[-5] == 0xe9) {
+                /* jmp near */
+            } else if (len >= 6 && p_end[-6] == 0xff && p_end[-5] == 0x25) {
+                /* jmp indirect */
             } else {
-                error("ret or jmp expected at the end of %s", name);
+                error("ret or jmp expected at the end of %s (last byte is 0x%02x)", name, p_end[-1]);
             }
             copy_size = len;
         }
@@ -495,21 +530,60 @@ void gen_code(const char *name, host_ulong offset, host_ulong size,
             const char *sym_name, *p;
             target_ulong val;
             int n;
+            ElfW(Rel) *data_relocs = NULL;
+            int nb_data_relocs = 0;
+            int data_reloc_entsize = 0;
+            int k;
+
+            for(k = 0; k < ehdr.e_shnum; k++) {
+                ElfW(Shdr) *sec2 = &shdr[k];
+                if ((sec2->sh_type == SHT_REL || sec2->sh_type == SHT_RELA) &&
+                    sec2->sh_info == data_shndx) {
+                    data_relocs = load_data(fd, sec2->sh_offset, sec2->sh_size);
+                    nb_data_relocs = sec2->sh_size / sec2->sh_entsize;
+                    data_reloc_entsize = sec2->sh_entsize;
+                    if (do_swap) {
+                        for(int j = 0; j < nb_data_relocs; j++) {
+                            ElfW(Rel) *rel2 = (ElfW(Rel) *)((char *)data_relocs + j * data_reloc_entsize);
+                            swabls(&rel2->r_offset);
+                            swabls(&rel2->r_info);
+                        }
+                    }
+                    break;
+                }
+            }
 
             for(i = 0, sym = symtab; i < nb_syms; i++, sym++) {
                 sym_name = strtab + sym->st_name;
                 if (strstart(sym_name, "__op_label", &p)) {
+                    printf("Function: %s, Found symbol: %s\n", name, sym_name);
                     /* test if the variable refers to a label inside
                        the code we are generating */
                     if (sym->st_shndx != data_shndx)
                         error("__op_labelN symbols must be in .data or .sdata section");
                     val = *(target_ulong *)(data_data + sym->st_value);
+                    printf("  Raw val in .data: %d (0x%x)\n", (int)val, (int)val);
+                    if (val == 0 && data_relocs) {
+                        for(int j = 0; j < nb_data_relocs; j++) {
+                            ElfW(Rel) *rel2 = (ElfW(Rel) *)((char *)data_relocs + j * data_reloc_entsize);
+                            if (rel2->r_offset == sym->st_value) {
+                                ElfW(Sym) *sym_rel = &symtab[ELFW(R_SYM)(rel2->r_info)];
+                                val = sym_rel->st_value;
+                                printf("  Reloc target symbol: %s, value: %d (0x%x)\n", 
+                                       strtab + sym_rel->st_name, (int)val, (int)val);
+                                break;
+                            }
+                        }
+                    }
+                    printf("  Final val: %d (0x%x), start_offset: %d, copy_size: %d\n", 
+                           (int)val, (int)val, (int)start_offset, (int)copy_size);
                     if (val >= start_offset && val < start_offset + copy_size) {
                         n = strtol(p, NULL, 10);
                         fprintf(outfile, "    label_offsets[%d] = %d + (gen_code_ptr - gen_code_buf);\n", n, val - start_offset);
                     }
                 }
             }
+            if (data_relocs) free(data_relocs);
         }
 
         /* load parameres in variables */
@@ -874,7 +948,6 @@ void gen_code(const char *name, host_ulong offset, host_ulong size,
 /* load an elf object file */
 int load_elf(const char *filename, FILE *outfile, int do_print_enum)
 {
-    int fd;
     struct elf_shdr *sec, *symtab_sec, *strtab_sec, *text_sec;
     int i, j;
     ElfW(Sym) *sym;

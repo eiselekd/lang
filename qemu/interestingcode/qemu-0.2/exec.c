@@ -193,6 +193,14 @@ void page_set_flags(unsigned long start, unsigned long end, int flags)
 void cpu_x86_tblocks_init(void)
 {
     if (!code_gen_ptr) {
+        unsigned long start = (unsigned long)code_gen_buffer;
+        unsigned long end = start + CODE_GEN_BUFFER_SIZE;
+        unsigned long page_size = getpagesize();
+        start &= ~(page_size - 1);
+        end = (end + page_size - 1) & ~(page_size - 1);
+        if (mprotect((void *)start, end - start, PROT_READ | PROT_WRITE | PROT_EXEC) < 0) {
+            perror("mprotect code_gen_buffer");
+        }
         code_gen_ptr = code_gen_buffer;
     }
 }

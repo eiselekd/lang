@@ -1,7 +1,7 @@
 include ../config.mak
 
-CFLAGS=-Wall -O2 -g
-LDFLAGS=
+CFLAGS+=-Wall -O2 -g
+LDFLAGS+=
 
 ifeq ($(ARCH),i386)
 TESTS=testclone testsig testthread sha1-i386 test-i386 runcom
@@ -15,6 +15,11 @@ all: $(TESTS)
 hello: hello.c
 	$(CC) -nostdlib $(CFLAGS) -static $(LDFLAGS) -o $@ $<
 	strip hello
+
+freestanding_test: freestanding_test.c
+	$(CC) -nostdlib $(CFLAGS) -fno-pic -fno-PIE -fno-builtin -static $(LDFLAGS) -o $@ $<
+	strip freestanding_test
+
 
 testclone: testclone.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
