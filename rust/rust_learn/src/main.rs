@@ -15,9 +15,9 @@ use std::{fs::File};
 
 fn slurp(filename : &str) -> Result<String>
 {
+    let mut b : String = String::new();
     let mut file = File::open(filename)
         .context("Open file {p}")?;
-    let mut b : String = String::new();
     match file.read_to_string(&mut b) {
         Err(e) => panic!("{}", e),
         Ok(_)  => println!("File opened successfully: {:?} {}", file, b),
